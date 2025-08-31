@@ -52,7 +52,7 @@ export const emailService = {
                 role: userData.role || 'user',
                 status: userData.status || 'offline'
               },
-              emailRedirectTo: 'https://dashboard.ontimely.co.uk/confirm-account'
+              emailRedirectTo: 'https://dashboard.ontimely.co.uk/confirm-account.html'
             }
           })
           
@@ -152,7 +152,7 @@ export const emailService = {
     
     try {
       // Generate confirmation URL with token
-      const confirmationUrl = `https://dashboard.ontimely.co.uk/confirm-account?token=${encodeURIComponent(data.email)}&type=signup`;
+      const confirmationUrl = `https://dashboard.ontimely.co.uk/confirm-account.html?token=${encodeURIComponent(data.email)}&type=signup`;
       console.log('🔍 CONFIRMATION URL:', confirmationUrl);
       
       // Send professional confirmation email via Edge Function (bypasses Vercel network restrictions)
@@ -191,7 +191,7 @@ export const emailService = {
               // Fallback to simple email template via Edge Function
         try {
           console.log('🔍 TRYING FALLBACK EMAIL via Edge Function...');
-          const confirmationUrl = `https://dashboard.ontimely.co.uk/confirm-account?token=${encodeURIComponent(data.email)}&type=signup`;
+          const confirmationUrl = `https://dashboard.ontimely.co.uk/confirm-account.html?token=${encodeURIComponent(data.email)}&type=signup`;
           
           const fallbackResponse = await fetch('https://portal.ontimely.co.uk/api/send-account-confirmation-email', {
             method: 'POST',
