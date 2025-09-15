@@ -5,18 +5,12 @@ import {
   TrendingUp, 
   MapPin, 
   Brain, 
-  Users, 
-  Calendar,
   Eye,
   MousePointer,
-  Award,
-  AlertTriangle,
   Plus,
   Search,
   Filter,
   BarChart3,
-  Globe,
-  Clock,
   Zap
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
