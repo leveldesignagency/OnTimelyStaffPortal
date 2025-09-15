@@ -125,7 +125,7 @@ const SmartAdvertising: React.FC = () => {
   const getPaymentTierColor = (tier: string) => {
     switch (tier) {
       case 'premium': return 'text-yellow-600 bg-yellow-100';
-      case 'standard': return 'text-blue-600 bg-blue-100';
+      case 'standard': return 'text-green-600 bg-green-100';
       case 'basic': return 'text-gray-600 bg-gray-100';
       default: return 'text-gray-600 bg-gray-100';
     }
@@ -148,7 +148,7 @@ const SmartAdvertising: React.FC = () => {
       case 'warm':
       case 'medium': return 'text-yellow-600 bg-yellow-100';
       case 'cold':
-      case 'low': return 'text-blue-600 bg-blue-100';
+      case 'low': return 'text-green-600 bg-green-100';
       default: return 'text-gray-600 bg-gray-100';
     }
   };
@@ -156,7 +156,7 @@ const SmartAdvertising: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-600"></div>
       </div>
     );
   }
@@ -170,7 +170,7 @@ const SmartAdvertising: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-900">Smart Advertising Platform</h1>
             <p className="text-gray-600 mt-2">AI-powered location-based advertising management</p>
           </div>
-          <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2">
+          <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2">
             <Plus className="w-4 h-4" />
             New Campaign
           </button>
@@ -189,9 +189,9 @@ const SmartAdvertising: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
+        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
           <div className="flex items-center">
-            <Target className="w-8 h-8 text-blue-600" />
+            <Target className="w-8 h-8 text-green-600" />
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Active Campaigns</p>
               <p className="text-2xl font-bold text-gray-900">{stats.activeCampaigns}</p>
@@ -229,9 +229,9 @@ const SmartAdvertising: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-indigo-500">
+        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
           <div className="flex items-center">
-            <Brain className="w-8 h-8 text-indigo-600" />
+            <Brain className="w-8 h-8 text-green-600" />
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Market Ops</p>
               <p className="text-2xl font-bold text-gray-900">{stats.marketOpportunities}</p>
@@ -254,7 +254,7 @@ const SmartAdvertising: React.FC = () => {
               onClick={() => setActiveTab(key as any)}
               className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm ${
                 activeTab === key
-                  ? 'border-indigo-500 text-indigo-600'
+                  ? 'border-green-500 text-green-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -379,7 +379,7 @@ const SmartAdvertising: React.FC = () => {
                       <div className="mt-4 pt-3 border-t border-gray-200">
                         <div className="flex justify-between items-center text-xs text-gray-500">
                           <span>Last analyzed: {new Date(intel.last_analyzed).toLocaleDateString()}</span>
-                          <button className="text-indigo-600 hover:text-indigo-700 font-medium">View Details</button>
+                          <button className="text-green-600 hover:text-green-700 font-medium">View Details</button>
                         </div>
                       </div>
                     </div>
@@ -426,7 +426,7 @@ const SmartAdvertising: React.FC = () => {
                           <div className="flex items-center">
                             <div className="w-16 bg-gray-200 rounded-full h-2 mr-3">
                               <div 
-                                className="bg-indigo-600 h-2 rounded-full" 
+                                className="bg-green-600 h-2 rounded-full" 
                                 style={{ width: `${opportunity.likelihood_score * 100}%` }}
                               ></div>
                             </div>

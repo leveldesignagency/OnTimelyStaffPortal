@@ -45,7 +45,7 @@ const Support: React.FC = () => {
       change: '-0.5h',
       changeType: 'decrease',
       icon: Clock,
-      color: 'bg-blue-500'
+      color: 'bg-green-500'
     },
     {
       title: 'Knowledge Articles',
@@ -168,7 +168,7 @@ const Support: React.FC = () => {
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       open: { color: 'bg-red-100 text-red-800', label: 'Open' },
-      'in-progress': { color: 'bg-blue-100 text-blue-800', label: 'In Progress' },
+      'in-progress': { color: 'bg-green-100 text-green-800', label: 'In Progress' },
       resolved: { color: 'bg-green-100 text-green-800', label: 'Resolved' },
       closed: { color: 'bg-gray-100 text-gray-800', label: 'Closed' }
     }
@@ -249,8 +249,8 @@ const Support: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
           <div className="text-center">
-            <div className="p-3 bg-blue-100 rounded-lg inline-block mb-4">
-              <BookOpen className="h-8 w-8 text-blue-600" />
+            <div className="p-3 bg-green-100 rounded-lg inline-block mb-4">
+              <BookOpen className="h-8 w-8 text-green-600" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Knowledge Base</h3>
             <p className="text-gray-600 mb-4">Browse help articles and tutorials</p>
@@ -417,7 +417,7 @@ const Support: React.FC = () => {
                 </div>
                 <div className="ml-4">
                   <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                    article.type === 'guide' ? 'bg-blue-100 text-blue-800' :
+                    article.type === 'guide' ? 'bg-green-100 text-green-800' :
                     article.type === 'troubleshooting' ? 'bg-orange-100 text-orange-800' :
                     'bg-green-100 text-green-800'
                   }`}>

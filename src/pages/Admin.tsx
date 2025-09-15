@@ -39,7 +39,7 @@ const Admin: React.FC = () => {
       value: '45%',
       status: 'good',
       icon: Cpu,
-      color: 'bg-blue-500'
+      color: 'bg-green-500'
     },
     {
       name: 'Memory Usage',
@@ -91,7 +91,7 @@ const Admin: React.FC = () => {
       description: 'Create multiple user accounts from CSV file',
       icon: Users,
       action: () => console.log('Bulk user creation'),
-      color: 'bg-blue-500'
+      color: 'bg-green-500'
     },
     {
       title: 'Company Management',
@@ -128,7 +128,7 @@ const Admin: React.FC = () => {
   const getStatusColor = (status: string) => {
     const colors = {
       excellent: 'text-green-600',
-      good: 'text-blue-600',
+      good: 'text-green-600',
       warning: 'text-yellow-600',
       critical: 'text-red-600'
     }
@@ -138,7 +138,7 @@ const Admin: React.FC = () => {
   const getStatusBgColor = (status: string) => {
     const colors = {
       excellent: 'bg-green-100',
-      good: 'bg-blue-100',
+      good: 'bg-green-100',
       warning: 'bg-yellow-100',
       critical: 'bg-red-600'
     }
@@ -210,7 +210,7 @@ const Admin: React.FC = () => {
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <Server className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+            <Server className="h-8 w-8 text-green-500 mx-auto mb-2" />
             <h4 className="font-medium text-gray-900">Uptime</h4>
             <p className="text-2xl font-bold text-green-600">{systemHealth.uptime}</p>
           </div>

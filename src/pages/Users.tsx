@@ -309,8 +309,8 @@ const UsersPage: React.FC = () => {
   const getRoleColor = (role: string | undefined) => {
     switch (role) {
       case 'masterAdmin': return 'bg-purple-100 text-purple-800'
-      case 'user': return 'bg-blue-100 text-blue-800'
-      default: return 'bg-blue-100 text-blue-800'
+      case 'user': return 'bg-green-100 text-green-800'
+      default: return 'bg-green-100 text-green-800'
     }
   }
 
@@ -571,7 +571,7 @@ const UsersPage: React.FC = () => {
                     required
                     value={newUser.role}
                     onChange={(e) => setNewUser({...newUser, role: e.target.value})}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
                   >
                     <option value="">Select a role</option>
                     <option value="user">User</option>
@@ -588,7 +588,7 @@ const UsersPage: React.FC = () => {
                       type="text"
                       name="customRole"
                       placeholder="Specify custom role"
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
                       onChange={(e) => setNewUser(prev => ({ ...prev, role: e.target.value }))}
                     />
                   </div>
@@ -638,14 +638,14 @@ const UsersPage: React.FC = () => {
               </div>
             </div>
             
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
               <div className="flex items-center space-x-2">
                 <div className="flex-shrink-0">
-                  <div className="w-5 h-5 bg-blue-100 rounded-full flex items-center justify-center">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                  <div className="w-5 h-5 bg-green-100 rounded-full flex items-center justify-center">
+                    <div className="w-2 h-2 bg-green-600 rounded-full"></div>
                   </div>
                 </div>
-                <p className="text-sm text-blue-800">
+                <p className="text-sm text-green-800">
                   A welcome email with login credentials has been sent to the user. They should check their email and set their password.
                 </p>
               </div>

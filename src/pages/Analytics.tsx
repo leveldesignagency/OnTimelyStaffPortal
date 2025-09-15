@@ -55,7 +55,7 @@ const Analytics: React.FC = () => {
       change: '+15%',
       changeType: 'positive',
       icon: Users,
-      color: 'bg-blue-500'
+      color: 'bg-green-500'
     },
     {
       title: 'Active Sessions',
@@ -118,7 +118,7 @@ const Analytics: React.FC = () => {
   const getStatusColor = (status: string) => {
     const colors = {
       excellent: 'text-green-600',
-      good: 'text-blue-600',
+      good: 'text-green-600',
       warning: 'text-yellow-600',
       critical: 'text-red-600'
     }
@@ -128,7 +128,7 @@ const Analytics: React.FC = () => {
   const getStatusBgColor = (status: string) => {
     const colors = {
       excellent: 'bg-green-100',
-      good: 'bg-blue-100',
+      good: 'bg-green-100',
       warning: 'bg-yellow-100',
       critical: 'bg-red-100'
     }

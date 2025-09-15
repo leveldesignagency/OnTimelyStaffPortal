@@ -153,8 +153,8 @@ const DesktopApp: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
           <div className="flex items-center">
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Package className="h-6 w-6 text-blue-600" />
+            <div className="p-3 bg-green-100 rounded-lg">
+              <Package className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Current Version</p>
@@ -230,8 +230,8 @@ const DesktopApp: React.FC = () => {
                 <div className="space-y-4">
                   {recentUpdates.map((update, index) => (
                     <div key={index} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
-                      <div className="p-2 bg-blue-100 rounded-lg">
-                        <Package className="h-5 w-5 text-blue-600" />
+                      <div className="p-2 bg-green-100 rounded-lg">
+                        <Package className="h-5 w-5 text-green-600" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
@@ -239,7 +239,7 @@ const DesktopApp: React.FC = () => {
                           <span className="text-sm text-gray-500">{update.date}</span>
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                             update.type === 'major' ? 'bg-purple-100 text-purple-800' :
-                            update.type === 'feature' ? 'bg-blue-100 text-blue-800' :
+                            update.type === 'feature' ? 'bg-green-100 text-green-800' :
                             'bg-green-100 text-green-800'
                           }`}>
                             {update.type}
@@ -346,7 +346,7 @@ const DesktopApp: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors cursor-pointer">
                     <div className="flex items-center gap-3">
-                      <FileText className="h-8 w-8 text-blue-500" />
+                      <FileText className="h-8 w-8 text-green-500" />
                       <div>
                         <h4 className="font-medium text-gray-900">User Manual</h4>
                         <p className="text-sm text-gray-600">Complete guide to using OnTimely</p>

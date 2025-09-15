@@ -94,9 +94,9 @@ const Companies: React.FC = () => {
 
   const getPlanBadge = (plan: string) => {
     const planClasses = {
-      basic: 'bg-blue-100 text-blue-800',
+      basic: 'bg-green-100 text-green-800',
       premium: 'bg-purple-100 text-purple-800',
-      enterprise: 'bg-indigo-100 text-indigo-800'
+      enterprise: 'bg-green-200 text-green-900'
     }
     return (
       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${planClasses[plan as keyof typeof planClasses] || planClasses.basic}`}>
@@ -136,7 +136,7 @@ const Companies: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-white p-4 rounded-lg border">
           <div className="flex items-center">
-            <Building2 className="w-8 h-8 text-blue-600" />
+            <Building2 className="w-8 h-8 text-green-600" />
             <div className="ml-3">
               <p className="text-sm font-medium text-gray-600">Total Companies</p>
               <p className="text-2xl font-bold text-gray-900">{companies.length}</p>
@@ -213,7 +213,7 @@ const Companies: React.FC = () => {
             <div className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center">
-                  <Building2 className="w-8 h-8 text-blue-600 mr-3" />
+                  <Building2 className="w-8 h-8 text-green-600 mr-3" />
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">{company.name}</h3>
                     <p className="text-sm text-gray-500">ID: {company.id.slice(0, 8)}...</p>
