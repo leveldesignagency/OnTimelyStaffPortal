@@ -8,6 +8,7 @@ import Companies from './pages/Companies'
 import DesktopApp from './pages/DesktopApp'
 import Analytics from './pages/Analytics'
 import Admin from './pages/Admin'
+import SmartAdvertising from './pages/SmartAdvertising'
 import Sidebar from './components/Sidebar'
 
 // Protected Route Component
@@ -140,6 +141,14 @@ function App() {
           <ProtectedRoute>
             <PortalLayout>
               <Admin />
+            </PortalLayout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/smart-advertising" element={
+          <ProtectedRoute>
+            <PortalLayout>
+              <SmartAdvertising />
             </PortalLayout>
           </ProtectedRoute>
         } />

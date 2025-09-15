@@ -10,7 +10,8 @@ import {
   Settings,
   LogOut,
   User,
-  ChevronDown
+  ChevronDown,
+  Target
 } from 'lucide-react'
 import { staffAuth } from '../lib/staffAuth'
 
@@ -27,6 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Users', href: '/users', icon: Users },
     { name: 'Companies', href: '/companies', icon: Building2 },
+    { name: 'Smart Advertising', href: '/smart-advertising', icon: Target },
     { name: 'Desktop App', href: '/desktop-app', icon: Monitor },
     { name: 'Analytics', href: '/analytics', icon: BarChart3 },
     { name: 'Support', href: '/support', icon: HelpCircle },
