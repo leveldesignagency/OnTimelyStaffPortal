@@ -53,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
       {/* Logo */}
       <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
         <div className="flex items-center space-x-2">
-          <svg viewBox="0 0 1695.17 474.35" style={{ height: '24px', width: 'auto' }}>
+          <svg viewBox="0 0 1695.17 474.35" style={{ height: '32px', width: 'auto' }}>
             <defs>
               <style>{`
                 .cls-1 {
