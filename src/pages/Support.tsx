@@ -202,9 +202,10 @@ const Support: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Support & Help</h1>
           <p className="text-gray-600 mt-2">Manage support tickets and provide user assistance</p>
@@ -213,10 +214,11 @@ const Support: React.FC = () => {
           <Plus className="h-4 w-4" />
           New Support Ticket
         </button>
+        </div>
       </div>
 
       {/* Support Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {supportStats.map((stat, index) => {
           const Icon = stat.icon
           return (

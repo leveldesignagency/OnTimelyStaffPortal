@@ -136,9 +136,10 @@ const Analytics: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Analytics & Monitoring</h1>
           <p className="text-gray-600 mt-2">Track user activity, system performance, and usage patterns</p>
@@ -163,10 +164,11 @@ const Analytics: React.FC = () => {
             ))}
           </select>
         </div>
+        </div>
       </div>
 
       {/* Overview Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {overviewStats.map((stat, index) => {
           const Icon = stat.icon
           return (

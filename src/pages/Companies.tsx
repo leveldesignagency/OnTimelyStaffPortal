@@ -114,9 +114,10 @@ const Companies: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="mb-8">
+        <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Companies</h1>
           <p className="text-gray-600">Manage company accounts and subscriptions</p>
@@ -128,10 +129,11 @@ const Companies: React.FC = () => {
           <Plus className="w-4 h-4 mr-2" />
           Add Company
         </button>
+        </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-white p-4 rounded-lg border">
           <div className="flex items-center">
             <Building2 className="w-8 h-8 text-blue-600" />

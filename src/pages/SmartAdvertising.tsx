@@ -162,21 +162,23 @@ const SmartAdvertising: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Smart Advertising Platform</h1>
-          <p className="text-gray-600 mt-2">AI-powered location-based advertising management</p>
+      <div className="mb-8">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Smart Advertising Platform</h1>
+            <p className="text-gray-600 mt-2">AI-powered location-based advertising management</p>
+          </div>
+          <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            New Campaign
+          </button>
         </div>
-        <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 flex items-center gap-2">
-          <Plus className="w-4 h-4" />
-          New Campaign
-        </button>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
           <div className="flex items-center">
             <DollarSign className="w-8 h-8 text-green-600" />
@@ -264,7 +266,7 @@ const SmartAdvertising: React.FC = () => {
       </div>
 
       {/* Tab Content */}
-      <div className="mt-6">
+      <div className="mt-8">
         {activeTab === 'campaigns' && (
           <div className="space-y-6">
             <div className="bg-white shadow rounded-lg">
