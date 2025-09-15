@@ -57,6 +57,12 @@ export const emailService = {
           })
           
           if (authError) {
+            console.error('🚨 SUPABASE AUTH ERROR:', {
+              message: authError.message,
+              status: authError.status,
+              details: authError
+            });
+            
             // Check if it's a rate limit error
             if (authError.message.includes('For security purposes, you can only request this after') && attempts < 3) {
               const waitTime = Math.pow(2, attempts) * 1000 + 5000 // Exponential backoff: 5s, 7s, 9s

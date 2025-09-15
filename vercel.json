@@ -13,6 +13,10 @@
     {
       "source": "/api/send-account-confirmation-email",
       "destination": "/api/send-account-confirmation-email.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
