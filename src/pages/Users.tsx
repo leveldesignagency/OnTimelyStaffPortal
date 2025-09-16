@@ -395,7 +395,7 @@ const UsersPage: React.FC = () => {
     }
   }
 
-  const handlePermanentDelete = async (userId: string, userName: string, userEmail: string) => {
+  const handlePermanentDelete = async (userId: string, userName: string, _userEmail: string) => {
     if (window.confirm(`Are you sure you want to permanently delete ${userName}? This action cannot be undone.`)) {
       try {
         await db.users.deleteUser(userId)
