@@ -1,4 +1,4 @@
-import { supabase, Company, User, Team, TeamMember, Chat, Message, SupportTicket, SystemMetric } from './supabase'
+import { supabase, supabaseAdmin, Company, User, Team, TeamMember, Chat, Message, SupportTicket, SystemMetric } from './supabase'
 import { emailService } from './email'
 import { generateTemporaryPassword } from './utils'
 

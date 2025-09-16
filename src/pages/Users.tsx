@@ -17,7 +17,8 @@ import {
   // EyeOff, // TODO: Uncomment when needed
   ChevronDown,
   Check,
-  Shield
+  Shield,
+  AlertCircle
 } from 'lucide-react'
 import { db } from '../lib/database'
 import { User, Company } from '../lib/supabase'
@@ -325,7 +326,7 @@ const UsersPage: React.FC = () => {
   }
 
   // Helper function for dropdown option styling
-  const getDropdownOptionClass = (isSelected: boolean, isFirst: boolean, isLast: boolean) => {
+  const getDropdownOptionClass = (_isSelected: boolean, isFirst: boolean, isLast: boolean) => {
     let baseClass = "w-full px-3 py-2 text-left hover:bg-primary-50 hover:text-primary-700 transition-colors duration-150 flex items-center justify-between"
     if (!isFirst) baseClass += " border-t border-gray-100"
     if (isFirst) baseClass += " rounded-t-lg"
