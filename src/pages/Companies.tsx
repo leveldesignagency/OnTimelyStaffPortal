@@ -17,6 +17,10 @@ const Companies: React.FC = () => {
   const [showUndo, setShowUndo] = useState(false)
   const [deletedCompany, setDeletedCompany] = useState<Company | null>(null)
   
+  // Tab states
+  const [activeTab, setActiveTab] = useState<'active' | 'deleted'>('active')
+  const [deletedCompanies, setDeletedCompanies] = useState<Company[]>([])
+  
   // Custom dropdown states
   const [showPlanDropdown, setShowPlanDropdown] = useState(false)
   const planDropdownRef = useRef<HTMLDivElement>(null)
@@ -29,6 +33,12 @@ const Companies: React.FC = () => {
   useEffect(() => {
     loadCompanies()
   }, [])
+
+  useEffect(() => {
+    if (activeTab === 'deleted') {
+      loadDeletedCompanies()
+    }
+  }, [activeTab])
 
   useEffect(() => {
     filterCompanies()
@@ -56,6 +66,15 @@ const Companies: React.FC = () => {
       // You could add a toast notification here
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadDeletedCompanies = async () => {
+    try {
+      const data = await db.companies.getDeletedCompanies()
+      setDeletedCompanies(data)
+    } catch (error) {
+      console.error('Error loading deleted companies:', error)
     }
   }
 
@@ -160,6 +179,17 @@ const Companies: React.FC = () => {
     }
   }
 
+  const handleRestoreCompany = async (company: Company) => {
+    try {
+      await db.companies.restoreCompany(company.id)
+      // Reload both active and deleted companies
+      loadCompanies()
+      loadDeletedCompanies()
+    } catch (error) {
+      console.error('Error restoring company:', error)
+    }
+  }
+
   const getPlanBadge = (plan: string) => {
     const planClasses = {
       basic: 'bg-green-100 text-green-800',
@@ -246,6 +276,34 @@ const Companies: React.FC = () => {
         </div>
       </div>
 
+      {/* Tabs */}
+      <div className="mb-6">
+        <div className="border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              onClick={() => setActiveTab('active')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'active'
+                  ? 'border-primary-500 text-primary-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Active Companies ({companies.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('deleted')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'deleted'
+                  ? 'border-primary-500 text-primary-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Recently Deleted ({deletedCompanies.length})
+            </button>
+          </nav>
+        </div>
+      </div>
+
       {/* Filters */}
       <div className="bg-white p-4 rounded-lg border">
         <div className="flex flex-col sm:flex-row gap-4">
@@ -305,61 +363,124 @@ const Companies: React.FC = () => {
       </div>
 
       {/* Companies Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredCompanies.map((company) => (
-          <div key={company.id} className="bg-white rounded-lg border hover:shadow-md transition-shadow">
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center">
-                  <Building2 className="w-8 h-8 text-green-600 mr-3" />
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{company.name}</h3>
-                    <p className="text-sm text-gray-500">ID: {company.id.slice(0, 8)}...</p>
+      {activeTab === 'active' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredCompanies.map((company) => (
+            <div key={company.id} className="bg-white rounded-lg border hover:shadow-md transition-shadow">
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center">
+                    <Building2 className="w-8 h-8 text-green-600 mr-3" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{company.name}</h3>
+                      <p className="text-sm text-gray-500">ID: {company.id.slice(0, 8)}...</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    {getPlanBadge(company.subscription_plan || 'basic')}
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  {getPlanBadge(company.subscription_plan || 'basic')}
-                </div>
-              </div>
 
-              <div className="space-y-3 mb-4">
-                <div className="flex items-center text-sm text-gray-600">
-                  <Users className="w-4 h-4 mr-2" />
-                  Max Users: {company.max_users || 5}
+                <div className="space-y-3 mb-4">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Users className="w-4 h-4 mr-2" />
+                    Max Users: {company.max_users || 5}
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Building2 className="w-4 h-4 mr-2" />
+                    Plan: {company.subscription_plan || 'basic'}
+                  </div>
                 </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <Building2 className="w-4 h-4 mr-2" />
-                  Plan: {company.subscription_plan || 'basic'}
-                </div>
-              </div>
 
-              <div className="flex items-center justify-between pt-4 border-t">
-                <span className="text-xs text-gray-500">
-                  Created {new Date(company.created_at).toLocaleDateString()}
-                </span>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => handleDeleteCompany(company)}
-                    className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50"
-                    title="Delete Company"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                  <button className="text-gray-400 hover:text-gray-600">
-                    <MoreVertical className="w-4 h-4" />
-                  </button>
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <span className="text-xs text-gray-500">
+                    Created {new Date(company.created_at).toLocaleDateString()}
+                  </span>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handleDeleteCompany(company)}
+                      className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50"
+                      title="Delete Company"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                    <button className="text-gray-400 hover:text-gray-600">
+                      <MoreVertical className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {filteredCompanies.length === 0 && !loading && (
+      {/* Deleted Companies Grid */}
+      {activeTab === 'deleted' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {deletedCompanies.map((company) => (
+            <div key={company.id} className="bg-white rounded-lg border border-red-200 hover:shadow-md transition-shadow">
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center">
+                    <Building2 className="w-8 h-8 text-red-600 mr-3" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">{company.name}</h3>
+                      <p className="text-sm text-gray-500">ID: {company.id.slice(0, 8)}...</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <span className="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">
+                      Deleted
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-3 mb-4">
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Users className="w-4 h-4 mr-2" />
+                    Max Users: {company.max_users || 5}
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Building2 className="w-4 h-4 mr-2" />
+                    Plan: {company.subscription_plan || 'basic'}
+                  </div>
+                  <div className="flex items-center text-sm text-red-600">
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Deleted: {company.deleted_at ? new Date(company.deleted_at).toLocaleDateString() : 'Unknown'}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <span className="text-xs text-gray-500">
+                    Created {new Date(company.created_at).toLocaleDateString()}
+                  </span>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handleRestoreCompany(company)}
+                      className="text-green-600 hover:text-green-800 p-1 rounded hover:bg-green-50"
+                      title="Restore Company"
+                    >
+                      <Check className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* No companies found */}
+      {((activeTab === 'active' && filteredCompanies.length === 0) || (activeTab === 'deleted' && deletedCompanies.length === 0)) && !loading && (
         <div className="text-center py-12">
           <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No companies found</h3>
-          <p className="text-gray-600">Try adjusting your search or filters.</p>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            {activeTab === 'active' ? 'No companies found' : 'No deleted companies found'}
+          </h3>
+          <p className="text-gray-600">
+            {activeTab === 'active' ? 'Try adjusting your search or filters.' : 'Deleted companies will appear here for 30 days.'}
+          </p>
         </div>
       )}
 
