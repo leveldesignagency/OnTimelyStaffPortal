@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Search, Plus, /* Filter, */ MoreVertical, Building2, Users, /* Mail, Phone, MapPin */ } from 'lucide-react'
+import React, { useState, useEffect, useRef } from 'react'
+import { Search, Plus, /* Filter, */ MoreVertical, Building2, Users, /* Mail, Phone, MapPin */ ChevronDown, Check } from 'lucide-react'
 import { db } from '@/lib/database'
 import { Company } from '@/lib/supabase'
 
@@ -10,6 +10,10 @@ const Companies: React.FC = () => {
   const [planFilter, setPlanFilter] = useState<string>('all')
   const [loading, setLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)
+  
+  // Custom dropdown states
+  const [showPlanDropdown, setShowPlanDropdown] = useState(false)
+  const planDropdownRef = useRef<HTMLDivElement>(null)
   const [newCompany, setNewCompany] = useState({
     name: '',
     subscription_plan: 'basic' as string,
@@ -23,6 +27,18 @@ const Companies: React.FC = () => {
   useEffect(() => {
     filterCompanies()
   }, [companies, searchTerm, planFilter])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (planDropdownRef.current && !planDropdownRef.current.contains(event.target as Node)) {
+        setShowPlanDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const loadCompanies = async () => {
     try {
@@ -51,6 +67,15 @@ const Companies: React.FC = () => {
     }
 
     setFilteredCompanies(filtered)
+  }
+
+  // Helper function for dropdown option styling
+  const getDropdownOptionClass = (_isSelected: boolean, isFirst: boolean, isLast: boolean) => {
+    let baseClass = "w-full px-3 py-2 text-left hover:bg-primary-50 hover:text-primary-700 transition-colors duration-150 flex items-center justify-between"
+    if (!isFirst) baseClass += " border-t border-gray-100"
+    if (isFirst) baseClass += " rounded-t-lg"
+    if (isLast) baseClass += " rounded-b-lg"
+    return baseClass
   }
 
   const handleCreateCompany = async () => {
@@ -181,7 +206,7 @@ const Companies: React.FC = () => {
       {/* Filters */}
       <div className="bg-white p-4 rounded-lg border">
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
+          <div className="flex-1 min-w-64">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
@@ -189,20 +214,50 @@ const Companies: React.FC = () => {
                 placeholder="Search companies..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="input pl-10 w-full"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
           </div>
-          <select
-            value={planFilter}
-            onChange={(e) => setPlanFilter(e.target.value)}
-            className="input"
-          >
-            <option value="all">All Plans</option>
-            <option value="basic">Basic</option>
-            <option value="premium">Premium</option>
-            <option value="enterprise">Enterprise</option>
-          </select>
+          
+          <div className="relative" ref={planDropdownRef}>
+            <button
+              type="button"
+              onClick={() => setShowPlanDropdown(!showPlanDropdown)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white text-left flex items-center justify-between min-w-[140px]"
+            >
+              <span className="text-gray-900">
+                {planFilter === 'all' ? 'All Plans' : 
+                 planFilter === 'basic' ? 'Basic' :
+                 planFilter === 'premium' ? 'Premium' : 'Enterprise'}
+              </span>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showPlanDropdown ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {showPlanDropdown && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+                {[
+                  { value: 'all', label: 'All Plans' },
+                  { value: 'basic', label: 'Basic' },
+                  { value: 'premium', label: 'Premium' },
+                  { value: 'enterprise', label: 'Enterprise' }
+                ].map((option, index, array) => (
+                  <button
+                    key={option.value}
+                    onClick={() => {
+                      setPlanFilter(option.value)
+                      setShowPlanDropdown(false)
+                    }}
+                    className={getDropdownOptionClass(planFilter === option.value, index === 0, index === array.length - 1)}
+                  >
+                    <span>{option.label}</span>
+                    {planFilter === option.value && (
+                      <Check className="w-4 h-4 text-primary-600" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
