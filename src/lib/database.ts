@@ -9,11 +9,13 @@ export const companyService = {
     const { data, error } = await supabase
       .from('companies')
       .select('*')
-      .is('deleted_at', null)
       .order('created_at', { ascending: false })
     
     if (error) throw error
-    return data || []
+    
+    // Filter out soft deleted companies on the client side
+    // This handles cases where deleted_at column doesn't exist yet
+    return (data || []).filter(company => !company.deleted_at)
   },
 
   // Get company by ID
