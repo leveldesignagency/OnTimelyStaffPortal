@@ -23,6 +23,7 @@ export interface Company {
   max_users?: number          // Optional, defaults to 5
   created_at: string
   updated_at: string
+  deleted_at?: string | null  // Optional, for soft delete functionality
 }
 
 export interface User {

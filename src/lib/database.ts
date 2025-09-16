@@ -4,11 +4,12 @@ import { generateTemporaryPassword } from './utils'
 
 // Company Management - using your existing companies table
 export const companyService = {
-  // Get all companies
+  // Get all companies (excluding soft deleted)
   async getCompanies(): Promise<Company[]> {
     const { data, error } = await supabase
       .from('companies')
       .select('*')
+      .is('deleted_at', null)
       .order('created_at', { ascending: false })
     
     if (error) throw error
@@ -60,6 +61,38 @@ export const companyService = {
       .eq('id', id)
     
     if (error) throw error
+  },
+
+  // Soft delete company (move to deleted_at instead of permanent deletion)
+  async softDeleteCompany(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('companies')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', id)
+    
+    if (error) throw error
+  },
+
+  // Restore soft deleted company
+  async restoreCompany(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('companies')
+      .update({ deleted_at: null })
+      .eq('id', id)
+    
+    if (error) throw error
+  },
+
+  // Get deleted companies (for admin recovery)
+  async getDeletedCompanies(): Promise<Company[]> {
+    const { data, error } = await supabase
+      .from('companies')
+      .select('*')
+      .not('deleted_at', 'is', null)
+      .order('deleted_at', { ascending: false })
+    
+    if (error) throw error
+    return data || []
   },
 
   // Get company statistics

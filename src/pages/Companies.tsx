@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Search, Plus, /* Filter, */ MoreVertical, Building2, Users, /* Mail, Phone, MapPin */ ChevronDown, Check } from 'lucide-react'
+import { Search, Plus, /* Filter, */ MoreVertical, Building2, Users, /* Mail, Phone, MapPin */ ChevronDown, Check, Trash2, AlertTriangle } from 'lucide-react'
 import { db } from '@/lib/database'
 import { Company } from '@/lib/supabase'
 
@@ -10,6 +10,12 @@ const Companies: React.FC = () => {
   const [planFilter, setPlanFilter] = useState<string>('all')
   const [loading, setLoading] = useState(true)
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [companyToDelete, setCompanyToDelete] = useState<Company | null>(null)
+  const [deleteConfirmation, setDeleteConfirmation] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [showUndo, setShowUndo] = useState(false)
+  const [deletedCompany, setDeletedCompany] = useState<Company | null>(null)
   
   // Custom dropdown states
   const [showPlanDropdown, setShowPlanDropdown] = useState(false)
@@ -105,15 +111,52 @@ const Companies: React.FC = () => {
     }
   }
 
-  const handleDeleteCompany = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this company? This action cannot be undone.')) {
-      try {
-        await db.companies.deleteCompany(id)
-        loadCompanies() // Reload the list
-      } catch (error) {
-        console.error('Error deleting company:', error)
-        // You could add a toast notification here
-      }
+  const handleDeleteCompany = (company: Company) => {
+    setCompanyToDelete(company)
+    setDeleteConfirmation('')
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteCompany = async () => {
+    if (!companyToDelete || deleteConfirmation !== companyToDelete.name) {
+      return
+    }
+
+    setIsDeleting(true)
+    try {
+      // Soft delete the company
+      await db.companies.softDeleteCompany(companyToDelete.id)
+      
+      // Show undo notification
+      setDeletedCompany(companyToDelete)
+      setShowUndo(true)
+      setTimeout(() => setShowUndo(false), 30000) // 30 seconds
+      
+      // Reload companies
+      loadCompanies()
+      
+      // Close modal
+      setShowDeleteModal(false)
+      setCompanyToDelete(null)
+      setDeleteConfirmation('')
+    } catch (error) {
+      console.error('Error deleting company:', error)
+      // You could add a toast notification here
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const handleUndoDelete = async () => {
+    if (!deletedCompany) return
+    
+    try {
+      await db.companies.restoreCompany(deletedCompany.id)
+      setShowUndo(false)
+      setDeletedCompany(null)
+      loadCompanies()
+    } catch (error) {
+      console.error('Error restoring company:', error)
     }
   }
 
@@ -296,10 +339,11 @@ const Companies: React.FC = () => {
                 </span>
                 <div className="flex items-center space-x-2">
                   <button
-                    onClick={() => handleDeleteCompany(company.id)}
-                    className="text-red-600 hover:text-red-800 text-sm font-medium"
+                    onClick={() => handleDeleteCompany(company)}
+                    className="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50"
+                    title="Delete Company"
                   >
-                    Delete
+                    <Trash2 className="w-4 h-4" />
                   </button>
                   <button className="text-gray-400 hover:text-gray-600">
                     <MoreVertical className="w-4 h-4" />
@@ -370,6 +414,97 @@ const Companies: React.FC = () => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Custom Delete Modal */}
+      {showDeleteModal && companyToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            {/* Header */}
+            <div className="flex items-center mb-4">
+              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                <Trash2 className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Delete Company</h3>
+                <p className="text-sm text-gray-500">This action can be undone within 30 days</p>
+              </div>
+            </div>
+
+            {/* Warning */}
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <div className="flex items-start">
+                <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 mr-3 flex-shrink-0" />
+                <div>
+                  <h4 className="text-sm font-medium text-red-800">Warning</h4>
+                  <p className="text-sm text-red-700 mt-1">
+                    This will delete the company "{companyToDelete.name}" and all associated users. 
+                    The company will be moved to a "Recently Deleted" section for 30 days.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Confirmation Input */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Type the company name to confirm deletion:
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmation}
+                onChange={(e) => setDeleteConfirmation(e.target.value)}
+                placeholder={companyToDelete.name}
+                className="input w-full"
+                autoFocus
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex space-x-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false)
+                  setCompanyToDelete(null)
+                  setDeleteConfirmation('')
+                }}
+                className="btn-secondary flex-1"
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteCompany}
+                disabled={deleteConfirmation !== companyToDelete.name || isDeleting}
+                className="btn-danger flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete Company'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Undo Notification */}
+      {showUndo && deletedCompany && (
+        <div className="fixed top-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-4">
+          <div className="flex items-center">
+            <Trash2 className="w-5 h-5 mr-2" />
+            <span>Company "{deletedCompany.name}" deleted</span>
+          </div>
+          <button
+            onClick={handleUndoDelete}
+            className="bg-white text-red-600 px-3 py-1 rounded text-sm font-medium hover:bg-gray-100"
+          >
+            Undo
+          </button>
+          <button
+            onClick={() => setShowUndo(false)}
+            className="text-white hover:text-gray-200"
+          >
+            ×
+          </button>
         </div>
       )}
     </div>
