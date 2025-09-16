@@ -67,6 +67,15 @@ const UsersPage: React.FC = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [userToDelete, setUserToDelete] = useState<{id: string, name: string, email: string} | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  
+  // Undo functionality states
+  const [showUndo, setShowUndo] = useState(false)
+  const [deletedUser, setDeletedUser] = useState<{id: string, name: string, email: string} | null>(null)
+  const [undoTimer, setUndoTimer] = useState<NodeJS.Timeout | null>(null)
+  
+  // Tab states
+  const [activeTab, setActiveTab] = useState<'active' | 'deleted'>('active')
+  const [deletedUsers, setDeletedUsers] = useState<User[]>([])
   // const [csvFile, setCsvFile] = useState<File | null>(null) // TODO: Uncomment when needed
   const [bulkPreview, setBulkPreview] = useState<Array<{ email: string; name: string }>>([])
 
@@ -115,12 +124,14 @@ const UsersPage: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true)
-      const [usersData, companiesData] = await Promise.all([
+      const [usersData, companiesData, deletedUsersData] = await Promise.all([
         db.users.getUsers(),
-        db.companies.getCompanies()
+        db.companies.getCompanies(),
+        db.users.getDeletedUsers()
       ])
       setUsers(usersData)
       setCompanies(companiesData)
+      setDeletedUsers(deletedUsersData)
     } catch (error) {
       console.error('Error loading data:', error)
     } finally {
@@ -312,16 +323,88 @@ const UsersPage: React.FC = () => {
     
     setIsDeleting(true)
     try {
-      await db.users.deleteUser(userToDelete.id)
-      loadData()
-      toast.success(`User ${userToDelete.name} deleted successfully.`)
+      // Soft delete the user (mark as deleted but don't remove from database)
+      await db.users.softDeleteUser(userToDelete.id)
+      
+      // Store deleted user info for undo
+      setDeletedUser(userToDelete)
+      setShowUndo(true)
+      
+      // Close the modal
       setShowDeleteModal(false)
       setUserToDelete(null)
+      
+      // Reload data to update the UI
+      loadData()
+      
+      // Start 3-second undo timer
+      const timer = setTimeout(() => {
+        setShowUndo(false)
+        setDeletedUser(null)
+        // After 3 seconds, permanently delete the user
+        if (deletedUser) {
+          db.users.deleteUser(deletedUser.id).catch(console.error)
+        }
+      }, 3000)
+      
+      setUndoTimer(timer)
+      
     } catch (error) {
       console.error('Error deleting user:', error)
       toast.error('Error deleting user. Please try again.')
     } finally {
       setIsDeleting(false)
+    }
+  }
+
+  const handleUndo = async () => {
+    if (!deletedUser) return
+    
+    try {
+      // Restore the user
+      await db.users.restoreUser(deletedUser.id)
+      
+      // Clear undo state
+      setShowUndo(false)
+      setDeletedUser(null)
+      
+      // Clear timer
+      if (undoTimer) {
+        clearTimeout(undoTimer)
+        setUndoTimer(null)
+      }
+      
+      // Reload data
+      loadData()
+      
+      toast.success(`User ${deletedUser.name} restored successfully.`)
+    } catch (error) {
+      console.error('Error restoring user:', error)
+      toast.error('Error restoring user. Please try again.')
+    }
+  }
+
+  const handleRestoreUser = async (userId: string, userName: string) => {
+    try {
+      await db.users.restoreUser(userId)
+      loadData()
+      toast.success(`User ${userName} restored successfully.`)
+    } catch (error) {
+      console.error('Error restoring user:', error)
+      toast.error('Error restoring user. Please try again.')
+    }
+  }
+
+  const handlePermanentDelete = async (userId: string, userName: string, userEmail: string) => {
+    if (window.confirm(`Are you sure you want to permanently delete ${userName}? This action cannot be undone.`)) {
+      try {
+        await db.users.deleteUser(userId)
+        loadData()
+        toast.success(`User ${userName} permanently deleted.`)
+      } catch (error) {
+        console.error('Error permanently deleting user:', error)
+        toast.error('Error permanently deleting user. Please try again.')
+      }
     }
   }
 
@@ -334,7 +417,7 @@ const UsersPage: React.FC = () => {
     return baseClass
   }
 
-  const filteredUsers = users.filter(user => {
+  const filteredUsers = (activeTab === 'active' ? users : deletedUsers).filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          user.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'all' || user.status === statusFilter
@@ -342,6 +425,15 @@ const UsersPage: React.FC = () => {
     
     return matchesSearch && matchesStatus && matchesCompany
   })
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (undoTimer) {
+        clearTimeout(undoTimer)
+      }
+    }
+  }, [undoTimer])
 
   const getCompanyName = (companyId: string | undefined) => {
     if (!companyId) return 'No Company'
@@ -516,6 +608,63 @@ const UsersPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Tabs */}
+      <div className="bg-white rounded-lg shadow-sm border mb-6">
+        <div className="border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8 px-6">
+            <button
+              onClick={() => setActiveTab('active')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'active'
+                  ? 'border-primary-500 text-primary-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Active Users ({users.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('deleted')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'deleted'
+                  ? 'border-primary-500 text-primary-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              Recently Deleted ({deletedUsers.length})
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      {/* Undo Notification */}
+      {showUndo && deletedUser && (
+        <div className="fixed top-4 right-4 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-4">
+          <div className="flex items-center">
+            <Trash2 className="w-5 h-5 mr-2" />
+            <span>User "{deletedUser.name}" deleted</span>
+          </div>
+          <button
+            onClick={handleUndo}
+            className="bg-white text-red-600 px-3 py-1 rounded text-sm font-medium hover:bg-red-50 transition-colors"
+          >
+            Undo
+          </button>
+          <button
+            onClick={() => {
+              setShowUndo(false)
+              setDeletedUser(null)
+              if (undoTimer) {
+                clearTimeout(undoTimer)
+                setUndoTimer(null)
+              }
+            }}
+            className="text-red-200 hover:text-white"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
       {/* Users Table */}
       <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
         <div className="overflow-x-auto">
@@ -582,22 +731,45 @@ const UsersPage: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex items-center space-x-2">
-                      <button 
-                        onClick={() => handlePasswordReset(user.id)}
-                        className="text-yellow-600 hover:text-yellow-900"
-                        title="Reset Password"
-                      >
-                        <Key className="w-4 h-4" />
-                      </button>
-                      <button className="text-primary-600 hover:text-primary-900">
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={() => handleDeleteUser(user.id, user.name, user.email)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      {activeTab === 'active' ? (
+                        <>
+                          <button 
+                            onClick={() => handlePasswordReset(user.id)}
+                            className="text-yellow-600 hover:text-yellow-900"
+                            title="Reset Password"
+                          >
+                            <Key className="w-4 h-4" />
+                          </button>
+                          <button className="text-primary-600 hover:text-primary-900">
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteUser(user.id, user.name, user.email)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button 
+                            onClick={() => handleRestoreUser(user.id, user.name)}
+                            className="text-green-600 hover:text-green-900"
+                            title="Restore User"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                          </button>
+                          <button 
+                            onClick={() => handlePermanentDelete(user.id, user.name, user.email)}
+                            className="text-red-600 hover:text-red-900"
+                            title="Permanently Delete"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -1034,18 +1206,15 @@ const UsersPage: React.FC = () => {
                 <button
                   onClick={confirmDeleteUser}
                   disabled={isDeleting}
-                  className="btn bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                  className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg text-sm font-medium transition-colors duration-150"
                 >
                   {isDeleting ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 inline-block"></div>
                       Deleting...
                     </>
                   ) : (
-                    <>
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Delete User
-                    </>
+                    'Delete User'
                   )}
                 </button>
               </div>

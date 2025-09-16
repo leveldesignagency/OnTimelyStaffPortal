@@ -91,6 +91,7 @@ export const userService = {
           subscription_plan
         )
       `)
+      .is('deleted_at', null)
       .order('created_at', { ascending: false })
     
     if (error) throw error
@@ -177,10 +178,81 @@ export const userService = {
     return data
   },
 
-  // Delete user from both database and Supabase Auth
+  // Soft delete user (mark as deleted but keep in database)
+  async softDeleteUser(id: string): Promise<void> {
+    try {
+      console.log('🔍 DATABASE: Soft deleting user with ID:', id);
+      
+      const { error } = await supabase
+        .from('users')
+        .update({ 
+          deleted_at: new Date().toISOString(),
+          status: 'deleted'
+        })
+        .eq('id', id)
+      
+      if (error) {
+        console.error('Soft delete error:', error);
+        throw error;
+      }
+      
+      console.log('✅ User soft deleted successfully');
+    } catch (error) {
+      console.error('❌ Soft delete failed:', error);
+      throw error;
+    }
+  },
+
+  // Restore soft deleted user
+  async restoreUser(id: string): Promise<void> {
+    try {
+      console.log('🔍 DATABASE: Restoring user with ID:', id);
+      
+      const { error } = await supabase
+        .from('users')
+        .update({ 
+          deleted_at: null,
+          status: 'offline' // Default status when restored
+        })
+        .eq('id', id)
+      
+      if (error) {
+        console.error('Restore error:', error);
+        throw error;
+      }
+      
+      console.log('✅ User restored successfully');
+    } catch (error) {
+      console.error('❌ Restore failed:', error);
+      throw error;
+    }
+  },
+
+  // Get deleted users (within last 30 days)
+  async getDeletedUsers(): Promise<User[]> {
+    try {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .not('deleted_at', 'is', null)
+        .gte('deleted_at', thirtyDaysAgo.toISOString())
+        .order('deleted_at', { ascending: false })
+      
+      if (error) throw error
+      return data || []
+    } catch (error) {
+      console.error('Error fetching deleted users:', error)
+      return []
+    }
+  },
+
+  // Delete user from both database and Supabase Auth (permanent deletion)
   async deleteUser(id: string): Promise<void> {
     try {
-      console.log('🔍 DATABASE: Deleting user with ID:', id);
+      console.log('🔍 DATABASE: Permanently deleting user with ID:', id);
       
       // First delete from the users table
       const { error: dbError } = await supabase
