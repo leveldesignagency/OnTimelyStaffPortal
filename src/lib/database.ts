@@ -91,11 +91,12 @@ export const userService = {
           subscription_plan
         )
       `)
-      .is('deleted_at', null)
       .order('created_at', { ascending: false })
     
     if (error) throw error
-    return data || []
+    
+    // Filter out soft-deleted users in JavaScript (safer approach)
+    return (data || []).filter(user => !user.deleted_at)
   },
 
   // Get users by company
@@ -237,12 +238,16 @@ export const userService = {
       const { data, error } = await supabase
         .from('users')
         .select('*')
-        .not('deleted_at', 'is', null)
-        .gte('deleted_at', thirtyDaysAgo.toISOString())
-        .order('deleted_at', { ascending: false })
+        .order('created_at', { ascending: false })
       
       if (error) throw error
-      return data || []
+      
+      // Filter deleted users in JavaScript (safer approach)
+      return (data || []).filter(user => {
+        if (!user.deleted_at) return false
+        const deletedDate = new Date(user.deleted_at)
+        return deletedDate >= thirtyDaysAgo
+      })
     } catch (error) {
       console.error('Error fetching deleted users:', error)
       return []
