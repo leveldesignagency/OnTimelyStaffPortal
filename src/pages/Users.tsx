@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import toast from 'react-hot-toast'
 import { 
   // Users, // TODO: Uncomment when needed
   Plus, 
@@ -102,9 +103,7 @@ const UsersPage: React.FC = () => {
       });
 
       if (!newUser.email || !newUser.name || !newUser.company_id) {
-        setSuccessMessage('Please fill in all required fields.')
-        setShowSuccess(true)
-        setTimeout(() => setShowSuccess(false), 5000)
+        toast.error('Please fill in all required fields.')
         return
       }
 
@@ -143,28 +142,32 @@ const UsersPage: React.FC = () => {
       })
       
       // Show success message
-      setSuccessMessage(`User ${newUser.name} created successfully! Welcome email sent.`)
-      setShowSuccess(true)
-      setTimeout(() => setShowSuccess(false), 5000)
+      toast.success(`User ${newUser.name} created successfully! Welcome email sent.`)
       
       loadData() // Reload the list
     } catch (error) {
       console.error('Error creating user:', error)
       
-      // Check if it's just an email rate limiting error
+      let errorMessage = 'Error creating user. Please try again.'
+      
       if (error && typeof error === 'object' && 'message' in error) {
-        const errorMessage = (error as any).message
-        if (errorMessage.includes('For security purposes, you can only request this after')) {
-          setSuccessMessage('User created successfully! Welcome email will be sent shortly (rate limited).')
-        } else {
-          setSuccessMessage('Error creating user. Please try again.')
+        const msg = (error as any).message.toLowerCase()
+        
+        if (msg.includes('for security purposes, you can only request this after')) {
+          toast.success('User created successfully! Welcome email will be sent shortly (rate limited).')
+          return
+        } else if (msg.includes('invalid email') || msg.includes('email format') || msg.includes('400')) {
+          errorMessage = 'Invalid email address. Please check the email format and try again.'
+        } else if (msg.includes('email already exists') || msg.includes('duplicate') || msg.includes('already registered')) {
+          errorMessage = 'A user with this email address already exists.'
+        } else if (msg.includes('company not found') || msg.includes('invalid company')) {
+          errorMessage = 'Selected company is invalid. Please refresh the page and try again.'
+        } else if (msg.includes('network') || msg.includes('connection')) {
+          errorMessage = 'Network error. Please check your connection and try again.'
         }
-      } else {
-        setSuccessMessage('Error creating user. Please try again.')
       }
       
-      setShowSuccess(true)
-      setTimeout(() => setShowSuccess(false), 5000)
+      toast.error(errorMessage)
     }
   }
 

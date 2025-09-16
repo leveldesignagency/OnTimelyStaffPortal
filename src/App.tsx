@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 import { staffAuth, AuthState } from './lib/staffAuth'
 import LoginPage from './pages/Login'
 import Dashboard from './pages/Dashboard'
@@ -84,6 +85,37 @@ const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 function App() {
   return (
     <div className="App">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#fff',
+            color: '#374151',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            fontSize: '14px',
+          },
+          success: {
+            iconTheme: {
+              primary: '#16a34a',
+              secondary: '#fff',
+            },
+            style: {
+              border: '1px solid #16a34a',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#dc2626',
+              secondary: '#fff',
+            },
+            style: {
+              border: '1px solid #dc2626',
+            },
+          },
+        }}
+      />
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
