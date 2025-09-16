@@ -42,11 +42,30 @@ const UsersPage: React.FC = () => {
   // Custom dropdown states
   const [showCompanyDropdown, setShowCompanyDropdown] = useState(false)
   const companyDropdownRef = useRef<HTMLDivElement>(null)
+  
+  // Filter dropdown states
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false)
+  const [showCompanyFilterDropdown, setShowCompanyFilterDropdown] = useState(false)
+  const [showRoleDropdown, setShowRoleDropdown] = useState(false)
+  const [showBulkCompanyDropdown, setShowBulkCompanyDropdown] = useState(false)
+  const [showBulkRoleDropdown, setShowBulkRoleDropdown] = useState(false)
+  
+  // Dropdown refs
+  const statusDropdownRef = useRef<HTMLDivElement>(null)
+  const companyFilterDropdownRef = useRef<HTMLDivElement>(null)
+  const roleDropdownRef = useRef<HTMLDivElement>(null)
+  const bulkCompanyDropdownRef = useRef<HTMLDivElement>(null)
+  const bulkRoleDropdownRef = useRef<HTMLDivElement>(null)
 
   // Bulk user creation states
   const [bulkInput, setBulkInput] = useState('')
   const [bulkCompanyId, setBulkCompanyId] = useState('')
   const [bulkRole, setBulkRole] = useState('user')
+
+  // Delete modal states
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [userToDelete, setUserToDelete] = useState<{id: string, name: string, email: string} | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
   // const [csvFile, setCsvFile] = useState<File | null>(null) // TODO: Uncomment when needed
   const [bulkPreview, setBulkPreview] = useState<Array<{ email: string; name: string }>>([])
 
@@ -65,11 +84,26 @@ const UsersPage: React.FC = () => {
     loadData()
   }, [])
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (companyDropdownRef.current && !companyDropdownRef.current.contains(event.target as Node)) {
         setShowCompanyDropdown(false)
+      }
+      if (statusDropdownRef.current && !statusDropdownRef.current.contains(event.target as Node)) {
+        setShowStatusDropdown(false)
+      }
+      if (companyFilterDropdownRef.current && !companyFilterDropdownRef.current.contains(event.target as Node)) {
+        setShowCompanyFilterDropdown(false)
+      }
+      if (roleDropdownRef.current && !roleDropdownRef.current.contains(event.target as Node)) {
+        setShowRoleDropdown(false)
+      }
+      if (bulkCompanyDropdownRef.current && !bulkCompanyDropdownRef.current.contains(event.target as Node)) {
+        setShowBulkCompanyDropdown(false)
+      }
+      if (bulkRoleDropdownRef.current && !bulkRoleDropdownRef.current.contains(event.target as Node)) {
+        setShowBulkRoleDropdown(false)
       }
     }
 
@@ -267,21 +301,36 @@ const UsersPage: React.FC = () => {
     }
   }
 
-  const handleDeleteUser = async (userId: string) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      try {
-        await db.users.deleteUser(userId)
-        loadData()
-        setSuccessMessage('User deleted successfully.')
-        setShowSuccess(true)
-        setTimeout(() => setShowSuccess(false), 5000)
-      } catch (error) {
-        console.error('Error deleting user:', error)
-        setSuccessMessage('Error deleting user. Please try again.')
-        setShowSuccess(true)
-        setTimeout(() => setShowSuccess(false), 5000)
-      }
+  const handleDeleteUser = (userId: string, userName: string, userEmail: string) => {
+    setUserToDelete({ id: userId, name: userName, email: userEmail })
+    setShowDeleteModal(true)
+  }
+
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return
+    
+    setIsDeleting(true)
+    try {
+      await db.users.deleteUser(userToDelete.id)
+      loadData()
+      toast.success(`User ${userToDelete.name} deleted successfully.`)
+      setShowDeleteModal(false)
+      setUserToDelete(null)
+    } catch (error) {
+      console.error('Error deleting user:', error)
+      toast.error('Error deleting user. Please try again.')
+    } finally {
+      setIsDeleting(false)
     }
+  }
+
+  // Helper function for dropdown option styling
+  const getDropdownOptionClass = (isSelected: boolean, isFirst: boolean, isLast: boolean) => {
+    let baseClass = "w-full px-3 py-2 text-left hover:bg-primary-50 hover:text-primary-700 transition-colors duration-150 flex items-center justify-between"
+    if (!isFirst) baseClass += " border-t border-gray-100"
+    if (isFirst) baseClass += " rounded-t-lg"
+    if (isLast) baseClass += " rounded-b-lg"
+    return baseClass
   }
 
   const filteredUsers = users.filter(user => {
@@ -376,30 +425,93 @@ const UsersPage: React.FC = () => {
             </div>
           </div>
           
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          >
-            <option value="all">All Statuses</option>
-            <option value="online">Online</option>
-            <option value="offline">Offline</option>
-            <option value="away">Away</option>
-            <option value="busy">Busy</option>
-          </select>
+          <div className="relative" ref={statusDropdownRef}>
+            <button
+              type="button"
+              onClick={() => setShowStatusDropdown(!showStatusDropdown)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white text-left flex items-center justify-between min-w-[140px]"
+            >
+              <span className="text-gray-900">
+                {statusFilter === 'all' ? 'All Statuses' : 
+                 statusFilter === 'online' ? 'Online' :
+                 statusFilter === 'offline' ? 'Offline' :
+                 statusFilter === 'away' ? 'Away' : 'Busy'}
+              </span>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showStatusDropdown ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {showStatusDropdown && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+                {[
+                  { value: 'all', label: 'All Statuses' },
+                  { value: 'online', label: 'Online' },
+                  { value: 'offline', label: 'Offline' },
+                  { value: 'away', label: 'Away' },
+                  { value: 'busy', label: 'Busy' }
+                ].map((option, index, array) => (
+                  <button
+                    key={option.value}
+                    onClick={() => {
+                      setStatusFilter(option.value)
+                      setShowStatusDropdown(false)
+                    }}
+                    className={getDropdownOptionClass(statusFilter === option.value, index === 0, index === array.length - 1)}
+                  >
+                    <span>{option.label}</span>
+                    {statusFilter === option.value && (
+                      <Check className="w-4 h-4 text-primary-600" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           
-          <select
-            value={companyFilter}
-            onChange={(e) => setCompanyFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          >
-            <option value="all">All Companies</option>
-            {companies.map(company => (
-              <option key={company.id} value={company.id}>
-                {company.name}
-              </option>
-            ))}
-          </select>
+          <div className="relative" ref={companyFilterDropdownRef}>
+            <button
+              type="button"
+              onClick={() => setShowCompanyFilterDropdown(!showCompanyFilterDropdown)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white text-left flex items-center justify-between min-w-[160px]"
+            >
+              <span className="text-gray-900 truncate">
+                {companyFilter === 'all' ? 'All Companies' : 
+                 companies.find(c => c.id === companyFilter)?.name || 'Unknown Company'}
+              </span>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showCompanyFilterDropdown ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {showCompanyFilterDropdown && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                <button
+                  onClick={() => {
+                    setCompanyFilter('all')
+                    setShowCompanyFilterDropdown(false)
+                  }}
+                  className={getDropdownOptionClass(companyFilter === 'all', true, companies.length === 0)}
+                >
+                  <span>All Companies</span>
+                  {companyFilter === 'all' && (
+                    <Check className="w-4 h-4 text-primary-600" />
+                  )}
+                </button>
+                {companies.map((company, index) => (
+                  <button
+                    key={company.id}
+                    onClick={() => {
+                      setCompanyFilter(company.id)
+                      setShowCompanyFilterDropdown(false)
+                    }}
+                    className={getDropdownOptionClass(companyFilter === company.id, false, index === companies.length - 1)}
+                  >
+                    <span className="truncate">{company.name}</span>
+                    {companyFilter === company.id && (
+                      <Check className="w-4 h-4 text-primary-600" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -480,7 +592,7 @@ const UsersPage: React.FC = () => {
                         <Edit className="w-4 h-4" />
                       </button>
                       <button 
-                        onClick={() => handleDeleteUser(user.id)}
+                        onClick={() => handleDeleteUser(user.id, user.name, user.email)}
                         className="text-red-600 hover:text-red-900"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -539,14 +651,14 @@ const UsersPage: React.FC = () => {
                   
                   {showCompanyDropdown && (
                     <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
-                      {companies.map((company) => (
+                      {companies.map((company, index) => (
                         <button
                           key={company.id}
                           onClick={() => {
                             setNewUser({...newUser, company_id: company.id})
                             setShowCompanyDropdown(false)
                           }}
-                          className="w-full px-3 py-2 text-left hover:bg-gray-100 flex items-center justify-between"
+                          className={getDropdownOptionClass(newUser.company_id === company.id, index === 0, index === companies.length - 1)}
                         >
                           <span>{company.name}</span>
                           {newUser.company_id === company.id && (
@@ -564,26 +676,55 @@ const UsersPage: React.FC = () => {
                 <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
                   Role
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <div className="relative" ref={roleDropdownRef}>
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
                     <Shield className="h-5 w-5 text-gray-400" />
                   </div>
-                  <select
-                    id="role"
-                    name="role"
-                    required
-                    value={newUser.role}
-                    onChange={(e) => setNewUser({...newUser, role: e.target.value})}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                  <button
+                    type="button"
+                    onClick={() => setShowRoleDropdown(!showRoleDropdown)}
+                    className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors bg-white text-left"
                   >
-                    <option value="">Select a role</option>
-                    <option value="user">User</option>
-                    <option value="manager">Manager</option>
-                    <option value="supervisor">Supervisor</option>
-                    <option value="employee">Employee</option>
-                    <option value="viewer">Viewer</option>
-                    <option value="other">Other</option>
-                  </select>
+                    <span className={newUser.role ? 'text-gray-900' : 'text-gray-500'}>
+                      {newUser.role === 'user' ? 'User' :
+                       newUser.role === 'manager' ? 'Manager' :
+                       newUser.role === 'supervisor' ? 'Supervisor' :
+                       newUser.role === 'employee' ? 'Employee' :
+                       newUser.role === 'viewer' ? 'Viewer' :
+                       newUser.role === 'other' ? 'Other' : 'Select a role'}
+                    </span>
+                  </button>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showRoleDropdown ? 'rotate-180' : ''}`} />
+                  </div>
+                  
+                  {showRoleDropdown && (
+                    <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+                      {[
+                        { value: 'user', label: 'User' },
+                        { value: 'manager', label: 'Manager' },
+                        { value: 'supervisor', label: 'Supervisor' },
+                        { value: 'employee', label: 'Employee' },
+                        { value: 'viewer', label: 'Viewer' },
+                        { value: 'other', label: 'Other' }
+                      ].map((option, index, array) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => {
+                            setNewUser({...newUser, role: option.value})
+                            setShowRoleDropdown(false)
+                          }}
+                          className={getDropdownOptionClass(newUser.role === option.value, index === 0, index === array.length - 1)}
+                        >
+                          <span>{option.label}</span>
+                          {newUser.role === option.value && (
+                            <Check className="w-4 h-4 text-primary-600" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 {newUser.role === 'other' && (
                   <div className="mt-2">
@@ -725,30 +866,79 @@ const UsersPage: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
-                    <select
-                      value={bulkCompanyId}
-                      onChange={(e) => setBulkCompanyId(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    >
-                      <option value="">Select a company</option>
-                      {companies.map(company => (
-                        <option key={company.id} value={company.id}>
-                          {company.name}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="relative" ref={bulkCompanyDropdownRef}>
+                      <button
+                        type="button"
+                        onClick={() => setShowBulkCompanyDropdown(!showBulkCompanyDropdown)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white text-left flex items-center justify-between"
+                      >
+                        <span className={bulkCompanyId ? 'text-gray-900' : 'text-gray-500'}>
+                          {bulkCompanyId ? companies.find(c => c.id === bulkCompanyId)?.name || 'Unknown Company' : 'Select a company'}
+                        </span>
+                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showBulkCompanyDropdown ? 'rotate-180' : ''}`} />
+                      </button>
+                      
+                      {showBulkCompanyDropdown && (
+                        <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                          {companies.map((company, index) => (
+                            <button
+                              key={company.id}
+                              type="button"
+                              onClick={() => {
+                                setBulkCompanyId(company.id)
+                                setShowBulkCompanyDropdown(false)
+                              }}
+                              className={getDropdownOptionClass(bulkCompanyId === company.id, index === 0, index === companies.length - 1)}
+                            >
+                              <span className="truncate">{company.name}</span>
+                              {bulkCompanyId === company.id && (
+                                <Check className="w-4 h-4 text-primary-600" />
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                    <select
-                      value={bulkRole}
-                      onChange={(e) => setBulkRole(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    >
-                      <option value="user">User</option>
-                      <option value="masterAdmin">Master Admin</option>
-                    </select>
+                    <div className="relative" ref={bulkRoleDropdownRef}>
+                      <button
+                        type="button"
+                        onClick={() => setShowBulkRoleDropdown(!showBulkRoleDropdown)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white text-left flex items-center justify-between"
+                      >
+                        <span className="text-gray-900">
+                          {bulkRole === 'user' ? 'User' : 'Master Admin'}
+                        </span>
+                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showBulkRoleDropdown ? 'rotate-180' : ''}`} />
+                      </button>
+                      
+                      {showBulkRoleDropdown && (
+                        <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+                          {[
+                            { value: 'user', label: 'User' },
+                            { value: 'masterAdmin', label: 'Master Admin' }
+                          ].map((option, index, array) => (
+                            <button
+                              key={option.value}
+                              type="button"
+                              onClick={() => {
+                                setBulkRole(option.value)
+                                setShowBulkRoleDropdown(false)
+                              }}
+                              className={getDropdownOptionClass(bulkRole === option.value, index === 0, index === array.length - 1)}
+                            >
+                              <span>{option.label}</span>
+                              {bulkRole === option.value && (
+                                <Check className="w-4 h-4 text-primary-600" />
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -785,6 +975,79 @@ const UsersPage: React.FC = () => {
               >
                 Create {bulkPreview.length} Users
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Delete Confirmation Modal */}
+      {showDeleteModal && userToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="p-6">
+              {/* Header */}
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                  <Trash2 className="w-5 h-5 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Delete User</h3>
+                  <p className="text-sm text-gray-500">This action cannot be undone</p>
+                </div>
+              </div>
+              
+              {/* Content */}
+              <div className="mb-6">
+                <p className="text-gray-700 mb-4">
+                  Are you sure you want to delete this user? This will permanently remove their account and all associated data.
+                </p>
+                
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <div className="flex items-start">
+                    <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 mr-3 flex-shrink-0" />
+                    <div>
+                      <h4 className="text-sm font-medium text-red-800 mb-1">User Details</h4>
+                      <p className="text-sm text-red-700">
+                        <strong>Name:</strong> {userToDelete.name}
+                      </p>
+                      <p className="text-sm text-red-700">
+                        <strong>Email:</strong> {userToDelete.email}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Actions */}
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(false)
+                    setUserToDelete(null)
+                  }}
+                  disabled={isDeleting}
+                  className="btn btn-secondary disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDeleteUser}
+                  disabled={isDeleting}
+                  className="btn bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                >
+                  {isDeleting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete User
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>

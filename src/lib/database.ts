@@ -177,14 +177,43 @@ export const userService = {
     return data
   },
 
-  // Delete user
+  // Delete user from both database and Supabase Auth
   async deleteUser(id: string): Promise<void> {
-    const { error } = await supabase
-      .from('users')
-      .delete()
-      .eq('id', id)
-    
-    if (error) throw error
+    try {
+      console.log('🔍 DATABASE: Deleting user with ID:', id);
+      
+      // First delete from the users table
+      const { error: dbError } = await supabase
+        .from('users')
+        .delete()
+        .eq('id', id)
+      
+      if (dbError) {
+        console.error('Database deletion error:', dbError);
+        throw dbError;
+      }
+      
+      console.log('✅ User deleted from database successfully');
+      
+      // Then delete from Supabase Auth using admin client
+      try {
+        const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(id)
+        
+        if (authError) {
+          console.warn('Auth deletion error (user may not exist in auth):', authError);
+          // Don't throw here - database deletion succeeded, auth deletion is cleanup
+        } else {
+          console.log('✅ User deleted from Supabase Auth successfully');
+        }
+      } catch (authError) {
+        console.warn('Auth deletion failed (continuing anyway):', authError);
+        // Don't throw - database deletion succeeded
+      }
+      
+    } catch (error) {
+      console.error('❌ User deletion failed:', error);
+      throw error;
+    }
   },
 
   // Update user status
