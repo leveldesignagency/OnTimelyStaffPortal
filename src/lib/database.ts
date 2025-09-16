@@ -184,6 +184,7 @@ export const userService = {
     try {
       console.log('🔍 DATABASE: Soft deleting user with ID:', id);
       
+      // Check if deleted_at column exists by trying to update it
       const { error } = await supabase
         .from('users')
         .update({ 
@@ -193,6 +194,11 @@ export const userService = {
         .eq('id', id)
       
       if (error) {
+        if (error.code === '42703') {
+          // Column doesn't exist, fall back to permanent delete
+          console.warn('deleted_at column not found, falling back to permanent delete');
+          return this.deleteUser(id);
+        }
         console.error('Soft delete error:', error);
         throw error;
       }
@@ -218,6 +224,18 @@ export const userService = {
         .eq('id', id)
       
       if (error) {
+        if (error.code === '42703') {
+          // Column doesn't exist, just update status
+          console.warn('deleted_at column not found, just updating status');
+          const { error: statusError } = await supabase
+            .from('users')
+            .update({ status: 'offline' })
+            .eq('id', id)
+          
+          if (statusError) throw statusError;
+          console.log('✅ User status updated successfully');
+          return;
+        }
         console.error('Restore error:', error);
         throw error;
       }
