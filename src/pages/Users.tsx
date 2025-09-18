@@ -534,7 +534,7 @@ const UsersPage: React.FC = () => {
             </button>
             
             {showStatusDropdown && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+              <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
                 {[
                   { value: 'all', label: 'All Statuses' },
                   { value: 'online', label: 'Online' },
@@ -574,7 +574,7 @@ const UsersPage: React.FC = () => {
             </button>
             
             {showCompanyFilterDropdown && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+              <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
                 <button
                   onClick={() => {
                     setCompanyFilter('all')
@@ -823,7 +823,7 @@ const UsersPage: React.FC = () => {
                   </button>
                   
                   {showCompanyDropdown && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
+                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-auto">
                       {companies.map((company, index) => (
                         <button
                           key={company.id}

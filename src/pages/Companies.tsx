@@ -364,7 +364,7 @@ const Companies: React.FC = () => {
 
       {/* Companies Grid */}
       {activeTab === 'active' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
           {filteredCompanies.map((company) => (
             <div key={company.id} className="bg-white rounded-lg border hover:shadow-md transition-shadow">
               <div className="p-6">
@@ -417,7 +417,7 @@ const Companies: React.FC = () => {
 
       {/* Deleted Companies Grid */}
       {activeTab === 'deleted' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
           {deletedCompanies.map((company) => (
             <div key={company.id} className="bg-white rounded-lg border border-red-200 hover:shadow-md transition-shadow">
               <div className="p-6">

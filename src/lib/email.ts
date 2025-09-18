@@ -158,7 +158,7 @@ export const emailService = {
     
     try {
       // Generate confirmation URL with token - go directly to password setup since Supabase auto-confirms admin-created users
-      const confirmationUrl = `https://ontimely.co.uk/set-initial-password.html?token=${encodeURIComponent(data.email)}&type=signup`;
+      const confirmationUrl = `https://dashboard.ontimely.co.uk/set-initial-password?token=${encodeURIComponent(data.email)}&type=signup`;
       console.log('🔍 CONFIRMATION URL:', confirmationUrl);
       
       // Send professional confirmation email via Edge Function (bypasses Vercel network restrictions)
@@ -344,7 +344,7 @@ export const emailService = {
           }
 
           // Use Edge Function for password reset emails
-          const resetUrl = `https://ontimely.co.uk/set-initial-password?token=${encodeURIComponent(email)}&type=recovery`;
+          const resetUrl = `https://dashboard.ontimely.co.uk/set-initial-password?token=${encodeURIComponent(email)}&type=recovery`;
           
           const response = await fetch('https://portal.ontimely.co.uk/api/send-account-confirmation-email', { 
             method: 'POST',
