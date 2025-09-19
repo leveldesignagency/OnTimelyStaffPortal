@@ -42,17 +42,16 @@ export const emailService = {
       // Retry function for rate limiting
       const createAuthUserWithRetry = async (attempts = 0): Promise<any> => {
         try {
-          const { data: authData, error: authError } = await supabaseAdmin.auth.signUp({
+          // Use admin API to create user without sending confirmation email
+          const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
             email: userData.email,
             password: userData.password,
-            options: {
-              data: {
-                name: userData.name,
-                company_id: userData.company_id,
-                role: userData.role || 'user',
-                status: userData.status || 'offline'
-              },
-              emailRedirectTo: 'https://dashboard.ontimely.co.uk/confirm-account.html'
+            email_confirm: false, // Don't auto-confirm, we'll do it manually
+            user_metadata: {
+              name: userData.name,
+              company_id: userData.company_id,
+              role: userData.role || 'user',
+              status: userData.status || 'offline'
             }
           })
           
