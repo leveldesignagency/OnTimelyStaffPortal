@@ -344,7 +344,7 @@ export const emailService = {
           }
 
           // Use Edge Function for password reset emails
-          const resetUrl = `https://accountsetup.ontimely.co.uk/set-initial-password?token=${encodeURIComponent(email)}&type=recovery`;
+          const resetUrl = `https://dashboard.ontimely.co.uk/set-initial-password?token=${encodeURIComponent(email)}&type=recovery`;
           
           const response = await fetch('https://portal.ontimely.co.uk/api/send-account-confirmation-email', { 
             method: 'POST',
