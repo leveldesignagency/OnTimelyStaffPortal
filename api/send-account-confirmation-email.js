@@ -30,14 +30,13 @@ module.exports = async (req, res) => {
       to: [email],
       subject: `Confirm Your OnTimely Account - Welcome ${name}!`,
              html: `
-               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #000000; color: #ffffff; margin: 0; padding: 20px; min-height: 100vh;">
+               <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #000000; color: #ffffff; margin: 0; padding: 0; width: 100%;">
                  
                  <!-- Desktop Layout -->
-                 <div style="max-width: 600px; margin: 0 auto; background: #000000; padding: 40px;">
+                 <div style="width: 100%; background: #000000; padding: 40px;">
                    
                    <!-- Header -->
-                   <div style="text-align: left; margin-bottom: 30px;">
-                     <div style="color: #ffffff; font-size: 24px; font-weight: bold; margin-bottom: 20px;">OnTimely</div>
+                   <div style="margin-bottom: 30px;">
                      <p style="color: #cccccc; font-size: 16px; margin: 0 0 10px;">You have been invited to create an account for:</p>
                      <h1 style="color: #ffffff; font-size: 32px; font-weight: bold; margin: 0 0 10px;">OnTimely Account</h1>
                      <p style="color: #cccccc; font-size: 14px; margin: 0;">Powered by OnTimely</p>
@@ -48,7 +47,7 @@ module.exports = async (req, res) => {
                      <p style="color: #cccccc; font-size: 16px; margin: 0 0 20px;">Please complete your account setup using the link below:</p>
                      
                      <!-- Button -->
-                     <div style="text-align: left; margin: 20px 0;">
+                     <div style="margin: 20px 0;">
                        <a href="${confirmationUrl}" 
                           style="display: inline-block; background: #22c55e; color: #ffffff; 
                                  padding: 12px 24px; text-decoration: none; border-radius: 6px; 
@@ -72,11 +71,10 @@ module.exports = async (req, res) => {
                  </div>
                  
                  <!-- Mobile Layout -->
-                 <div style="display: none; max-width: 100%; margin: 0; padding: 20px; background: #000000;">
+                 <div style="display: none; width: 100%; background: #000000; padding: 20px;">
                    
                    <!-- Mobile Header -->
                    <div style="text-align: center; margin-bottom: 30px;">
-                     <div style="color: #ffffff; font-size: 20px; font-weight: bold; margin-bottom: 15px;">OnTimely</div>
                      <p style="color: #cccccc; font-size: 14px; margin: 0 0 8px;">You have been invited to create an account for:</p>
                      <h1 style="color: #ffffff; font-size: 24px; font-weight: bold; margin: 0 0 8px;">OnTimely Account</h1>
                      <p style="color: #cccccc; font-size: 12px; margin: 0;">Powered by OnTimely</p>
