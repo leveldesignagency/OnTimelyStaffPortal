@@ -8,7 +8,6 @@ import {
   Users, 
   Clock, 
   AlertCircle,
-  CheckCircle,
   Eye,
   Phone,
   Mail
@@ -39,6 +38,7 @@ interface LiveChatSession {
   status: 'waiting' | 'active' | 'ended'
   started_at: string
   ended_at: string
+  created_at?: string
 }
 
 const HelpCenterIntegration: React.FC = () => {
@@ -204,7 +204,7 @@ const HelpCenterIntegration: React.FC = () => {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Chat Sessions</p>
               <p className="text-2xl font-semibold text-gray-900">
-                {stats?.total_chat_sessions || 0}
+                {stats?.totalChatSessions || 0}
               </p>
             </div>
           </div>
@@ -216,7 +216,7 @@ const HelpCenterIntegration: React.FC = () => {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Screen Shares</p>
               <p className="text-2xl font-semibold text-gray-900">
-                {stats?.total_screen_shares || 0}
+                {stats?.totalScreenShares || 0}
               </p>
             </div>
           </div>
@@ -228,7 +228,7 @@ const HelpCenterIntegration: React.FC = () => {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Live Chats</p>
               <p className="text-2xl font-semibold text-gray-900">
-                {stats?.total_live_chats || 0}
+                {stats?.totalLiveChats || 0}
               </p>
             </div>
           </div>
@@ -240,7 +240,7 @@ const HelpCenterIntegration: React.FC = () => {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Avg Response</p>
               <p className="text-2xl font-semibold text-gray-900">
-                {stats?.avg_response_time || 'N/A'}
+                {stats?.avgResponseTime || 'N/A'}
               </p>
             </div>
           </div>
