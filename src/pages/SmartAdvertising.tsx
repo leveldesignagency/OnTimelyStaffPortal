@@ -168,6 +168,7 @@ const SmartAdvertising: React.FC = () => {
   };
 
   const CampaignForm = () => {
+    const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState<Partial<Campaign>>({
       title: '',
       company_name: '',
@@ -188,35 +189,105 @@ const SmartAdvertising: React.FC = () => {
       target_locations: []
     });
 
-    const [newCity, setNewCity] = useState('');
-    const [newEventType, setNewEventType] = useState('');
+    // Campaign creation specific fields
+    const [campaignDetails, setCampaignDetails] = useState({
+      campaignTitle: '',
+      companyName: '',
+      invoiceEmail: '',
+      campaignRef: '',
+      invoiceRef: '',
+      location: '',
+      country: '',
+      city: '',
+      distance: 0,
+      dealDescription: '',
+      dealDuration: 30, // days
+      startDate: '',
+      endDate: '',
+      targetAudience: 'all',
+      budget: 0,
+      estimatedReach: 0,
+      costPerImpression: 0,
+      totalCost: 0
+    });
+
 
     useEffect(() => {
       if (editingCampaign) {
         setFormData(editingCampaign);
+        setCurrentStep(3); // Skip to ad creation for editing
       }
     }, [editingCampaign]);
+
+    // Pricing algorithm based on Instagram's model
+    const calculatePricing = () => {
+      const baseCostPerImpression = 0.02; // $0.02 per impression (Instagram-like)
+      const locationMultiplier = campaignDetails.country === 'global' ? 1.5 : 1.0;
+      const distanceMultiplier = Math.max(1, campaignDetails.distance / 10); // More distance = higher cost
+      const durationMultiplier = Math.max(0.5, campaignDetails.dealDuration / 30); // Longer duration = better rate
+      
+      const costPerImpression = baseCostPerImpression * locationMultiplier * distanceMultiplier * (1 / durationMultiplier);
+      
+      // Calculate estimated reach based on event data
+      const estimatedReach = calculateEstimatedReach();
+      const totalCost = costPerImpression * estimatedReach;
+
+      setCampaignDetails(prev => ({
+        ...prev,
+        costPerImpression,
+        totalCost: Math.round(totalCost * 100) / 100,
+        estimatedReach
+      }));
+    };
+
+    // Calculate estimated reach based on upcoming events
+    const calculateEstimatedReach = () => {
+      // This would typically query your events database
+      // For now, using a mock calculation based on location and duration
+      const baseReach = 1000; // Base reach per event
+      const locationMultiplier = campaignDetails.country === 'global' ? 5 : 1;
+      const cityMultiplier = campaignDetails.city ? 1.5 : 1;
+      const durationMultiplier = Math.max(1, campaignDetails.dealDuration / 30);
+      
+      return Math.round(baseReach * locationMultiplier * cityMultiplier * durationMultiplier);
+    };
+
+    useEffect(() => {
+      calculatePricing();
+    }, [campaignDetails.country, campaignDetails.distance, campaignDetails.dealDuration, campaignDetails.estimatedReach]);
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       try {
+        // Merge campaign details with form data
+        const finalCampaignData = {
+          ...formData,
+          title: campaignDetails.campaignTitle,
+          company_name: campaignDetails.companyName,
+          monthly_payment_amount: campaignDetails.totalCost,
+          target_cities: campaignDetails.city ? [campaignDetails.city] : [],
+          target_locations: campaignDetails.country ? [campaignDetails.country] : [],
+          target_event_types: [campaignDetails.targetAudience],
+        };
+
         if (editingCampaign) {
           const { error } = await supabase
             .from('campaigns')
-            .update(formData)
+            .update(finalCampaignData)
             .eq('id', editingCampaign.id);
           
           if (error) throw error;
         } else {
           const { error } = await supabase
             .from('campaigns')
-            .insert([formData]);
+            .insert([finalCampaignData]);
           
           if (error) throw error;
         }
         
         setShowCampaignForm(false);
         setEditingCampaign(null);
+        setCurrentStep(1);
         loadDashboardData();
       } catch (error) {
         console.error('Error saving campaign:', error);
@@ -224,265 +295,442 @@ const SmartAdvertising: React.FC = () => {
       }
     };
 
-    const addToArray = (field: string, value: string, setter: (value: string) => void) => {
-      if (value.trim()) {
-        setFormData(prev => ({
-          ...prev,
-          [field]: [...(prev[field as keyof Campaign] as string[] || []), value.trim()]
-        }));
-        setter('');
-      }
-    };
 
-    const removeFromArray = (field: string, index: number) => {
-      setFormData(prev => ({
-        ...prev,
-        [field]: (prev[field as keyof Campaign] as string[] || []).filter((_, i) => i !== index)
-      }));
-    };
+    const renderStep1 = () => (
+      <div className="space-y-6">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">Campaign Information & Pricing</h2>
+          <p className="text-gray-600">Set up your campaign details and get an instant quote</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Campaign Title *</label>
+            <input
+              type="text"
+              value={campaignDetails.campaignTitle}
+              onChange={(e) => setCampaignDetails(prev => ({ ...prev, campaignTitle: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Company Name *</label>
+            <input
+              type="text"
+              value={campaignDetails.companyName}
+              onChange={(e) => setCampaignDetails(prev => ({ ...prev, companyName: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Invoice Email *</label>
+            <input
+              type="email"
+              value={campaignDetails.invoiceEmail}
+              onChange={(e) => setCampaignDetails(prev => ({ ...prev, invoiceEmail: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Campaign Reference</label>
+            <input
+              type="text"
+              value={campaignDetails.campaignRef}
+              onChange={(e) => setCampaignDetails(prev => ({ ...prev, campaignRef: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Invoice Reference</label>
+            <input
+              type="text"
+              value={campaignDetails.invoiceRef}
+              onChange={(e) => setCampaignDetails(prev => ({ ...prev, invoiceRef: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Deal Duration (days)</label>
+            <input
+              type="number"
+              value={campaignDetails.dealDuration}
+              onChange={(e) => setCampaignDetails(prev => ({ ...prev, dealDuration: parseInt(e.target.value) || 30 }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+              min="1"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Deal Description</label>
+          <textarea
+            value={campaignDetails.dealDescription}
+            onChange={(e) => setCampaignDetails(prev => ({ ...prev, dealDescription: e.target.value }))}
+            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+            rows={3}
+            placeholder="Describe the deal, offer, or promotion..."
+          />
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Country *</label>
+            <select
+              value={campaignDetails.country}
+              onChange={(e) => setCampaignDetails(prev => ({ ...prev, country: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+              required
+            >
+              <option value="">Select Country</option>
+              <option value="global">Global</option>
+              <option value="US">United States</option>
+              <option value="UK">United Kingdom</option>
+              <option value="CA">Canada</option>
+              <option value="AU">Australia</option>
+              <option value="DE">Germany</option>
+              <option value="FR">France</option>
+              <option value="ES">Spain</option>
+              <option value="IT">Italy</option>
+              <option value="NL">Netherlands</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">City</label>
+            <input
+              type="text"
+              value={campaignDetails.city}
+              onChange={(e) => setCampaignDetails(prev => ({ ...prev, city: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+              placeholder="e.g., London, New York"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Distance (km)</label>
+            <input
+              type="number"
+              value={campaignDetails.distance}
+              onChange={(e) => setCampaignDetails(prev => ({ ...prev, distance: parseInt(e.target.value) || 0 }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+              min="0"
+              placeholder="0 for city-wide"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Target Audience</label>
+          <select
+            value={campaignDetails.targetAudience}
+            onChange={(e) => setCampaignDetails(prev => ({ ...prev, targetAudience: e.target.value }))}
+            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+          >
+            <option value="all">All Event Attendees</option>
+            <option value="business">Business Events Only</option>
+            <option value="conference">Conferences Only</option>
+            <option value="wedding">Weddings Only</option>
+            <option value="corporate">Corporate Events Only</option>
+          </select>
+        </div>
+
+        {/* Pricing Display */}
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">Pricing Estimate</h3>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span className="text-gray-600">Estimated Reach:</span>
+              <span className="ml-2 font-medium">{campaignDetails.estimatedReach.toLocaleString()} people</span>
+            </div>
+            <div>
+              <span className="text-gray-600">Cost per Impression:</span>
+              <span className="ml-2 font-medium">${campaignDetails.costPerImpression.toFixed(4)}</span>
+            </div>
+            <div>
+              <span className="text-gray-600">Campaign Duration:</span>
+              <span className="ml-2 font-medium">{campaignDetails.dealDuration} days</span>
+            </div>
+            <div>
+              <span className="text-gray-600">Total Cost:</span>
+              <span className="ml-2 font-bold text-green-600 text-lg">${campaignDetails.totalCost}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+    const renderStep2 = () => (
+      <div className="space-y-6">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">Payment Confirmation</h2>
+          <p className="text-gray-600">Review and confirm your campaign pricing</p>
+        </div>
+
+        <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Summary</h3>
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Campaign:</span>
+              <span className="font-medium">{campaignDetails.campaignTitle}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Company:</span>
+              <span className="font-medium">{campaignDetails.companyName}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Location:</span>
+              <span className="font-medium">{campaignDetails.country} {campaignDetails.city && `- ${campaignDetails.city}`}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Duration:</span>
+              <span className="font-medium">{campaignDetails.dealDuration} days</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Estimated Reach:</span>
+              <span className="font-medium">{campaignDetails.estimatedReach.toLocaleString()} people</span>
+            </div>
+            <div className="border-t pt-3">
+              <div className="flex justify-between text-lg font-bold">
+                <span>Total Cost:</span>
+                <span className="text-green-600">${campaignDetails.totalCost}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-yellow-800">Payment Required</h3>
+              <div className="mt-2 text-sm text-yellow-700">
+                <p>Payment must be completed before proceeding to create the advertisement. You will be redirected to our payment processor.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+    const renderStep3 = () => (
+      <div className="space-y-6">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">Create Advertisement</h2>
+          <p className="text-gray-600">Design your mobile advertisement</p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Short Description *</label>
+            <textarea
+              value={formData.description || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+              rows={2}
+              maxLength={60}
+              placeholder="Brief description for mobile display"
+            />
+            <p className="text-xs text-gray-500">Max 60 characters (for mobile display)</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Full Description</label>
+            <textarea
+              value={formData.full_description || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, full_description: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+              rows={2}
+              placeholder="Detailed description for ad detail page"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">CTA Text</label>
+            <input
+              type="text"
+              value={formData.cta_text || 'Get Info'}
+              onChange={(e) => setFormData(prev => ({ ...prev, cta_text: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">CTA URL</label>
+            <input
+              type="url"
+              value={formData.cta_url || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, cta_url: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Advertisement Image *</label>
+            <input
+              type="file"
+              accept="image/*,video/*"
+              onChange={(e) => {
+                // Handle file upload
+                const file = e.target.files?.[0];
+                if (file) {
+                  // Here you would upload to your storage service
+                  console.log('Upload file:', file);
+                }
+              }}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+            />
+            <p className="text-xs text-gray-500">Supports all image and video formats</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Company Logo *</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                // Handle file upload
+                const file = e.target.files?.[0];
+                if (file) {
+                  // Here you would upload to your storage service
+                  console.log('Upload logo:', file);
+                }
+              }}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+            />
+            <p className="text-xs text-gray-500">Supports all image formats</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Discount Code</label>
+            <input
+              type="text"
+              value={formData.discount_code || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, discount_code: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Discount Link</label>
+            <input
+              type="url"
+              value={formData.discount_link || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, discount_link: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Status</label>
+          <select
+            value={formData.status || 'draft'}
+            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'active' | 'paused' | 'draft' | 'ended' }))}
+            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+          >
+            <option value="draft">Draft</option>
+            <option value="active">Active</option>
+            <option value="paused">Paused</option>
+            <option value="ended">Ended</option>
+          </select>
+        </div>
+      </div>
+    );
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <h2 className="text-xl font-bold mb-4">
-            {editingCampaign ? 'Edit Campaign' : 'Create New Campaign'}
-          </h2>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Title</label>
-                <input
-                  type="text"
-                  value={formData.title || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Company Name</label>
-                <input
-                  type="text"
-                  value={formData.company_name || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, company_name: e.target.value }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                  required
-                />
-              </div>
+        <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          {/* Progress Steps */}
+          <div className="flex items-center justify-center mb-8">
+            <div className="flex items-center space-x-4">
+              {[1, 2, 3].map((step) => (
+                <div key={step} className="flex items-center">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                    currentStep >= step 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-gray-200 text-gray-600'
+                  }`}>
+                    {step}
+                  </div>
+                  {step < 3 && (
+                    <div className={`w-16 h-1 mx-2 ${
+                      currentStep > step ? 'bg-green-600' : 'bg-gray-200'
+                    }`} />
+                  )}
+                </div>
+              ))}
             </div>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Short Description</label>
-              <textarea
-                value={formData.description || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                rows={2}
-                maxLength={60}
-              />
-              <p className="text-xs text-gray-500">Max 60 characters (for mobile display)</p>
-            </div>
+          {/* Step Content */}
+          {currentStep === 1 && renderStep1()}
+          {currentStep === 2 && renderStep2()}
+          {currentStep === 3 && renderStep3()}
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Full Description</label>
-              <textarea
-                value={formData.full_description || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, full_description: e.target.value }))}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                rows={4}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">CTA Text</label>
-                <input
-                  type="text"
-                  value={formData.cta_text || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, cta_text: e.target.value }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">CTA URL</label>
-                <input
-                  type="url"
-                  value={formData.cta_url || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, cta_url: e.target.value }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Image URL</label>
-                <input
-                  type="url"
-                  value={formData.image_url || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Company Logo URL</label>
-                <input
-                  type="url"
-                  value={formData.company_logo_url || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, company_logo_url: e.target.value }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Discount Code</label>
-                <input
-                  type="text"
-                  value={formData.discount_code || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, discount_code: e.target.value }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Discount Link</label>
-                <input
-                  type="url"
-                  value={formData.discount_link || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, discount_link: e.target.value }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Payment Tier</label>
-                <select
-                  value={formData.payment_tier || 'basic'}
-                  onChange={(e) => setFormData(prev => ({ ...prev, payment_tier: e.target.value as 'premium' | 'standard' | 'basic' }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                >
-                  <option value="basic">Basic</option>
-                  <option value="standard">Standard</option>
-                  <option value="premium">Premium</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Monthly Amount</label>
-                <input
-                  type="number"
-                  value={formData.monthly_payment_amount || 0}
-                  onChange={(e) => setFormData(prev => ({ ...prev, monthly_payment_amount: parseFloat(e.target.value) || 0 }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Status</label>
-                <select
-                  value={formData.status || 'draft'}
-                  onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'active' | 'paused' | 'draft' | 'ended' }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                >
-                  <option value="draft">Draft</option>
-                  <option value="active">Active</option>
-                  <option value="paused">Paused</option>
-                  <option value="ended">Ended</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Target Cities */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Target Cities</label>
-              <div className="flex gap-2 mt-1">
-                <input
-                  type="text"
-                  value={newCity}
-                  onChange={(e) => setNewCity(e.target.value)}
-                  placeholder="Add city"
-                  className="flex-1 border border-gray-300 rounded-md px-3 py-2"
-                />
-                <button
-                  type="button"
-                  onClick={() => addToArray('target_cities', newCity, setNewCity)}
-                  className="px-3 py-2 bg-indigo-600 text-white rounded-md"
-                >
-                  Add
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {(formData.target_cities || []).map((city, index) => (
-                  <span key={index} className="bg-gray-100 px-2 py-1 rounded text-sm flex items-center gap-1">
-                    {city}
-                    <button
-                      type="button"
-                      onClick={() => removeFromArray('target_cities', index)}
-                      className="text-red-500"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Target Event Types */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Target Event Types</label>
-              <div className="flex gap-2 mt-1">
-                <input
-                  type="text"
-                  value={newEventType}
-                  onChange={(e) => setNewEventType(e.target.value)}
-                  placeholder="Add event type"
-                  className="flex-1 border border-gray-300 rounded-md px-3 py-2"
-                />
-                <button
-                  type="button"
-                  onClick={() => addToArray('target_event_types', newEventType, setNewEventType)}
-                  className="px-3 py-2 bg-indigo-600 text-white rounded-md"
-                >
-                  Add
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {(formData.target_event_types || []).map((type, index) => (
-                  <span key={index} className="bg-gray-100 px-2 py-1 rounded text-sm flex items-center gap-1">
-                    {type}
-                    <button
-                      type="button"
-                      onClick={() => removeFromArray('target_event_types', index)}
-                      className="text-red-500"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-2 pt-4">
-              <button
-                type="button"
-                onClick={() => {
+          {/* Navigation Buttons */}
+          <div className="flex justify-between pt-6 border-t">
+            <button
+              type="button"
+              onClick={() => {
+                if (currentStep > 1) {
+                  setCurrentStep(currentStep - 1);
+                } else {
                   setShowCampaignForm(false);
                   setEditingCampaign(null);
-                }}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md"
-              >
-                {editingCampaign ? 'Update' : 'Create'} Campaign
-              </button>
+                }
+              }}
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            >
+              {currentStep === 1 ? 'Cancel' : 'Back'}
+            </button>
+            
+            <div className="flex space-x-2">
+              {currentStep === 2 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    // Handle payment processing
+                    alert('Redirecting to payment processor...');
+                    setCurrentStep(3);
+                  }}
+                  className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                >
+                  Pay ${campaignDetails.totalCost}
+                </button>
+              )}
+              
+              {currentStep === 3 ? (
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                >
+                  {editingCampaign ? 'Update' : 'Create'} Campaign
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setCurrentStep(currentStep + 1)}
+                  className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                >
+                  Next
+                </button>
+              )}
             </div>
-          </form>
+          </div>
         </div>
       </div>
     );
