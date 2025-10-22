@@ -298,7 +298,7 @@ const HelpCenterIntegration: React.FC = () => {
                     <div>
                       <p className="font-medium">User ID: {session.user_id}</p>
                       <p className="text-sm text-gray-500">
-                        Waiting since: {new Date(session.started_at ?? session.created_at || new Date().toISOString()).toLocaleString()}
+                        Waiting since: {new Date(session.started_at ?? session.created_at ?? new Date().toISOString()).toLocaleString()}
                       </p>
                     </div>
                   </div>
