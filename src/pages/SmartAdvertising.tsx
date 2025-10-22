@@ -37,6 +37,15 @@ interface Campaign {
   target_cities: string[];
   target_event_types?: string[];
   target_locations?: string[];
+  // New optional fields for scheduling and targeting
+  start_date?: string; // YYYY-MM-DD
+  end_date?: string;   // YYYY-MM-DD
+  invoice_email?: string;
+  campaign_ref?: string;
+  invoice_ref?: string;
+  target_country?: string;
+  target_city?: string;
+  target_distance_km?: number;
   created_at: string;
   updated_at?: string;
 }
@@ -219,6 +228,41 @@ const SmartAdvertising: React.FC = () => {
       }
     }, [editingCampaign]);
 
+    // Helper: compute end date from start + duration
+    const computeEndDate = (startDateIso: string, durationDays: number) => {
+      if (!startDateIso || !durationDays) return '';
+      const d = new Date(startDateIso);
+      if (Number.isNaN(d.getTime())) return '';
+      d.setDate(d.getDate() + durationDays);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    };
+
+    // Debounced Supabase-backed reach estimation
+    const fetchEstimatedReach = async () => {
+      try {
+        if (!campaignDetails.startDate) return;
+        const end = computeEndDate(campaignDetails.startDate, campaignDetails.dealDuration || 0);
+        const { data, error } = await supabase.rpc('estimate_reach', {
+          p_country: campaignDetails.country || null,
+          p_city: campaignDetails.city || null,
+          p_distance_km: campaignDetails.distance || 0,
+          p_start_date: campaignDetails.startDate,
+          p_end_date: end
+        });
+        if (error) throw error;
+        const reach = typeof data === 'number' ? data : (data?.estimated_reach ?? 0);
+        setCampaignDetails(prev => ({ ...prev, estimatedReach: Math.max(0, reach) }));
+      } catch (err) {
+        console.error('estimate_reach RPC error:', err);
+        // Fallback to heuristic
+        const fallback = calculateEstimatedReach();
+        setCampaignDetails(prev => ({ ...prev, estimatedReach: fallback }));
+      }
+    };
+
     // Pricing algorithm based on Instagram's model
     const calculatePricing = () => {
       const baseCostPerImpression = 0.02; // $0.02 per impression (Instagram-like)
@@ -256,6 +300,66 @@ const SmartAdvertising: React.FC = () => {
       calculatePricing();
     }, [campaignDetails.country, campaignDetails.distance, campaignDetails.dealDuration, campaignDetails.estimatedReach]);
 
+    // Maintain endDate from startDate + duration
+    useEffect(() => {
+      if (campaignDetails.startDate) {
+        const end = computeEndDate(campaignDetails.startDate, campaignDetails.dealDuration || 0);
+        setCampaignDetails(prev => ({ ...prev, endDate: end }));
+      }
+    }, [campaignDetails.startDate, campaignDetails.dealDuration]);
+
+    // Debounce reach estimation on key inputs
+    useEffect(() => {
+      const t = setTimeout(() => {
+        fetchEstimatedReach();
+      }, 500);
+      return () => clearTimeout(t);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [campaignDetails.country, campaignDetails.city, campaignDetails.distance, campaignDetails.startDate, campaignDetails.dealDuration]);
+
+    // Custom Select Component for consistent styling
+    const CustomSelect: React.FC<{
+      value: string;
+      onChange: (v: string) => void;
+      options: { label: string; value: string }[];
+      placeholder?: string;
+    }> = ({ value, onChange, options, placeholder }) => {
+      const [open, setOpen] = useState(false);
+      const selected = options.find(o => o.value === value);
+      return (
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setOpen(o => !o)}
+            className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 bg-white flex items-center justify-between hover:border-gray-400"
+          >
+            <span className={selected ? 'text-gray-900' : 'text-gray-500'}>
+              {selected?.label || placeholder || 'Select'}
+            </span>
+            <svg className="w-4 h-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+            </svg>
+          </button>
+          {open && (
+            <div className="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-56 overflow-auto">
+              {options.map(opt => (
+                <div
+                  key={opt.value}
+                  onClick={() => {
+                    onChange(opt.value);
+                    setOpen(false);
+                  }}
+                  className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${opt.value === value ? 'bg-gray-50 font-medium' : ''}`}
+                >
+                  {opt.label}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       try {
@@ -268,6 +372,15 @@ const SmartAdvertising: React.FC = () => {
           target_cities: campaignDetails.city ? [campaignDetails.city] : [],
           target_locations: campaignDetails.country ? [campaignDetails.country] : [],
           target_event_types: [campaignDetails.targetAudience],
+          // New scheduling/targeting fields
+          start_date: campaignDetails.startDate || null,
+          end_date: campaignDetails.endDate || null,
+          invoice_email: campaignDetails.invoiceEmail || null,
+          campaign_ref: campaignDetails.campaignRef || null,
+          invoice_ref: campaignDetails.invoiceRef || null,
+          target_country: campaignDetails.country || null,
+          target_city: campaignDetails.city || null,
+          target_distance_km: campaignDetails.distance || 0,
         };
 
         if (editingCampaign) {
@@ -348,7 +461,7 @@ const SmartAdvertising: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Invoice Reference</label>
             <input
@@ -368,6 +481,19 @@ const SmartAdvertising: React.FC = () => {
               min="1"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Start Date *</label>
+            <input
+              type="date"
+              value={campaignDetails.startDate}
+              onChange={(e) => setCampaignDetails(prev => ({ ...prev, startDate: e.target.value }))}
+              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+              required
+            />
+            {campaignDetails.endDate && (
+              <p className="text-xs text-gray-500 mt-1">Ends on {campaignDetails.endDate}</p>
+            )}
+          </div>
         </div>
 
         <div>
@@ -384,24 +510,24 @@ const SmartAdvertising: React.FC = () => {
         <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Country *</label>
-            <select
+            <CustomSelect
               value={campaignDetails.country}
-              onChange={(e) => setCampaignDetails(prev => ({ ...prev, country: e.target.value }))}
-              className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-              required
-            >
-              <option value="">Select Country</option>
-              <option value="global">Global</option>
-              <option value="US">United States</option>
-              <option value="UK">United Kingdom</option>
-              <option value="CA">Canada</option>
-              <option value="AU">Australia</option>
-              <option value="DE">Germany</option>
-              <option value="FR">France</option>
-              <option value="ES">Spain</option>
-              <option value="IT">Italy</option>
-              <option value="NL">Netherlands</option>
-            </select>
+              onChange={(val) => setCampaignDetails(prev => ({ ...prev, country: val }))}
+              options={[
+                { label: 'Select Country', value: '' },
+                { label: 'Global', value: 'global' },
+                { label: 'United States', value: 'US' },
+                { label: 'United Kingdom', value: 'UK' },
+                { label: 'Canada', value: 'CA' },
+                { label: 'Australia', value: 'AU' },
+                { label: 'Germany', value: 'DE' },
+                { label: 'France', value: 'FR' },
+                { label: 'Spain', value: 'ES' },
+                { label: 'Italy', value: 'IT' },
+                { label: 'Netherlands', value: 'NL' },
+              ]}
+              placeholder="Select Country"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">City</label>
@@ -428,17 +554,18 @@ const SmartAdvertising: React.FC = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">Target Audience</label>
-          <select
+          <CustomSelect
             value={campaignDetails.targetAudience}
-            onChange={(e) => setCampaignDetails(prev => ({ ...prev, targetAudience: e.target.value }))}
-            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-          >
-            <option value="all">All Event Attendees</option>
-            <option value="business">Business Events Only</option>
-            <option value="conference">Conferences Only</option>
-            <option value="wedding">Weddings Only</option>
-            <option value="corporate">Corporate Events Only</option>
-          </select>
+            onChange={(val) => setCampaignDetails(prev => ({ ...prev, targetAudience: val }))}
+            options={[
+              { label: 'All Event Attendees', value: 'all' },
+              { label: 'Business Events Only', value: 'business' },
+              { label: 'Conferences Only', value: 'conference' },
+              { label: 'Weddings Only', value: 'wedding' },
+              { label: 'Corporate Events Only', value: 'corporate' },
+            ]}
+            placeholder="Select Audience"
+          />
         </div>
 
         {/* Pricing Display */}
@@ -636,16 +763,17 @@ const SmartAdvertising: React.FC = () => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">Status</label>
-          <select
+          <CustomSelect
             value={formData.status || 'draft'}
-            onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'active' | 'paused' | 'draft' | 'ended' }))}
-            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-          >
-            <option value="draft">Draft</option>
-            <option value="active">Active</option>
-            <option value="paused">Paused</option>
-            <option value="ended">Ended</option>
-          </select>
+            onChange={(val) => setFormData(prev => ({ ...prev, status: val as 'active' | 'paused' | 'draft' | 'ended' }))}
+            options={[
+              { label: 'Draft', value: 'draft' },
+              { label: 'Active', value: 'active' },
+              { label: 'Paused', value: 'paused' },
+              { label: 'Ended', value: 'ended' },
+            ]}
+            placeholder="Select Status"
+          />
         </div>
       </div>
     );
