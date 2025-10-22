@@ -5,18 +5,12 @@ import {
   TrendingUp, 
   MapPin, 
   Brain, 
-  Users, 
-  Calendar,
   Eye,
   MousePointer,
-  Award,
-  AlertTriangle,
   Plus,
   Search,
   Filter,
   BarChart3,
-  Globe,
-  Clock,
   Zap
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -196,7 +190,6 @@ const SmartAdvertising: React.FC = () => {
 
     const [newCity, setNewCity] = useState('');
     const [newEventType, setNewEventType] = useState('');
-    const [newLocation, setNewLocation] = useState('');
 
     useEffect(() => {
       if (editingCampaign) {
