@@ -95,12 +95,12 @@ class StaffAuthService {
         throw new Error('Invalid credentials or account not found')
       }
 
-      // SIMPLE: Just check if password matches what's stored
-      if (staffMember.password_hash !== credentials.password) {
-        console.log('🔐 STAFF AUTH: Password check failed:', {
-          entered: credentials.password,
-          stored: staffMember.password_hash
-        })
+      // Verify password using bcrypt
+      const { passwordUtils } = await import('./passwordUtils')
+      const isValidPassword = await passwordUtils.verifyPassword(credentials.password, staffMember.password_hash)
+      
+      if (!isValidPassword) {
+        console.log('🔐 STAFF AUTH: Password check failed')
         throw new Error('Invalid password')
       }
 

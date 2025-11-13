@@ -351,6 +351,11 @@ export const userService = {
     return this.updateUser(id, { status })
   },
 
+  // Update user role
+  async updateUserRole(id: string, role: string): Promise<User> {
+    return this.updateUser(id, { role })
+  },
+
   // Reset user password and send new temporary password via Supabase Auth
   async resetUserPassword(userId: string): Promise<string> {
     try {

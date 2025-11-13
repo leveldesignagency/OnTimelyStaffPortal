@@ -6,10 +6,14 @@ import LoginPage from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Users from './pages/Users'
 import Companies from './pages/Companies'
+import CompanyDetailPage from './pages/CompanyDetailPage'
 import DesktopApp from './pages/DesktopApp'
 import Analytics from './pages/Analytics'
 import Admin from './pages/Admin'
 import SmartAdvertising from './pages/SmartAdvertising'
+import Support from './pages/Support'
+import ScreenSharing from './pages/ScreenSharing'
+import Apps from './pages/Apps'
 import Sidebar from './components/Sidebar'
 
 // Protected Route Component
@@ -153,6 +157,14 @@ function App() {
           </ProtectedRoute>
         } />
         
+        <Route path="/companies/:id" element={
+          <ProtectedRoute>
+            <PortalLayout>
+              <CompanyDetailPage />
+            </PortalLayout>
+          </ProtectedRoute>
+        } />
+        
         <Route path="/desktop-app" element={
           <ProtectedRoute>
             <PortalLayout>
@@ -181,6 +193,30 @@ function App() {
           <ProtectedRoute>
             <PortalLayout>
               <SmartAdvertising />
+            </PortalLayout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/support" element={
+          <ProtectedRoute>
+            <PortalLayout>
+              <Support />
+            </PortalLayout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/screen-sharing" element={
+          <ProtectedRoute>
+            <PortalLayout>
+              <ScreenSharing />
+            </PortalLayout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/apps" element={
+          <ProtectedRoute>
+            <PortalLayout>
+              <Apps />
             </PortalLayout>
           </ProtectedRoute>
         } />

@@ -11,7 +11,9 @@ import {
   LogOut,
   User,
   ChevronDown,
-  Target
+  Target,
+  ScreenShare,
+  Package
 } from 'lucide-react'
 import { staffAuth } from '../lib/staffAuth'
 
@@ -32,6 +34,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
     { name: 'Desktop App', href: '/desktop-app', icon: Monitor },
     { name: 'Analytics', href: '/analytics', icon: BarChart3 },
     { name: 'Support', href: '/support', icon: HelpCircle },
+    { name: 'Screen Sharing', href: '/screen-sharing', icon: ScreenShare },
+    { name: 'Apps', href: '/apps', icon: Package },
     { name: 'Admin', href: '/admin', icon: Settings },
   ]
 

@@ -204,8 +204,30 @@ const UsersPage: React.FC = () => {
           return
         } else if (msg.includes('invalid email') || msg.includes('email format') || msg.includes('400')) {
           errorMessage = 'Invalid email address. Please check the email format and try again.'
-        } else if (msg.includes('email already exists') || msg.includes('duplicate') || msg.includes('already registered')) {
-          errorMessage = 'A user with this email address already exists.'
+        } else if (msg.includes('email already exists') || msg.includes('duplicate') || msg.includes('already registered') || msg.includes('unique constraint') || msg.includes('violates unique constraint')) {
+          // Check if user exists in the same company
+          const existingUser = users.find(u => u.email === newUser.email)
+          if (existingUser && existingUser.company_id === newUser.company_id) {
+            errorMessage = `A user with this email already exists in ${existingUser.company_id ? companies.find(c => c.id === existingUser.company_id)?.name : 'this company'}. Please use a different email or edit the existing user.`
+          } else if (existingUser) {
+            // User exists in different company - allow creation
+            errorMessage = `A user with this email exists in another company (${existingUser.company_id ? companies.find(c => c.id === existingUser.company_id)?.name : 'different company'}). You can create this user as they will use different login credentials.`
+            // Actually let's allow this
+            const userData: any = {
+              email: newUser.email,
+              name: newUser.name,
+              company_id: newUser.company_id,
+              role: newUser.role
+            }
+            const createdUser = await db.users.createUser(userData)
+            toast.success('User created successfully! Welcome email sent.')
+            setShowCreateModal(false)
+            setNewUser({ email: '', name: '', company_id: '', role: 'user' })
+            loadData()
+            return
+          } else {
+            errorMessage = 'A user with this email address already exists. Please use a different email.'
+          }
         } else if (msg.includes('company not found') || msg.includes('invalid company')) {
           errorMessage = 'Selected company is invalid. Please refresh the page and try again.'
         } else if (msg.includes('network') || msg.includes('connection')) {

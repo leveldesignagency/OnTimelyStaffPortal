@@ -204,7 +204,7 @@ const Support: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-8">
       {/* Page Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
@@ -240,7 +240,7 @@ const Support: React.FC = () => {
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
-            Help Center Live
+            Live Support
           </button>
         </nav>
       </div>

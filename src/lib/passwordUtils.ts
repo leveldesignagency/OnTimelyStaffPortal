@@ -1,25 +1,30 @@
-// Simple password hashing utility for staff accounts
-// In production, you should use a proper bcrypt implementation
+// Secure password hashing utility for staff accounts
+// Uses bcrypt for secure password hashing
+
+import bcrypt from 'bcryptjs'
 
 export const passwordUtils = {
-  // Simple hash function for demo purposes
-  // In production, use bcrypt or similar
-  hashPassword(password: string): string {
-    // This is a very basic hash - NOT secure for production!
-    // For production, use: bcrypt.hashSync(password, 10)
-    let hash = 0
-    for (let i = 0; i < password.length; i++) {
-      const char = password.charCodeAt(i)
-      hash = ((hash << 5) - hash) + char
-      hash = hash & hash // Convert to 32-bit integer
-    }
-    return `demo_hash_${Math.abs(hash)}`
+  // Hash password using bcrypt
+  // Salt rounds: 10 (good balance between security and performance)
+  async hashPassword(password: string): Promise<string> {
+    const saltRounds = 10
+    return await bcrypt.hash(password, saltRounds)
   },
 
-  // Verify password against hash
-  verifyPassword(password: string, hash: string): boolean {
-    const computedHash = this.hashPassword(password)
-    return computedHash === hash
+  // Synchronous version for server-side use
+  hashPasswordSync(password: string): string {
+    const saltRounds = 10
+    return bcrypt.hashSync(password, saltRounds)
+  },
+
+  // Verify password against bcrypt hash
+  async verifyPassword(password: string, hash: string): Promise<boolean> {
+    return await bcrypt.compare(password, hash)
+  },
+
+  // Synchronous version for server-side use
+  verifyPasswordSync(password: string, hash: string): boolean {
+    return bcrypt.compareSync(password, hash)
   },
 
   // Generate a secure random password

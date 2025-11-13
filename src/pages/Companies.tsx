@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Search, Plus, /* Filter, */ MoreVertical, Building2, Users, /* Mail, Phone, MapPin */ ChevronDown, Check, Trash2, AlertTriangle } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { db } from '@/lib/database'
 import { Company } from '@/lib/supabase'
 
 const Companies: React.FC = () => {
+  const navigate = useNavigate()
   const [companies, setCompanies] = useState<Company[]>([])
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -366,7 +368,11 @@ const Companies: React.FC = () => {
       {activeTab === 'active' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
           {filteredCompanies.map((company) => (
-            <div key={company.id} className="bg-white rounded-lg border hover:shadow-md transition-shadow">
+            <div 
+              key={company.id} 
+              className="bg-white rounded-lg border hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => navigate(`/companies/${company.id}`)}
+            >
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center">
