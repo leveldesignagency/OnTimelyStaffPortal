@@ -219,7 +219,7 @@ const UsersPage: React.FC = () => {
               company_id: newUser.company_id,
               role: newUser.role
             }
-            const createdUser = await db.users.createUser(userData)
+            await db.users.createUser(userData)
             toast.success('User created successfully! Welcome email sent.')
             setShowCreateModal(false)
             setNewUser({ email: '', name: '', company_id: '', role: 'user' })

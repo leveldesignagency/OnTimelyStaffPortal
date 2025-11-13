@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { ArrowLeft, Building2, Users, Mail, Edit, Save, Trash2, X, ChevronDown } from 'lucide-react'
+import { ArrowLeft, Building2, Users, Edit, Save, Trash2, X, ChevronDown } from 'lucide-react'
 import { db } from '@/lib/database'
 import { Company } from '@/lib/supabase'
 
@@ -38,12 +38,23 @@ const CompanyDetailPage: React.FC = () => {
       
       // Load company data
       const companyData = await db.companies.getCompany(id!)
-      setCompany(companyData)
-      setCompanyNameValue(companyData.name)
+      if (companyData) {
+        setCompany(companyData)
+        setCompanyNameValue(companyData.name)
+      }
       
       // Load company users
       const companyUsers = await db.users.getUsersByCompany(id!)
-      setUsers(companyUsers)
+      // Map User[] to CompanyUser[] with proper type handling
+      const mappedUsers: CompanyUser[] = companyUsers.map(user => ({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role || 'user',
+        status: user.status || 'offline',
+        created_at: user.created_at
+      }))
+      setUsers(mappedUsers)
     } catch (error) {
       console.error('Error loading company data:', error)
     } finally {

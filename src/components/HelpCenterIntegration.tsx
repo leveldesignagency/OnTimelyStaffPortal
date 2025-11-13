@@ -31,6 +31,15 @@ interface ScreenShareSession {
   status: 'active' | 'completed' | 'expired'
   created_at: string
   expires_at: string
+  metadata?: {
+    user_name?: string
+    user_email?: string
+    company_id?: string
+    platform?: string
+    app_version?: string
+    resolution?: string
+    frame_rate?: string
+  }
 }
 
 interface LiveChatSession {
