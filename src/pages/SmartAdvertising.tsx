@@ -246,7 +246,12 @@ const SmartAdvertising: React.FC = () => {
     // Debounced Supabase-backed reach estimation
     const fetchEstimatedReach = async () => {
       try {
-        if (!campaignDetails.startDate) return;
+        if (!campaignDetails.startDate) {
+          // Use fallback if no start date
+          const fallback = calculateEstimatedReach();
+          setCampaignDetails(prev => ({ ...prev, estimatedReach: fallback }));
+          return;
+        }
         const end = computeEndDate(campaignDetails.startDate, campaignDetails.dealDuration || 0);
         const { data, error } = await supabase.rpc('estimate_reach', {
           p_country: campaignDetails.country || null,
@@ -255,12 +260,16 @@ const SmartAdvertising: React.FC = () => {
           p_start_date: campaignDetails.startDate,
           p_end_date: end
         });
-        if (error) throw error;
+        if (error) {
+          // Silently fallback - don't spam console with errors
+          const fallback = calculateEstimatedReach();
+          setCampaignDetails(prev => ({ ...prev, estimatedReach: fallback }));
+          return;
+        }
         const reach = typeof data === 'number' ? data : (data?.estimated_reach ?? 0);
         setCampaignDetails(prev => ({ ...prev, estimatedReach: Math.max(0, reach) }));
       } catch (err) {
-        console.error('estimate_reach RPC error:', err);
-        // Fallback to heuristic
+        // Silently fallback - don't spam console with errors
         const fallback = calculateEstimatedReach();
         setCampaignDetails(prev => ({ ...prev, estimatedReach: fallback }));
       }
@@ -654,7 +663,20 @@ const SmartAdvertising: React.FC = () => {
 
         {/* Pricing Display */}
         <div className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Pricing Estimate</h3>
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-lg font-semibold text-gray-900">Pricing Estimate</h3>
+            <button
+              type="button"
+              onClick={() => {
+                setCampaignDetails(prev => ({ ...prev, totalCost: 0 }));
+                alert('Amount set to $0 for testing');
+              }}
+              className="px-3 py-1 text-xs bg-yellow-500 text-white rounded hover:bg-yellow-600"
+              title="Set amount to $0 for testing"
+            >
+              Test: $0
+            </button>
+          </div>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="text-gray-600">Estimated Reach:</span>

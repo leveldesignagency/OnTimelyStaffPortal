@@ -34,30 +34,80 @@ module.exports = async (req, res) => {
     // Generate invoice number
     const invoiceNumber = `INV-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
     
+    // Get or create a system company/user for advertising invoices
+    // Try to find the first company (system company for advertising)
+    let systemCompanyId = null;
+    let systemUserId = null;
+    
+    const { data: companies } = await supabase
+      .from('companies')
+      .select('id')
+      .limit(1);
+    
+    if (companies && companies.length > 0) {
+      systemCompanyId = companies[0].id;
+    } else {
+      // If no companies exist, we need to handle this differently
+      // For now, we'll create a minimal invoice without company_id/user_id
+      // You may need to create a system company for advertising invoices
+      console.warn('No companies found in database. Invoice creation may fail if company_id is required.');
+    }
+    
+    // Try to get a system user (first user in the system)
+    const { data: users } = await supabase
+      .from('users')
+      .select('id')
+      .limit(1);
+    
+    if (users && users.length > 0) {
+      systemUserId = users[0].id;
+    }
+    
     // Create invoice record
+    const invoiceData = {
+      invoice_number: invoiceNumber,
+      status: 'sent',
+      recipient_name: company_name,
+      recipient_email: email,
+      invoice_date: new Date().toISOString().split('T')[0],
+      due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days from now
+      currency: 'USD',
+      discount_amount: 0, // Explicitly set discount to 0
+      line_items: [
+        {
+          description: `Smart Advertising Campaign: ${campaign_title}`,
+          quantity: 1,
+          unit_price: amount,
+          total: amount
+        }
+      ],
+      subtotal: amount,
+      tax_amount: 0,
+      total_amount: amount,
+      notes: `Campaign Reference: ${invoice_ref || 'N/A'}\nCampaign ID: ${campaign_id}`
+    };
+    
+    // Add company_id and user_id if available (required fields)
+    if (systemCompanyId) {
+      invoiceData.company_id = systemCompanyId;
+    }
+    if (systemUserId) {
+      invoiceData.user_id = systemUserId;
+    }
+    
+    // If we don't have required fields, return an error
+    if (!systemCompanyId || !systemUserId) {
+      return res.status(500).json({ 
+        error: 'System configuration error', 
+        details: 'No company or user found in database. Please ensure at least one company and user exist for invoice creation.',
+        company_id: systemCompanyId,
+        user_id: systemUserId
+      });
+    }
+    
     const { data: invoice, error: invoiceError } = await supabase
       .from('invoices')
-      .insert({
-        invoice_number: invoiceNumber,
-        status: 'sent',
-        recipient_name: company_name,
-        recipient_email: email,
-        invoice_date: new Date().toISOString().split('T')[0],
-        due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days from now
-        currency: 'USD',
-        line_items: [
-          {
-            description: `Smart Advertising Campaign: ${campaign_title}`,
-            quantity: 1,
-            unit_price: amount,
-            total: amount
-          }
-        ],
-        subtotal: amount,
-        tax_amount: 0,
-        total_amount: amount,
-        notes: `Campaign Reference: ${invoice_ref || 'N/A'}\nCampaign ID: ${campaign_id}`
-      })
+      .insert(invoiceData)
       .select()
       .single();
 
