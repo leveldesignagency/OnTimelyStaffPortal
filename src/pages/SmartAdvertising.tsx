@@ -11,7 +11,8 @@ import {
   Search,
   Filter,
   BarChart3,
-  Zap
+  Zap,
+  X
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -84,6 +85,10 @@ const SmartAdvertising: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showCampaignForm, setShowCampaignForm] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
+  const [showDiscountCodes, setShowDiscountCodes] = useState(false);
+  const [discountCodes, setDiscountCodes] = useState<any[]>([]);
+  const [editingDiscountCode, setEditingDiscountCode] = useState<any | null>(null);
+  const [showPaymentConfirmation, setShowPaymentConfirmation] = useState(false);
 
   // Stats
   const [stats, setStats] = useState({
@@ -120,9 +125,16 @@ const SmartAdvertising: React.FC = () => {
         .select('*')
         .order('likelihood_score', { ascending: false });
 
+      // Load discount codes
+      const { data: discountCodesData } = await supabase
+        .from('discount_codes')
+        .select('*')
+        .order('created_at', { ascending: false });
+
       setCampaigns(campaignsData || []);
       setMarketIntel(marketData || []);
       setSalesOps(salesData || []);
+      setDiscountCodes(discountCodesData || []);
 
       // Calculate stats
       const totalRevenue = (campaignsData || []).reduce((sum, c) => sum + (c.monthly_payment_amount || 0), 0);
@@ -432,14 +444,15 @@ const SmartAdvertising: React.FC = () => {
       );
     };
 
-    const handleSave = async () => {
+    const handleSave = async (saveAsDraft: boolean = false) => {
       try {
         // Merge campaign details with form data
         const finalCampaignData = {
           ...formData,
           title: campaignDetails.campaignTitle,
           company_name: campaignDetails.companyName,
-          monthly_payment_amount: campaignDetails.totalCost,
+          monthly_payment_amount: campaignDetails.discountAmount > 0 ? campaignDetails.finalCost : campaignDetails.totalCost,
+          original_amount: campaignDetails.totalCost,
           target_cities: campaignDetails.city ? [campaignDetails.city] : [],
           target_locations: campaignDetails.country ? [campaignDetails.country] : [],
           target_event_types: [campaignDetails.targetAudience],
@@ -452,7 +465,9 @@ const SmartAdvertising: React.FC = () => {
           target_country: campaignDetails.country || null,
           target_city: campaignDetails.city || null,
           target_distance_km: campaignDetails.distance || 0,
-          status: 'pending',
+          discount_code: campaignDetails.discountCode || null,
+          discount_amount: campaignDetails.discountAmount || 0,
+          status: saveAsDraft ? 'draft' : 'pending',
           payment_status: 'pending',
         };
 
@@ -471,28 +486,31 @@ const SmartAdvertising: React.FC = () => {
           if (error) throw error;
         }
         
-        alert('Campaign saved as pending. You can send the payment link when ready.');
+        alert(saveAsDraft 
+          ? 'Campaign saved as draft. You can continue editing later.' 
+          : 'Campaign saved as pending. You can send the payment link when ready.');
         setShowCampaignForm(false);
         setEditingCampaign(null);
         setCurrentStep(1);
         loadDashboardData();
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error saving campaign:', error);
-        alert('Error saving campaign');
+        alert(`Error saving campaign: ${error.message}`);
       }
     };
 
     const handleSendPaymentLink = async () => {
       try {
-        // First save the campaign if it's new
+        // First save the campaign as pending if it's new or draft
         let campaignId = editingCampaign?.id;
         
-        if (!campaignId) {
+        if (!campaignId || editingCampaign?.status === 'draft') {
           const finalCampaignData = {
             ...formData,
             title: campaignDetails.campaignTitle,
             company_name: campaignDetails.companyName,
-            monthly_payment_amount: campaignDetails.totalCost,
+            monthly_payment_amount: campaignDetails.discountAmount > 0 ? campaignDetails.finalCost : campaignDetails.totalCost,
+            original_amount: campaignDetails.totalCost,
             target_cities: campaignDetails.city ? [campaignDetails.city] : [],
             target_locations: campaignDetails.country ? [campaignDetails.country] : [],
             target_event_types: [campaignDetails.targetAudience],
@@ -504,18 +522,31 @@ const SmartAdvertising: React.FC = () => {
             target_country: campaignDetails.country || null,
             target_city: campaignDetails.city || null,
             target_distance_km: campaignDetails.distance || 0,
+            discount_code: campaignDetails.discountCode || null,
+            discount_amount: campaignDetails.discountAmount || 0,
             status: 'pending',
             payment_status: 'pending',
           };
 
-          const { data, error } = await supabase
-            .from('campaigns')
-            .insert([finalCampaignData])
-            .select()
-            .single();
-          
-          if (error) throw error;
-          campaignId = data.id;
+          if (campaignId) {
+            // Update existing draft
+            const { error } = await supabase
+              .from('campaigns')
+              .update(finalCampaignData)
+              .eq('id', campaignId);
+            
+            if (error) throw error;
+          } else {
+            // Insert new campaign
+            const { data, error } = await supabase
+              .from('campaigns')
+              .insert([finalCampaignData])
+              .select()
+              .single();
+            
+            if (error) throw error;
+            campaignId = data.id;
+          }
         }
 
         // Send invoice via API
@@ -554,6 +585,7 @@ const SmartAdvertising: React.FC = () => {
           })
           .eq('id', campaignId);
 
+        setShowPaymentConfirmation(false);
         alert('Payment link sent successfully! The customer will receive an invoice email.');
         setShowCampaignForm(false);
         setEditingCampaign(null);
@@ -1039,6 +1071,58 @@ const SmartAdvertising: React.FC = () => {
           {currentStep === 2 && renderStep2()}
           {currentStep === 3 && renderStep3()}
 
+          {/* Payment Confirmation Modal */}
+          {showPaymentConfirmation && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Confirm Send Payment Link</h3>
+                <div className="space-y-3 mb-6">
+                  <div>
+                    <p className="text-sm text-gray-600">Company:</p>
+                    <p className="font-semibold text-gray-900">{campaignDetails.companyName}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Campaign:</p>
+                    <p className="font-semibold text-gray-900">{campaignDetails.campaignTitle}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Email:</p>
+                    <p className="font-semibold text-gray-900">{campaignDetails.invoiceEmail}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Amount:</p>
+                    <p className="font-semibold text-gray-900">
+                      ${campaignDetails.discountAmount > 0 ? campaignDetails.finalCost.toFixed(2) : campaignDetails.totalCost.toFixed(2)}
+                      {campaignDetails.discountAmount > 0 && (
+                        <span className="text-sm text-gray-500 ml-2">
+                          (Original: ${campaignDetails.totalCost.toFixed(2)}, Discount: ${campaignDetails.discountAmount.toFixed(2)})
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 mb-6">
+                  This will save the campaign as pending and send an invoice email to the customer. 
+                  The campaign will go live automatically once payment is received.
+                </p>
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => setShowPaymentConfirmation(false)}
+                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSendPaymentLink}
+                    className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                  >
+                    Confirm & Send
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Navigation Buttons */}
           <div className="flex justify-between pt-6 border-t">
             <button
@@ -1057,37 +1141,25 @@ const SmartAdvertising: React.FC = () => {
             </button>
             
             <div className="flex space-x-2">
-              {currentStep === 2 && (
-                <>
-                  <button
-                    type="button"
-                    onClick={handleSave}
-                    className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-                  >
-                    Save as Pending
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleSendPaymentLink}
-                    className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                  >
-                    Send Payment Link
-                  </button>
-                </>
-              )}
-              
               {currentStep === 3 ? (
                 <>
                   <button
                     type="button"
-                    onClick={handleSave}
+                    onClick={() => handleSave(true)}
                     className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                  >
+                    Save as Draft
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSave(false)}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                   >
                     Save as Pending
                   </button>
                   <button
                     type="button"
-                    onClick={handleSendPaymentLink}
+                    onClick={() => setShowPaymentConfirmation(true)}
                     className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
                   >
                     Send Payment Link
@@ -1127,13 +1199,22 @@ const SmartAdvertising: React.FC = () => {
             <h1 className="text-3xl font-bold text-gray-900">Smart Advertising Platform</h1>
             <p className="text-gray-600 mt-2">AI-powered location-based advertising management</p>
           </div>
-          <button 
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
-            onClick={() => setShowCampaignForm(true)}
-          >
-            <Plus className="w-4 h-4" />
-            New Campaign
-          </button>
+          <div className="flex gap-2">
+            <button 
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+              onClick={() => setShowDiscountCodes(true)}
+            >
+              <Zap className="w-4 h-4" />
+              Discount Codes
+            </button>
+            <button 
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center gap-2"
+              onClick={() => setShowCampaignForm(true)}
+            >
+              <Plus className="w-4 h-4" />
+              New Campaign
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1541,4 +1622,5 @@ const SmartAdvertising: React.FC = () => {
   );
 };
 
+export default SmartAdvertising;
 export default SmartAdvertising;
