@@ -184,16 +184,28 @@ module.exports = async (req, res) => {
                 <tbody>
                   <tr>
                     <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-size: 14px; color: #1f2937;">
-                      Smart Advertising Campaign: ${campaign_title}
+                      Smart Advertising Campaign: ${campaign_title}${discount_code ? `<br><span style="font-size: 12px; color: #10b981;">Discount Code: ${discount_code}</span>` : ''}
                     </td>
                     <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; font-size: 14px; color: #1f2937;">
-                      $${parseFloat(amount).toFixed(2)}
+                      $${(original_amount || amount).toFixed(2)}
                     </td>
                   </tr>
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td style="padding: 12px; text-align: right; font-size: 16px; font-weight: 600; color: #1f2937;" colspan="2">
+                    <td style="padding: 12px; text-align: right; font-size: 14px; color: #6b7280;" colspan="2">
+                      Subtotal: $${(original_amount || amount).toFixed(2)}
+                    </td>
+                  </tr>
+                  ${discount_amount > 0 ? `
+                  <tr>
+                    <td style="padding: 8px 12px; text-align: right; font-size: 14px; color: #10b981; font-weight: 600;" colspan="2">
+                      Discount (${discount_code}): -$${discount_amount.toFixed(2)}
+                    </td>
+                  </tr>
+                  ` : ''}
+                  <tr>
+                    <td style="padding: 12px; text-align: right; font-size: 16px; font-weight: 600; color: #1f2937; border-top: 2px solid #e5e7eb;" colspan="2">
                       Total: $${parseFloat(amount).toFixed(2)}
                     </td>
                   </tr>
