@@ -42,11 +42,11 @@ export const emailService = {
       // Retry function for rate limiting
       const createAuthUserWithRetry = async (attempts = 0): Promise<any> => {
         try {
-          // Use admin API to create user without sending confirmation email
+          // Use admin API to create user - auto-confirm email so they can log in immediately
           const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
             email: userData.email,
             password: userData.password,
-            email_confirm: false, // Don't auto-confirm, we'll do it manually
+            email_confirm: true, // Auto-confirm so users can log in to mobile app immediately
             user_metadata: {
               name: userData.name,
               company_id: userData.company_id,
