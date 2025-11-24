@@ -1181,6 +1181,320 @@ const SmartAdvertising: React.FC = () => {
     );
   };
 
+  // Discount Code Management Component
+  const DiscountCodeManager = () => {
+    const [formData, setFormData] = useState({
+      code: '',
+      description: '',
+      discount_type: 'percentage' as 'percentage' | 'fixed',
+      discount_value: 0,
+      max_discount_amount: null as number | null,
+      min_purchase_amount: 0,
+      max_uses: null as number | null,
+      valid_from: new Date().toISOString().split('T')[0],
+      valid_until: null as string | null,
+      is_active: true
+    });
+
+    const handleSaveDiscountCode = async () => {
+      try {
+        if (!formData.code || !formData.discount_value) {
+          alert('Please fill in code and discount value');
+          return;
+        }
+
+        const discountData = {
+          ...formData,
+          code: formData.code.toUpperCase().trim(),
+          max_discount_amount: formData.max_discount_amount || null,
+          max_uses: formData.max_uses || null,
+          valid_until: formData.valid_until || null
+        };
+
+        if (editingDiscountCode) {
+          const { error } = await supabase
+            .from('discount_codes')
+            .update(discountData)
+            .eq('id', editingDiscountCode.id);
+          
+          if (error) throw error;
+        } else {
+          const { error } = await supabase
+            .from('discount_codes')
+            .insert([discountData]);
+          
+          if (error) throw error;
+        }
+
+        setShowDiscountCodes(false);
+        setEditingDiscountCode(null);
+        setFormData({
+          code: '',
+          description: '',
+          discount_type: 'percentage',
+          discount_value: 0,
+          max_discount_amount: null,
+          min_purchase_amount: 0,
+          max_uses: null,
+          valid_from: new Date().toISOString().split('T')[0],
+          valid_until: null,
+          is_active: true
+        });
+        loadDashboardData();
+        alert('Discount code saved successfully!');
+      } catch (error: any) {
+        console.error('Error saving discount code:', error);
+        alert(`Error saving discount code: ${error.message}`);
+      }
+    };
+
+    const handleDeleteDiscountCode = async (id: string) => {
+      if (!confirm('Are you sure you want to delete this discount code?')) return;
+      
+      try {
+        const { error } = await supabase
+          .from('discount_codes')
+          .delete()
+          .eq('id', id);
+        
+        if (error) throw error;
+        loadDashboardData();
+        alert('Discount code deleted successfully!');
+      } catch (error: any) {
+        console.error('Error deleting discount code:', error);
+        alert(`Error deleting discount code: ${error.message}`);
+      }
+    };
+
+    useEffect(() => {
+      if (editingDiscountCode) {
+        setFormData({
+          code: editingDiscountCode.code || '',
+          description: editingDiscountCode.description || '',
+          discount_type: editingDiscountCode.discount_type || 'percentage',
+          discount_value: editingDiscountCode.discount_value || 0,
+          max_discount_amount: editingDiscountCode.max_discount_amount || null,
+          min_purchase_amount: editingDiscountCode.min_purchase_amount || 0,
+          max_uses: editingDiscountCode.max_uses || null,
+          valid_from: editingDiscountCode.valid_from ? new Date(editingDiscountCode.valid_from).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+          valid_until: editingDiscountCode.valid_until ? new Date(editingDiscountCode.valid_until).toISOString().split('T')[0] : null,
+          is_active: editingDiscountCode.is_active !== false
+        });
+      }
+    }, [editingDiscountCode]);
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">
+              {editingDiscountCode ? 'Edit Discount Code' : 'Create Discount Code'}
+            </h2>
+            <button
+              onClick={() => {
+                setShowDiscountCodes(false);
+                setEditingDiscountCode(null);
+                setFormData({
+                  code: '',
+                  description: '',
+                  discount_type: 'percentage',
+                  discount_value: 0,
+                  max_discount_amount: null,
+                  min_purchase_amount: 0,
+                  max_uses: null,
+                  valid_from: new Date().toISOString().split('T')[0],
+                  valid_until: null,
+                  is_active: true
+                });
+              }}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Code *</label>
+              <input
+                type="text"
+                value={formData.code}
+                onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                placeholder="SAVE20"
+                style={{ textTransform: 'uppercase' }}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <input
+                type="text"
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                placeholder="20% off for new customers"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Discount Type *</label>
+              <select
+                value={formData.discount_type}
+                onChange={(e) => setFormData(prev => ({ ...prev, discount_type: e.target.value as 'percentage' | 'fixed' }))}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+              >
+                <option value="percentage">Percentage (%)</option>
+                <option value="fixed">Fixed Amount ($)</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Discount Value * {formData.discount_type === 'percentage' ? '(0-100)' : '($)'}
+              </label>
+              <input
+                type="number"
+                value={formData.discount_value}
+                onChange={(e) => setFormData(prev => ({ ...prev, discount_value: parseFloat(e.target.value) || 0 }))}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                min="0"
+                max={formData.discount_type === 'percentage' ? 100 : undefined}
+                step="0.01"
+                required
+              />
+            </div>
+            {formData.discount_type === 'percentage' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Max Discount Amount ($)</label>
+                <input
+                  type="number"
+                  value={formData.max_discount_amount || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, max_discount_amount: e.target.value ? parseFloat(e.target.value) : null }))}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  min="0"
+                  step="0.01"
+                  placeholder="Optional"
+                />
+              </div>
+            )}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Min Purchase Amount ($)</label>
+              <input
+                type="number"
+                value={formData.min_purchase_amount}
+                onChange={(e) => setFormData(prev => ({ ...prev, min_purchase_amount: parseFloat(e.target.value) || 0 }))}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Max Uses</label>
+              <input
+                type="number"
+                value={formData.max_uses || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, max_uses: e.target.value ? parseInt(e.target.value) : null }))}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                min="1"
+                placeholder="Unlimited if empty"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Valid From *</label>
+              <input
+                type="date"
+                value={formData.valid_from}
+                onChange={(e) => setFormData(prev => ({ ...prev, valid_from: e.target.value }))}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Valid Until</label>
+              <input
+                type="date"
+                value={formData.valid_until || ''}
+                onChange={(e) => setFormData(prev => ({ ...prev, valid_until: e.target.value || null }))}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData.is_active}
+                onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
+                className="mr-2"
+              />
+              <label className="text-sm font-medium text-gray-700">Active</label>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <button
+              onClick={() => {
+                setShowDiscountCodes(false);
+                setEditingDiscountCode(null);
+              }}
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSaveDiscountCode}
+              className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+            >
+              {editingDiscountCode ? 'Update' : 'Create'} Discount Code
+            </button>
+          </div>
+
+          {/* Existing Discount Codes List */}
+          <div className="mt-8 border-t pt-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Existing Discount Codes</h3>
+            <div className="space-y-2 max-h-64 overflow-y-auto">
+              {discountCodes.map((dc) => (
+                <div key={dc.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-900">{dc.code}</span>
+                      <span className={`px-2 py-1 text-xs rounded-full ${dc.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                        {dc.is_active ? 'Active' : 'Inactive'}
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-600 mt-1">
+                      {dc.discount_type === 'percentage' 
+                        ? `${dc.discount_value}% off` 
+                        : `$${dc.discount_value} off`}
+                      {dc.description && ` - ${dc.description}`}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      Uses: {dc.current_uses || 0} {dc.max_uses ? `/ ${dc.max_uses}` : '(unlimited)'}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setEditingDiscountCode(dc)}
+                      className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteDiscountCode(dc.id)}
+                      className="px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+              {discountCodes.length === 0 && (
+                <p className="text-gray-500 text-center py-4">No discount codes created yet</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -1192,6 +1506,7 @@ const SmartAdvertising: React.FC = () => {
   return (
     <div className="p-6">
       {showCampaignForm && <CampaignForm />}
+      {showDiscountCodes && <DiscountCodeManager />}
       {/* Header */}
       <div className="mb-8">
         <div className="flex justify-between items-center">
