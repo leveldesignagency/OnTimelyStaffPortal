@@ -1938,4 +1938,3 @@ const SmartAdvertising: React.FC = () => {
 };
 
 export default SmartAdvertising;
-export default SmartAdvertising;
