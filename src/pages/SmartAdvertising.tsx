@@ -30,7 +30,10 @@ interface Campaign {
   qr_code?: string;
   payment_tier: 'premium' | 'standard' | 'basic';
   monthly_payment_amount: number;
-  status: 'active' | 'paused' | 'draft' | 'ended';
+  status: 'active' | 'paused' | 'draft' | 'ended' | 'pending';
+  payment_status?: 'pending' | 'invoice_sent' | 'paid' | 'failed';
+  invoice_id?: string;
+  invoice_url?: string;
   impressions_count: number;
   clicks_count: number;
   ctr: number;
@@ -263,9 +266,9 @@ const SmartAdvertising: React.FC = () => {
       }
     };
 
-    // Pricing algorithm based on Instagram's model
+    // Pricing algorithm - increased base cost per impression
     const calculatePricing = () => {
-      const baseCostPerImpression = 0.02; // $0.02 per impression (Instagram-like)
+      const baseCostPerImpression = 0.15; // $0.15 per impression (increased from $0.02)
       const locationMultiplier = campaignDetails.country === 'global' ? 1.5 : 1.0;
       const distanceMultiplier = Math.max(1, campaignDetails.distance / 10); // More distance = higher cost
       const durationMultiplier = Math.max(0.5, campaignDetails.dealDuration / 30); // Longer duration = better rate
@@ -360,8 +363,7 @@ const SmartAdvertising: React.FC = () => {
       );
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
+    const handleSave = async () => {
       try {
         // Merge campaign details with form data
         const finalCampaignData = {
@@ -381,6 +383,8 @@ const SmartAdvertising: React.FC = () => {
           target_country: campaignDetails.country || null,
           target_city: campaignDetails.city || null,
           target_distance_km: campaignDetails.distance || 0,
+          status: 'pending',
+          payment_status: 'pending',
         };
 
         if (editingCampaign) {
@@ -398,6 +402,7 @@ const SmartAdvertising: React.FC = () => {
           if (error) throw error;
         }
         
+        alert('Campaign saved as pending. You can send the payment link when ready.');
         setShowCampaignForm(false);
         setEditingCampaign(null);
         setCurrentStep(1);
@@ -406,6 +411,92 @@ const SmartAdvertising: React.FC = () => {
         console.error('Error saving campaign:', error);
         alert('Error saving campaign');
       }
+    };
+
+    const handleSendPaymentLink = async () => {
+      try {
+        // First save the campaign if it's new
+        let campaignId = editingCampaign?.id;
+        
+        if (!campaignId) {
+          const finalCampaignData = {
+            ...formData,
+            title: campaignDetails.campaignTitle,
+            company_name: campaignDetails.companyName,
+            monthly_payment_amount: campaignDetails.totalCost,
+            target_cities: campaignDetails.city ? [campaignDetails.city] : [],
+            target_locations: campaignDetails.country ? [campaignDetails.country] : [],
+            target_event_types: [campaignDetails.targetAudience],
+            start_date: campaignDetails.startDate || null,
+            end_date: campaignDetails.endDate || null,
+            invoice_email: campaignDetails.invoiceEmail || null,
+            campaign_ref: campaignDetails.campaignRef || null,
+            invoice_ref: campaignDetails.invoiceRef || null,
+            target_country: campaignDetails.country || null,
+            target_city: campaignDetails.city || null,
+            target_distance_km: campaignDetails.distance || 0,
+            status: 'pending',
+            payment_status: 'pending',
+          };
+
+          const { data, error } = await supabase
+            .from('campaigns')
+            .insert([finalCampaignData])
+            .select()
+            .single();
+          
+          if (error) throw error;
+          campaignId = data.id;
+        }
+
+        // Send invoice via API
+        const response = await fetch('https://portal.ontimely.co.uk/api/send-campaign-invoice', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            campaign_id: campaignId,
+            email: campaignDetails.invoiceEmail,
+            amount: campaignDetails.totalCost,
+            company_name: campaignDetails.companyName,
+            campaign_title: campaignDetails.campaignTitle,
+            invoice_ref: campaignDetails.invoiceRef,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to send invoice');
+        }
+
+        const invoiceData = await response.json();
+        
+        // Update campaign with invoice info
+        await supabase
+          .from('campaigns')
+          .update({
+            payment_status: 'invoice_sent',
+            invoice_id: invoiceData.invoice_id,
+            invoice_url: invoiceData.payment_url,
+          })
+          .eq('id', campaignId);
+
+        alert('Payment link sent successfully! The customer will receive an invoice email.');
+        setShowCampaignForm(false);
+        setEditingCampaign(null);
+        setCurrentStep(1);
+        loadDashboardData();
+      } catch (error: any) {
+        console.error('Error sending payment link:', error);
+        alert(`Error sending payment link: ${error.message}`);
+      }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      // This is now only used for editing existing campaigns
+      await handleSave();
     };
 
 
@@ -827,27 +918,41 @@ const SmartAdvertising: React.FC = () => {
             
             <div className="flex space-x-2">
               {currentStep === 2 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    // Handle payment processing
-                    alert('Redirecting to payment processor...');
-                    setCurrentStep(3);
-                  }}
-                  className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                >
-                  Pay ${campaignDetails.totalCost}
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                  >
+                    Save as Pending
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSendPaymentLink}
+                    className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                  >
+                    Send Payment Link
+                  </button>
+                </>
               )}
               
               {currentStep === 3 ? (
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                >
-                  {editingCampaign ? 'Update' : 'Create'} Campaign
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    className="px-6 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                  >
+                    Save as Pending
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSendPaymentLink}
+                    className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                  >
+                    Send Payment Link
+                  </button>
+                </>
               ) : (
                 <button
                   type="button"
@@ -1007,6 +1112,7 @@ const SmartAdvertising: React.FC = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Campaign</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Tier</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Status</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Performance</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Locations</th>
@@ -1028,7 +1134,23 @@ const SmartAdvertising: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          ${campaign.monthly_payment_amount?.toLocaleString() || 0}/mo
+                          ${campaign.monthly_payment_amount?.toLocaleString() || 0}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {campaign.payment_status ? (
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              campaign.payment_status === 'paid' ? 'bg-green-100 text-green-800' :
+                              campaign.payment_status === 'invoice_sent' ? 'bg-yellow-100 text-yellow-800' :
+                              campaign.payment_status === 'pending' ? 'bg-gray-100 text-gray-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {campaign.payment_status}
+                            </span>
+                          ) : (
+                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                              N/A
+                            </span>
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">{campaign.impressions_count.toLocaleString()} impressions</div>
@@ -1043,36 +1165,100 @@ const SmartAdvertising: React.FC = () => {
                           {campaign.target_cities?.length ? `${campaign.target_cities.length} cities` : 'Global'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          <button
-                            onClick={() => {
-                              setEditingCampaign(campaign);
-                              setShowCampaignForm(true);
-                            }}
-                            className="text-indigo-600 hover:text-indigo-900 mr-2"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={async () => {
-                              if (confirm('Are you sure you want to delete this campaign?')) {
-                                try {
-                                  const { error } = await supabase
-                                    .from('campaigns')
-                                    .delete()
-                                    .eq('id', campaign.id);
-                                  
-                                  if (error) throw error;
-                                  loadDashboardData();
-                                } catch (error) {
-                                  console.error('Error deleting campaign:', error);
-                                  alert('Error deleting campaign');
+                          <div className="flex flex-col gap-1">
+                            <button
+                              onClick={() => {
+                                setEditingCampaign(campaign);
+                                setShowCampaignForm(true);
+                              }}
+                              className="text-indigo-600 hover:text-indigo-900"
+                            >
+                              Edit
+                            </button>
+                            {campaign.payment_status === 'paid' && campaign.status === 'pending' && (
+                              <button
+                                onClick={async () => {
+                                  if (confirm('Activate this campaign? It will go live immediately.')) {
+                                    try {
+                                      const { error } = await supabase
+                                        .from('campaigns')
+                                        .update({ status: 'active' })
+                                        .eq('id', campaign.id);
+                                      
+                                      if (error) throw error;
+                                      loadDashboardData();
+                                      alert('Campaign activated successfully!');
+                                    } catch (error) {
+                                      console.error('Error activating campaign:', error);
+                                      alert('Error activating campaign');
+                                    }
+                                  }
+                                }}
+                                className="text-green-600 hover:text-green-900 font-semibold"
+                              >
+                                Activate
+                              </button>
+                            )}
+                            {campaign.payment_status === 'invoice_sent' && (
+                              <button
+                                onClick={async () => {
+                                  // Check invoice status and manually activate if paid
+                                  try {
+                                    if (campaign.invoice_id) {
+                                      const { data: invoice } = await supabase
+                                        .from('invoices')
+                                        .select('status')
+                                        .eq('id', campaign.invoice_id)
+                                        .single();
+                                      
+                                      if (invoice?.status === 'paid') {
+                                        await supabase
+                                          .from('campaigns')
+                                          .update({ 
+                                            status: 'active',
+                                            payment_status: 'paid'
+                                          })
+                                          .eq('id', campaign.id);
+                                        alert('Campaign activated! Invoice was paid.');
+                                      } else {
+                                        alert('Invoice not yet paid. Status: ' + (invoice?.status || 'unknown'));
+                                      }
+                                    } else {
+                                      alert('No invoice ID found for this campaign.');
+                                    }
+                                    loadDashboardData();
+                                  } catch (error) {
+                                    console.error('Error checking invoice:', error);
+                                    alert('Error checking invoice status');
+                                  }
+                                }}
+                                className="text-blue-600 hover:text-blue-900"
+                              >
+                                Check Payment
+                              </button>
+                            )}
+                            <button
+                              onClick={async () => {
+                                if (confirm('Are you sure you want to delete this campaign?')) {
+                                  try {
+                                    const { error } = await supabase
+                                      .from('campaigns')
+                                      .delete()
+                                      .eq('id', campaign.id);
+                                    
+                                    if (error) throw error;
+                                    loadDashboardData();
+                                  } catch (error) {
+                                    console.error('Error deleting campaign:', error);
+                                    alert('Error deleting campaign');
+                                  }
                                 }
-                              }
-                            }}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            Delete
-                          </button>
+                              }}
+                              className="text-red-600 hover:text-red-900"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
