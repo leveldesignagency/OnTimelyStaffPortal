@@ -493,13 +493,6 @@ const SmartAdvertising: React.FC = () => {
       }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      // This is now only used for editing existing campaigns
-      await handleSave();
-    };
-
-
     const renderStep1 = () => (
       <div className="space-y-6">
         <div className="text-center mb-6">
