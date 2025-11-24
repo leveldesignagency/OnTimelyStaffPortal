@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { campaign_id, email, amount, company_name, campaign_title, invoice_ref } = req.body;
+    const { campaign_id, email, amount, company_name, campaign_title, invoice_ref, discount_code, discount_amount, original_amount } = req.body;
 
     if (!campaign_id || !email || !amount) {
       return res.status(400).json({ error: 'Missing required fields: campaign_id, email, amount' });
@@ -72,16 +72,16 @@ module.exports = async (req, res) => {
       invoice_date: new Date().toISOString().split('T')[0],
       due_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 14 days from now
       currency: 'USD',
-      discount_amount: 0, // Explicitly set discount to 0
+      discount_amount: discount_amount || 0,
       line_items: [
         {
-          description: `Smart Advertising Campaign: ${campaign_title}`,
+          description: `Smart Advertising Campaign: ${campaign_title}${discount_code ? ` (Discount: ${discount_code})` : ''}`,
           quantity: 1,
-          unit_price: amount,
-          total: amount
+          unit_price: original_amount || amount,
+          total: original_amount || amount
         }
       ],
-      subtotal: amount,
+      subtotal: original_amount || amount,
       tax_amount: 0,
       total_amount: amount,
       notes: `Campaign Reference: ${invoice_ref || 'N/A'}\nCampaign ID: ${campaign_id}`

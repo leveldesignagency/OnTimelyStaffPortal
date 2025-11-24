@@ -220,7 +220,10 @@ const SmartAdvertising: React.FC = () => {
       budget: 0,
       estimatedReach: 0,
       costPerImpression: 0,
-      totalCost: 0
+      totalCost: 0,
+      discountCode: '',
+      discountAmount: 0,
+      finalCost: 0
     });
 
 
@@ -275,6 +278,59 @@ const SmartAdvertising: React.FC = () => {
       }
     };
 
+    // Validate and apply discount code
+    const validateDiscountCode = async (code: string) => {
+      if (!code || code.trim() === '') {
+        setCampaignDetails(prev => ({
+          ...prev,
+          discountCode: '',
+          discountAmount: 0,
+          finalCost: prev.totalCost
+        }));
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase.rpc('validate_discount_code', {
+          p_code: code.toUpperCase().trim(),
+          p_amount: campaignDetails.totalCost
+        });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const result = data[0];
+          if (result.valid) {
+            setCampaignDetails(prev => ({
+              ...prev,
+              discountCode: code.toUpperCase().trim(),
+              discountAmount: parseFloat(result.discount_amount),
+              finalCost: Math.max(0, prev.totalCost - parseFloat(result.discount_amount))
+            }));
+            alert(result.message || 'Discount code applied!');
+          } else {
+            setCampaignDetails(prev => ({
+              ...prev,
+              discountCode: '',
+              discountAmount: 0,
+              finalCost: prev.totalCost
+            }));
+            alert(result.message || 'Invalid discount code');
+          }
+        }
+      } catch (err: any) {
+        console.error('Error validating discount code:', err);
+        // If RPC doesn't exist, just clear the discount
+        setCampaignDetails(prev => ({
+          ...prev,
+          discountCode: '',
+          discountAmount: 0,
+          finalCost: prev.totalCost
+        }));
+        alert('Discount code validation unavailable. Please contact support.');
+      }
+    };
+
     // Pricing algorithm - increased base cost per impression
     const calculatePricing = () => {
       const baseCostPerImpression = 0.15; // $0.15 per impression (increased from $0.02)
@@ -287,12 +343,16 @@ const SmartAdvertising: React.FC = () => {
       // Calculate estimated reach based on event data
       const estimatedReach = calculateEstimatedReach();
       const totalCost = costPerImpression * estimatedReach;
+      
+      // Apply discount if exists
+      const finalCost = Math.max(0, totalCost - campaignDetails.discountAmount);
 
       setCampaignDetails(prev => ({
         ...prev,
         costPerImpression,
         totalCost: Math.round(totalCost * 100) / 100,
-        estimatedReach
+        estimatedReach,
+        finalCost: Math.round(finalCost * 100) / 100
       }));
     };
 
@@ -310,7 +370,7 @@ const SmartAdvertising: React.FC = () => {
 
     useEffect(() => {
       calculatePricing();
-    }, [campaignDetails.country, campaignDetails.distance, campaignDetails.dealDuration, campaignDetails.estimatedReach]);
+    }, [campaignDetails.country, campaignDetails.distance, campaignDetails.dealDuration, campaignDetails.estimatedReach, campaignDetails.discountAmount]);
 
     // Maintain endDate from startDate + duration
     useEffect(() => {
@@ -467,7 +527,10 @@ const SmartAdvertising: React.FC = () => {
           body: JSON.stringify({
             campaign_id: campaignId,
             email: campaignDetails.invoiceEmail,
-            amount: campaignDetails.totalCost,
+            amount: campaignDetails.discountAmount > 0 ? campaignDetails.finalCost : campaignDetails.totalCost,
+            discount_code: campaignDetails.discountCode || null,
+            discount_amount: campaignDetails.discountAmount || 0,
+            original_amount: campaignDetails.totalCost,
             company_name: campaignDetails.companyName,
             campaign_title: campaignDetails.campaignTitle,
             invoice_ref: campaignDetails.invoiceRef,
