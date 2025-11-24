@@ -192,52 +192,109 @@ const SmartAdvertising: React.FC = () => {
   };
 
   const CampaignForm = () => {
-    const [currentStep, setCurrentStep] = useState(1);
-    const [formData, setFormData] = useState<Partial<Campaign>>({
-      title: '',
-      company_name: '',
-      description: '',
-      full_description: '',
-      cta_text: 'Get Info',
-      cta_url: '',
-      image_url: '',
-      company_logo_url: '',
-      discount_code: '',
-      discount_link: '',
-      qr_code: '',
-      payment_tier: 'basic',
-      monthly_payment_amount: 0,
-      status: 'draft',
-      target_cities: [],
-      target_event_types: [],
-      target_locations: []
+    // Load from localStorage or use defaults
+    const loadFromStorage = (key: string, defaultValue: any) => {
+      try {
+        const stored = localStorage.getItem(`campaign_form_${key}`);
+        return stored ? JSON.parse(stored) : defaultValue;
+      } catch {
+        return defaultValue;
+      }
+    };
+
+    const saveToStorage = (key: string, value: any) => {
+      try {
+        localStorage.setItem(`campaign_form_${key}`, JSON.stringify(value));
+      } catch (e) {
+        console.warn('Failed to save to localStorage:', e);
+      }
+    };
+
+    const clearFormStorage = () => {
+      try {
+        localStorage.removeItem('campaign_form_formData');
+        localStorage.removeItem('campaign_form_campaignDetails');
+        localStorage.removeItem('campaign_form_currentStep');
+      } catch (e) {
+        console.warn('Failed to clear localStorage:', e);
+      }
+    };
+
+    const [currentStep, setCurrentStep] = useState(() => {
+      const stored = localStorage.getItem('campaign_form_currentStep');
+      return stored ? parseInt(stored, 10) : 1;
+    });
+    
+    const [formData, setFormData] = useState<Partial<Campaign>>(() => {
+      if (editingCampaign) {
+        return editingCampaign;
+      }
+      return loadFromStorage('formData', {
+        title: '',
+        company_name: '',
+        description: '',
+        full_description: '',
+        cta_text: 'Get Info',
+        cta_url: '',
+        image_url: '',
+        company_logo_url: '',
+        discount_code: '',
+        discount_link: '',
+        qr_code: '',
+        payment_tier: 'basic',
+        monthly_payment_amount: 0,
+        status: 'draft',
+        target_cities: [],
+        target_event_types: [],
+        target_locations: []
+      });
     });
 
     // Campaign creation specific fields
-    const [campaignDetails, setCampaignDetails] = useState({
-      campaignTitle: '',
-      companyName: '',
-      invoiceEmail: '',
-      campaignRef: '',
-      invoiceRef: '',
-      location: '',
-      country: '',
-      city: '',
-      distance: 0,
-      dealDescription: '',
-      dealDuration: 30, // days
-      startDate: '',
-      endDate: '',
-      targetAudience: 'all',
-      budget: 0,
-      estimatedReach: 0,
-      costPerImpression: 0,
-      totalCost: 0,
-      discountCode: '',
-      discountAmount: 0,
-      finalCost: 0
+    const [campaignDetails, setCampaignDetails] = useState(() => {
+      return loadFromStorage('campaignDetails', {
+        campaignTitle: '',
+        companyName: '',
+        invoiceEmail: '',
+        campaignRef: '',
+        invoiceRef: '',
+        location: '',
+        country: '',
+        city: '',
+        distance: 0,
+        dealDescription: '',
+        dealDuration: 30, // days
+        startDate: '',
+        endDate: '',
+        targetAudience: 'all',
+        budget: 0,
+        estimatedReach: 0,
+        costPerImpression: 0,
+        totalCost: 0,
+        discountCode: '',
+        discountAmount: 0,
+        finalCost: 0
+      });
     });
 
+    // Save to localStorage whenever form data changes
+    useEffect(() => {
+      if (!editingCampaign) {
+        saveToStorage('formData', formData);
+      }
+    }, [formData, editingCampaign]);
+
+    useEffect(() => {
+      if (!editingCampaign) {
+        saveToStorage('campaignDetails', campaignDetails);
+      }
+    }, [campaignDetails, editingCampaign]);
+
+    useEffect(() => {
+      if (!editingCampaign) {
+        saveToStorage('currentStep', currentStep);
+      }
+    }, [currentStep, editingCampaign]);
 
     useEffect(() => {
       if (editingCampaign) {
@@ -489,6 +546,8 @@ const SmartAdvertising: React.FC = () => {
         alert(saveAsDraft 
           ? 'Campaign saved as draft. You can continue editing later.' 
           : 'Campaign saved as pending. You can send the payment link when ready.');
+        // Only clear form on successful save
+        clearFormStorage();
         setShowCampaignForm(false);
         setEditingCampaign(null);
         setCurrentStep(1);
@@ -496,6 +555,7 @@ const SmartAdvertising: React.FC = () => {
       } catch (error: any) {
         console.error('Error saving campaign:', error);
         alert(`Error saving campaign: ${error.message}`);
+        // DON'T clear form on error - keep the data!
       }
     };
 
@@ -587,6 +647,8 @@ const SmartAdvertising: React.FC = () => {
 
         setShowPaymentConfirmation(false);
         alert('Payment link sent successfully! The customer will receive an invoice email.');
+        // Only clear form on successful send
+        clearFormStorage();
         setShowCampaignForm(false);
         setEditingCampaign(null);
         setCurrentStep(1);
@@ -594,6 +656,7 @@ const SmartAdvertising: React.FC = () => {
       } catch (error: any) {
         console.error('Error sending payment link:', error);
         alert(`Error sending payment link: ${error.message}`);
+        // DON'T clear form on error - keep the data!
       }
     };
 
@@ -1043,7 +1106,22 @@ const SmartAdvertising: React.FC = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
+          {/* Close Button */}
+          <button
+            onClick={() => {
+              if (confirm('Are you sure you want to close? Your progress will be saved but the form will be cleared.')) {
+                clearFormStorage();
+                setShowCampaignForm(false);
+                setEditingCampaign(null);
+                setCurrentStep(1);
+              }
+            }}
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          
           {/* Progress Steps */}
           <div className="flex items-center justify-center mb-8">
             <div className="flex items-center space-x-4">
@@ -1131,8 +1209,13 @@ const SmartAdvertising: React.FC = () => {
                 if (currentStep > 1) {
                   setCurrentStep(currentStep - 1);
                 } else {
-                  setShowCampaignForm(false);
-                  setEditingCampaign(null);
+                  // Only clear form when explicitly closing
+                  if (confirm('Are you sure you want to close? Your progress will be saved but the form will be cleared.')) {
+                    clearFormStorage();
+                    setShowCampaignForm(false);
+                    setEditingCampaign(null);
+                    setCurrentStep(1);
+                  }
                 }
               }}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
