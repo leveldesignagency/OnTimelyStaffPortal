@@ -793,9 +793,21 @@ const SmartAdvertising: React.FC = () => {
               <span className="font-medium">{campaignDetails.estimatedReach.toLocaleString()} people</span>
             </div>
             <div className="border-t pt-3">
-              <div className="flex justify-between text-lg font-bold">
-                <span>Total Cost:</span>
-                <span className="text-green-600">${campaignDetails.totalCost}</span>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Subtotal:</span>
+                  <span className="font-medium">${campaignDetails.totalCost.toFixed(2)}</span>
+                </div>
+                {campaignDetails.discountAmount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Discount ({campaignDetails.discountCode}):</span>
+                    <span className="font-medium">-${campaignDetails.discountAmount.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-lg font-bold border-t pt-2">
+                  <span>Total Cost:</span>
+                  <span className="text-green-600">${(campaignDetails.discountAmount > 0 ? campaignDetails.finalCost : campaignDetails.totalCost).toFixed(2)}</span>
+                </div>
               </div>
             </div>
           </div>
