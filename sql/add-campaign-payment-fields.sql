@@ -23,6 +23,10 @@ ADD COLUMN IF NOT EXISTS discount_amount DECIMAL(10, 2) DEFAULT 0;
 ALTER TABLE campaigns 
 ADD COLUMN IF NOT EXISTS original_amount DECIMAL(10, 2);
 
+-- Add discount_link field (used in campaign form)
+ALTER TABLE campaigns 
+ADD COLUMN IF NOT EXISTS discount_link TEXT;
+
 -- Add index for payment status queries
 CREATE INDEX IF NOT EXISTS idx_campaigns_payment_status ON campaigns(payment_status);
 
