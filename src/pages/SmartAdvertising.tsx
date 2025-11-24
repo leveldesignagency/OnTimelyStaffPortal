@@ -724,6 +724,38 @@ const SmartAdvertising: React.FC = () => {
           />
         </div>
 
+        {/* Discount Code Section */}
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Discount Code (Optional)</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={campaignDetails.discountCode}
+              onChange={(e) => setCampaignDetails(prev => ({ ...prev, discountCode: e.target.value }))}
+              onBlur={(e) => {
+                if (e.target.value.trim()) {
+                  validateDiscountCode(e.target.value);
+                }
+              }}
+              placeholder="Enter discount code"
+              className="flex-1 border border-gray-300 rounded-md px-3 py-2 uppercase"
+              style={{ textTransform: 'uppercase' }}
+            />
+            <button
+              type="button"
+              onClick={() => validateDiscountCode(campaignDetails.discountCode)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Apply
+            </button>
+          </div>
+          {campaignDetails.discountAmount > 0 && (
+            <div className="mt-2 text-sm text-green-700 font-medium">
+              ✓ Discount applied: -${campaignDetails.discountAmount.toFixed(2)}
+            </div>
+          )}
+        </div>
+
         {/* Pricing Display */}
         <div className="bg-gray-50 p-4 rounded-lg">
           <div className="flex justify-between items-center mb-3">
@@ -754,9 +786,27 @@ const SmartAdvertising: React.FC = () => {
               <span className="ml-2 font-medium">{campaignDetails.dealDuration} days</span>
             </div>
             <div>
-              <span className="text-gray-600">Total Cost:</span>
-              <span className="ml-2 font-bold text-green-600 text-lg">${campaignDetails.totalCost}</span>
+              <span className="text-gray-600">Subtotal:</span>
+              <span className="ml-2 font-medium">${campaignDetails.totalCost.toFixed(2)}</span>
             </div>
+            {campaignDetails.discountAmount > 0 && (
+              <>
+                <div>
+                  <span className="text-gray-600">Discount ({campaignDetails.discountCode}):</span>
+                  <span className="ml-2 font-medium text-green-600">-${campaignDetails.discountAmount.toFixed(2)}</span>
+                </div>
+                <div>
+                  <span className="text-gray-600">Total Cost:</span>
+                  <span className="ml-2 font-bold text-green-600 text-lg">${campaignDetails.finalCost.toFixed(2)}</span>
+                </div>
+              </>
+            )}
+            {campaignDetails.discountAmount === 0 && (
+              <div>
+                <span className="text-gray-600">Total Cost:</span>
+                <span className="ml-2 font-bold text-green-600 text-lg">${campaignDetails.totalCost.toFixed(2)}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>
