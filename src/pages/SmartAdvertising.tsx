@@ -191,6 +191,31 @@ const SmartAdvertising: React.FC = () => {
     }
   };
 
+  // Campaign details type
+  type CampaignDetailsType = {
+    campaignTitle: string;
+    companyName: string;
+    invoiceEmail: string;
+    campaignRef: string;
+    invoiceRef: string;
+    location: string;
+    country: string;
+    city: string;
+    distance: number;
+    dealDescription: string;
+    dealDuration: number;
+    startDate: string;
+    endDate: string;
+    targetAudience: string;
+    budget: number;
+    estimatedReach: number;
+    costPerImpression: number;
+    totalCost: number;
+    discountCode: string;
+    discountAmount: number;
+    finalCost: number;
+  };
+
   const CampaignForm = () => {
     // Load from localStorage or use defaults
     const loadFromStorage = (key: string, defaultValue: any) => {
@@ -251,7 +276,7 @@ const SmartAdvertising: React.FC = () => {
     });
 
     // Campaign creation specific fields
-    const [campaignDetails, setCampaignDetails] = useState(() => {
+    const [campaignDetails, setCampaignDetails] = useState<CampaignDetailsType>(() => {
       return loadFromStorage('campaignDetails', {
         campaignTitle: '',
         companyName: '',
@@ -321,7 +346,7 @@ const SmartAdvertising: React.FC = () => {
         if (!campaignDetails.startDate) {
           // Use fallback if no start date
           const fallback = calculateEstimatedReach();
-          setCampaignDetails(prev => ({ ...prev, estimatedReach: fallback }));
+          setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, estimatedReach: fallback }));
           return;
         }
         const end = computeEndDate(campaignDetails.startDate, campaignDetails.dealDuration || 0);
@@ -335,22 +360,22 @@ const SmartAdvertising: React.FC = () => {
         if (error) {
           // Silently fallback - don't spam console with errors
           const fallback = calculateEstimatedReach();
-          setCampaignDetails(prev => ({ ...prev, estimatedReach: fallback }));
+          setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, estimatedReach: fallback }));
           return;
         }
         const reach = typeof data === 'number' ? data : (data?.estimated_reach ?? 0);
-        setCampaignDetails(prev => ({ ...prev, estimatedReach: Math.max(0, reach) }));
+        setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, estimatedReach: Math.max(0, reach) }));
       } catch (err) {
         // Silently fallback - don't spam console with errors
         const fallback = calculateEstimatedReach();
-        setCampaignDetails(prev => ({ ...prev, estimatedReach: fallback }));
+        setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, estimatedReach: fallback }));
       }
     };
 
     // Validate and apply discount code
     const validateDiscountCode = async (code: string) => {
       if (!code || code.trim() === '') {
-        setCampaignDetails(prev => ({
+        setCampaignDetails((prev: CampaignDetailsType) => ({
           ...prev,
           discountCode: '',
           discountAmount: 0,
@@ -370,7 +395,7 @@ const SmartAdvertising: React.FC = () => {
         if (data && data.length > 0) {
           const result = data[0];
           if (result.valid) {
-            setCampaignDetails(prev => ({
+            setCampaignDetails((prev: CampaignDetailsType) => ({
               ...prev,
               discountCode: code.toUpperCase().trim(),
               discountAmount: parseFloat(result.discount_amount),
@@ -378,7 +403,7 @@ const SmartAdvertising: React.FC = () => {
             }));
             alert(result.message || 'Discount code applied!');
           } else {
-            setCampaignDetails(prev => ({
+            setCampaignDetails((prev: CampaignDetailsType) => ({
               ...prev,
               discountCode: '',
               discountAmount: 0,
@@ -390,7 +415,7 @@ const SmartAdvertising: React.FC = () => {
       } catch (err: any) {
         console.error('Error validating discount code:', err);
         // If RPC doesn't exist, just clear the discount
-        setCampaignDetails(prev => ({
+        setCampaignDetails((prev: CampaignDetailsType) => ({
           ...prev,
           discountCode: '',
           discountAmount: 0,
@@ -416,7 +441,7 @@ const SmartAdvertising: React.FC = () => {
       // Apply discount if exists
       const finalCost = Math.max(0, totalCost - campaignDetails.discountAmount);
 
-      setCampaignDetails(prev => ({
+            setCampaignDetails((prev: CampaignDetailsType) => ({
         ...prev,
         costPerImpression,
         totalCost: Math.round(totalCost * 100) / 100,
@@ -445,7 +470,7 @@ const SmartAdvertising: React.FC = () => {
     useEffect(() => {
       if (campaignDetails.startDate) {
         const end = computeEndDate(campaignDetails.startDate, campaignDetails.dealDuration || 0);
-        setCampaignDetails(prev => ({ ...prev, endDate: end }));
+        setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, endDate: end }));
       }
     }, [campaignDetails.startDate, campaignDetails.dealDuration]);
 
@@ -673,7 +698,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="text"
               value={campaignDetails.campaignTitle}
-              onChange={(e) => setCampaignDetails(prev => ({ ...prev, campaignTitle: e.target.value }))}
+              onChange={(e) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, campaignTitle: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               required
             />
@@ -683,7 +708,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="text"
               value={campaignDetails.companyName}
-              onChange={(e) => setCampaignDetails(prev => ({ ...prev, companyName: e.target.value }))}
+              onChange={(e) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, companyName: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               required
             />
@@ -696,7 +721,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="email"
               value={campaignDetails.invoiceEmail}
-              onChange={(e) => setCampaignDetails(prev => ({ ...prev, invoiceEmail: e.target.value }))}
+              onChange={(e) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, invoiceEmail: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               required
             />
@@ -706,7 +731,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="text"
               value={campaignDetails.campaignRef}
-              onChange={(e) => setCampaignDetails(prev => ({ ...prev, campaignRef: e.target.value }))}
+              onChange={(e) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, campaignRef: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
@@ -718,7 +743,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="text"
               value={campaignDetails.invoiceRef}
-              onChange={(e) => setCampaignDetails(prev => ({ ...prev, invoiceRef: e.target.value }))}
+              onChange={(e) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, invoiceRef: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
@@ -727,7 +752,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="number"
               value={campaignDetails.dealDuration}
-              onChange={(e) => setCampaignDetails(prev => ({ ...prev, dealDuration: parseInt(e.target.value) || 30 }))}
+              onChange={(e) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, dealDuration: parseInt(e.target.value) || 30 }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               min="1"
             />
@@ -737,7 +762,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="date"
               value={campaignDetails.startDate}
-              onChange={(e) => setCampaignDetails(prev => ({ ...prev, startDate: e.target.value }))}
+              onChange={(e) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, startDate: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               required
             />
@@ -751,7 +776,7 @@ const SmartAdvertising: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700">Deal Description</label>
           <textarea
             value={campaignDetails.dealDescription}
-            onChange={(e) => setCampaignDetails(prev => ({ ...prev, dealDescription: e.target.value }))}
+            onChange={(e) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, dealDescription: e.target.value }))}
             className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
             rows={3}
             placeholder="Describe the deal, offer, or promotion..."
@@ -763,7 +788,7 @@ const SmartAdvertising: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700">Country *</label>
             <CustomSelect
               value={campaignDetails.country}
-              onChange={(val) => setCampaignDetails(prev => ({ ...prev, country: val }))}
+              onChange={(val) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, country: val }))}
               options={[
                 { label: 'Select Country', value: '' },
                 { label: 'Global', value: 'global' },
@@ -785,7 +810,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="text"
               value={campaignDetails.city}
-              onChange={(e) => setCampaignDetails(prev => ({ ...prev, city: e.target.value }))}
+              onChange={(e) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, city: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               placeholder="e.g., London, New York"
             />
@@ -795,7 +820,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="number"
               value={campaignDetails.distance}
-              onChange={(e) => setCampaignDetails(prev => ({ ...prev, distance: parseInt(e.target.value) || 0 }))}
+              onChange={(e) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, distance: parseInt(e.target.value) || 0 }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               min="0"
               placeholder="0 for city-wide"
@@ -826,7 +851,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="text"
               value={campaignDetails.discountCode}
-              onChange={(e) => setCampaignDetails(prev => ({ ...prev, discountCode: e.target.value }))}
+              onChange={(e) => setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, discountCode: e.target.value }))}
               onBlur={(e) => {
                 if (e.target.value.trim()) {
                   validateDiscountCode(e.target.value);
@@ -858,7 +883,7 @@ const SmartAdvertising: React.FC = () => {
             <button
               type="button"
               onClick={() => {
-                setCampaignDetails(prev => ({ ...prev, totalCost: 0 }));
+                setCampaignDetails((prev: CampaignDetailsType) => ({ ...prev, totalCost: 0 }));
                 alert('Amount set to $0 for testing');
               }}
               className="px-3 py-1 text-xs bg-yellow-500 text-white rounded hover:bg-yellow-600"
@@ -988,7 +1013,7 @@ const SmartAdvertising: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700">Short Description *</label>
             <textarea
               value={formData.description || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              onChange={(e) => setFormData((prev: Partial<Campaign>) => ({ ...prev, description: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               rows={2}
               maxLength={60}
@@ -1000,7 +1025,7 @@ const SmartAdvertising: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700">Full Description</label>
             <textarea
               value={formData.full_description || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, full_description: e.target.value }))}
+              onChange={(e) => setFormData((prev: Partial<Campaign>) => ({ ...prev, full_description: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
               rows={2}
               placeholder="Detailed description for ad detail page"
@@ -1014,7 +1039,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="text"
               value={formData.cta_text || 'Get Info'}
-              onChange={(e) => setFormData(prev => ({ ...prev, cta_text: e.target.value }))}
+              onChange={(e) => setFormData((prev: Partial<Campaign>) => ({ ...prev, cta_text: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
@@ -1023,7 +1048,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="url"
               value={formData.cta_url || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, cta_url: e.target.value }))}
+              onChange={(e) => setFormData((prev: Partial<Campaign>) => ({ ...prev, cta_url: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
@@ -1072,7 +1097,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="text"
               value={formData.discount_code || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, discount_code: e.target.value }))}
+              onChange={(e) => setFormData((prev: Partial<Campaign>) => ({ ...prev, discount_code: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
@@ -1081,7 +1106,7 @@ const SmartAdvertising: React.FC = () => {
             <input
               type="url"
               value={formData.discount_link || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, discount_link: e.target.value }))}
+              onChange={(e) => setFormData((prev: Partial<Campaign>) => ({ ...prev, discount_link: e.target.value }))}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
             />
           </div>
@@ -1091,7 +1116,7 @@ const SmartAdvertising: React.FC = () => {
           <label className="block text-sm font-medium text-gray-700">Status</label>
           <CustomSelect
             value={formData.status || 'draft'}
-            onChange={(val) => setFormData(prev => ({ ...prev, status: val as 'active' | 'paused' | 'draft' | 'ended' }))}
+            onChange={(val) => setFormData((prev: Partial<Campaign>) => ({ ...prev, status: val as 'active' | 'paused' | 'draft' | 'ended' }))}
             options={[
               { label: 'Draft', value: 'draft' },
               { label: 'Active', value: 'active' },
@@ -1266,7 +1291,20 @@ const SmartAdvertising: React.FC = () => {
 
   // Discount Code Management Component
   const DiscountCodeManager = () => {
-    const [formData, setFormData] = useState({
+    type DiscountFormData = {
+      code: string;
+      description: string;
+      discount_type: 'percentage' | 'fixed';
+      discount_value: number;
+      max_discount_amount: number | null;
+      min_purchase_amount: number;
+      max_uses: number | null;
+      valid_from: string;
+      valid_until: string | null;
+      is_active: boolean;
+    };
+    
+    const [formData, setFormData] = useState<DiscountFormData>({
       code: '',
       description: '',
       discount_type: 'percentage' as 'percentage' | 'fixed',
@@ -1402,7 +1440,7 @@ const SmartAdvertising: React.FC = () => {
               <input
                 type="text"
                 value={formData.code}
-                onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
+                onChange={(e) => setFormData((prev: DiscountFormData) => ({ ...prev, code: e.target.value.toUpperCase() }))}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                 placeholder="SAVE20"
                 style={{ textTransform: 'uppercase' }}
@@ -1414,7 +1452,7 @@ const SmartAdvertising: React.FC = () => {
               <input
                 type="text"
                 value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) => setFormData((prev: DiscountFormData) => ({ ...prev, description: e.target.value }))}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                 placeholder="20% off for new customers"
               />
@@ -1423,7 +1461,7 @@ const SmartAdvertising: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">Discount Type *</label>
               <select
                 value={formData.discount_type}
-                onChange={(e) => setFormData(prev => ({ ...prev, discount_type: e.target.value as 'percentage' | 'fixed' }))}
+                onChange={(e) => setFormData((prev: DiscountFormData) => ({ ...prev, discount_type: e.target.value as 'percentage' | 'fixed' }))}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
               >
                 <option value="percentage">Percentage (%)</option>
@@ -1437,7 +1475,7 @@ const SmartAdvertising: React.FC = () => {
               <input
                 type="number"
                 value={formData.discount_value}
-                onChange={(e) => setFormData(prev => ({ ...prev, discount_value: parseFloat(e.target.value) || 0 }))}
+                onChange={(e) => setFormData((prev: DiscountFormData) => ({ ...prev, discount_value: parseFloat(e.target.value) || 0 }))}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                 min="0"
                 max={formData.discount_type === 'percentage' ? 100 : undefined}
@@ -1451,7 +1489,7 @@ const SmartAdvertising: React.FC = () => {
                 <input
                   type="number"
                   value={formData.max_discount_amount || ''}
-                  onChange={(e) => setFormData(prev => ({ ...prev, max_discount_amount: e.target.value ? parseFloat(e.target.value) : null }))}
+                  onChange={(e) => setFormData((prev: DiscountFormData) => ({ ...prev, max_discount_amount: e.target.value ? parseFloat(e.target.value) : null }))}
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
                   min="0"
                   step="0.01"
@@ -1464,7 +1502,7 @@ const SmartAdvertising: React.FC = () => {
               <input
                 type="number"
                 value={formData.min_purchase_amount}
-                onChange={(e) => setFormData(prev => ({ ...prev, min_purchase_amount: parseFloat(e.target.value) || 0 }))}
+                onChange={(e) => setFormData((prev: DiscountFormData) => ({ ...prev, min_purchase_amount: parseFloat(e.target.value) || 0 }))}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                 min="0"
                 step="0.01"
@@ -1475,7 +1513,7 @@ const SmartAdvertising: React.FC = () => {
               <input
                 type="number"
                 value={formData.max_uses || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, max_uses: e.target.value ? parseInt(e.target.value) : null }))}
+                onChange={(e) => setFormData((prev: DiscountFormData) => ({ ...prev, max_uses: e.target.value ? parseInt(e.target.value) : null }))}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                 min="1"
                 placeholder="Unlimited if empty"
@@ -1486,7 +1524,7 @@ const SmartAdvertising: React.FC = () => {
               <input
                 type="date"
                 value={formData.valid_from}
-                onChange={(e) => setFormData(prev => ({ ...prev, valid_from: e.target.value }))}
+                onChange={(e) => setFormData((prev: DiscountFormData) => ({ ...prev, valid_from: e.target.value }))}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                 required
               />
@@ -1496,7 +1534,7 @@ const SmartAdvertising: React.FC = () => {
               <input
                 type="date"
                 value={formData.valid_until || ''}
-                onChange={(e) => setFormData(prev => ({ ...prev, valid_until: e.target.value || null }))}
+                onChange={(e) => setFormData((prev: DiscountFormData) => ({ ...prev, valid_until: e.target.value || null }))}
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
               />
             </div>
@@ -1504,7 +1542,7 @@ const SmartAdvertising: React.FC = () => {
               <input
                 type="checkbox"
                 checked={formData.is_active}
-                onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
+                onChange={(e) => setFormData((prev: DiscountFormData) => ({ ...prev, is_active: e.target.checked }))}
                 className="mr-2"
               />
               <label className="text-sm font-medium text-gray-700">Active</label>
