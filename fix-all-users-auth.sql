@@ -62,6 +62,7 @@ DO $$
 DECLARE
     v_user RECORD;
     v_instance_id UUID;
+    v_existing_auth_id UUID;
     v_default_password TEXT := 'TempPassword123!'; -- Users should reset via portal
 BEGIN
     -- Get instance_id
@@ -84,51 +85,103 @@ BEGIN
         FROM users u
         LEFT JOIN auth.users au ON u.id = au.id
     LOOP
-        -- Check if user exists in auth.users
+        -- Check if user exists in auth.users by ID
         IF v_user.auth_id IS NULL THEN
-            -- User doesn't exist in auth.users - create them
-            RAISE NOTICE 'Creating auth user for: % (ID: %)', v_user.email, v_user.id;
+            -- Check if user exists by email (different ID scenario)
+            SELECT id INTO v_existing_auth_id
+            FROM auth.users
+            WHERE email = v_user.email
+            LIMIT 1;
             
-            INSERT INTO auth.users (
-                id,
-                instance_id,
-                email,
-                encrypted_password,
-                email_confirmed_at,  -- CRITICAL: Set this so they can log in
-                created_at,
-                updated_at,
-                aud,
-                role,
-                confirmation_token,
-                email_change_token_new,
-                recovery_token,
-                raw_user_meta_data
-            ) VALUES (
-                v_user.id,
-                v_instance_id,
-                v_user.email,
-                crypt(v_default_password, gen_salt('bf', 10)), -- Temporary password
-                NOW(),  -- Email confirmed = can log in immediately
-                COALESCE(v_user.created_at, NOW()),
-                NOW(),
-                'authenticated',
-                'authenticated',
-                '',
-                '',
-                '',
-                jsonb_build_object(
-                    'name', v_user.name,
-                    'company_id', v_user.company_id,
-                    'role', v_user.role
-                )
-            )
-            ON CONFLICT (id) DO UPDATE SET
-                email = EXCLUDED.email,
-                email_confirmed_at = NOW(),  -- Ensure email is confirmed
-                updated_at = NOW(),
-                raw_user_meta_data = EXCLUDED.raw_user_meta_data;
+            IF v_existing_auth_id IS NOT NULL THEN
+                -- User exists with same email but different ID
+                -- Update the users table to match the existing auth user ID
+                RAISE NOTICE 'User % exists in auth.users with different ID. Updating users table ID from % to %', 
+                    v_user.email, v_user.id, v_existing_auth_id;
+                
+                -- Update users table to use the existing auth user ID
+                UPDATE users
+                SET id = v_existing_auth_id
+                WHERE id = v_user.id;
+                
+                -- Confirm email for the existing auth user
+                UPDATE auth.users
+                SET 
+                    email_confirmed_at = COALESCE(email_confirmed_at, NOW()),
+                    updated_at = NOW(),
+                    raw_user_meta_data = COALESCE(
+                        raw_user_meta_data,
+                        jsonb_build_object(
+                            'name', v_user.name,
+                            'company_id', v_user.company_id,
+                            'role', v_user.role
+                        )
+                    )
+                WHERE id = v_existing_auth_id;
+            ELSE
+                -- User doesn't exist in auth.users at all - create them
+                RAISE NOTICE 'Creating auth user for: % (ID: %)', v_user.email, v_user.id;
+                
+                BEGIN
+                    INSERT INTO auth.users (
+                        id,
+                        instance_id,
+                        email,
+                        encrypted_password,
+                        email_confirmed_at,  -- CRITICAL: Set this so they can log in
+                        created_at,
+                        updated_at,
+                        aud,
+                        role,
+                        confirmation_token,
+                        email_change_token_new,
+                        recovery_token,
+                        raw_user_meta_data
+                    ) VALUES (
+                        v_user.id,
+                        v_instance_id,
+                        v_user.email,
+                        crypt(v_default_password, gen_salt('bf', 10)), -- Temporary password
+                        NOW(),  -- Email confirmed = can log in immediately
+                        COALESCE(v_user.created_at, NOW()),
+                        NOW(),
+                        'authenticated',
+                        'authenticated',
+                        '',
+                        '',
+                        '',
+                        jsonb_build_object(
+                            'name', v_user.name,
+                            'company_id', v_user.company_id,
+                            'role', v_user.role
+                        )
+                    );
+                EXCEPTION WHEN unique_violation THEN
+                    -- If email conflict occurs, update existing user instead
+                    RAISE NOTICE 'Email % already exists in auth.users, updating existing record', v_user.email;
+                    
+                    UPDATE auth.users
+                    SET 
+                        email_confirmed_at = COALESCE(email_confirmed_at, NOW()),
+                        updated_at = NOW(),
+                        raw_user_meta_data = COALESCE(
+                            raw_user_meta_data,
+                            jsonb_build_object(
+                                'name', v_user.name,
+                                'company_id', v_user.company_id,
+                                'role', v_user.role
+                            )
+                        )
+                    WHERE email = v_user.email;
+                    
+                    -- Update users table to match the existing auth user ID
+                    UPDATE users
+                    SET id = (SELECT id FROM auth.users WHERE email = v_user.email LIMIT 1)
+                    WHERE id = v_user.id;
+                END;
+            END IF;
         ELSE
-            -- User exists but email might not be confirmed
+            -- User exists with matching ID - just confirm email if needed
             IF v_user.email_confirmed_at IS NULL THEN
                 RAISE NOTICE 'Confirming email for existing auth user: % (ID: %)', v_user.email, v_user.id;
                 
