@@ -13,7 +13,8 @@ import {
   ChevronDown,
   Target,
   ScreenShare,
-  Package
+  Package,
+  AlertTriangle
 } from 'lucide-react'
 import { staffAuth } from '../lib/staffAuth'
 
@@ -36,6 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
     { name: 'Support', href: '/support', icon: HelpCircle },
     { name: 'Screen Sharing', href: '/screen-sharing', icon: ScreenShare },
     { name: 'Apps', href: '/apps', icon: Package },
+    { name: 'Crash Reports', href: '/crash-reports', icon: AlertTriangle },
     { name: 'Admin', href: '/admin', icon: Settings },
   ]
 

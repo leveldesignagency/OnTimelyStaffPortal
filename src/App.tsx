@@ -14,6 +14,7 @@ import SmartAdvertising from './pages/SmartAdvertising'
 import Support from './pages/Support'
 import ScreenSharing from './pages/ScreenSharing'
 import Apps from './pages/Apps'
+import CrashReports from './pages/CrashReports'
 import Sidebar from './components/Sidebar'
 
 // Protected Route Component
@@ -217,6 +218,14 @@ function App() {
           <ProtectedRoute>
             <PortalLayout>
               <Apps />
+            </PortalLayout>
+          </ProtectedRoute>
+        } />
+        
+        <Route path="/crash-reports" element={
+          <ProtectedRoute>
+            <PortalLayout>
+              <CrashReports />
             </PortalLayout>
           </ProtectedRoute>
         } />

@@ -95,14 +95,10 @@ BEGIN
             
             IF v_existing_auth_id IS NOT NULL THEN
                 -- User exists with same email but different ID
-                -- Update the users table to match the existing auth user ID
-                RAISE NOTICE 'User % exists in auth.users with different ID. Updating users table ID from % to %', 
-                    v_user.email, v_user.id, v_existing_auth_id;
-                
-                -- Update users table to use the existing auth user ID
-                UPDATE users
-                SET id = v_existing_auth_id
-                WHERE id = v_user.id;
+                -- DON'T change IDs - just confirm the email so they can log in
+                -- The IDs don't need to match for login to work, just email needs to be confirmed
+                RAISE NOTICE 'User % exists in auth.users with ID %. Confirming email (users.id=% stays unchanged)', 
+                    v_user.email, v_existing_auth_id, v_user.id;
                 
                 -- Confirm email for the existing auth user
                 UPDATE auth.users
@@ -157,8 +153,8 @@ BEGIN
                         )
                     );
                 EXCEPTION WHEN unique_violation THEN
-                    -- If email conflict occurs, update existing user instead
-                    RAISE NOTICE 'Email % already exists in auth.users, updating existing record', v_user.email;
+                    -- If email conflict occurs, just confirm the existing user's email
+                    RAISE NOTICE 'Email % already exists in auth.users, confirming existing record', v_user.email;
                     
                     UPDATE auth.users
                     SET 
@@ -173,11 +169,6 @@ BEGIN
                             )
                         )
                     WHERE email = v_user.email;
-                    
-                    -- Update users table to match the existing auth user ID
-                    UPDATE users
-                    SET id = (SELECT id FROM auth.users WHERE email = v_user.email LIMIT 1)
-                    WHERE id = v_user.id;
                 END;
             END IF;
         ELSE
