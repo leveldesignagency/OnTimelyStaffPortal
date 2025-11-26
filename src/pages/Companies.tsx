@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Search, Plus, /* Filter, */ MoreVertical, Building2, Users, /* Mail, Phone, MapPin */ ChevronDown, Check, Trash2, AlertTriangle } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { db } from '@/lib/database'
 import { Company } from '@/lib/supabase'
 
 const Companies: React.FC = () => {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [companies, setCompanies] = useState<Company[]>([])
   const [filteredCompanies, setFilteredCompanies] = useState<Company[]>([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -35,6 +36,16 @@ const Companies: React.FC = () => {
   useEffect(() => {
     loadCompanies()
   }, [])
+
+  // Check for openModal query param and auto-open modal
+  useEffect(() => {
+    const openModal = searchParams.get('openModal')
+    if (openModal === 'create') {
+      setShowCreateModal(true)
+      // Remove the query param from URL without reloading
+      setSearchParams({}, { replace: true })
+    }
+  }, [searchParams, setSearchParams])
 
   useEffect(() => {
     if (activeTab === 'deleted') {

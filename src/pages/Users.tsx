@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { 
   // Users, // TODO: Uncomment when needed
@@ -24,6 +25,8 @@ import { db } from '../lib/database'
 import { User, Company } from '../lib/supabase'
 
 const UsersPage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [users, setUsers] = useState<User[]>([])
   const [companies, setCompanies] = useState<Company[]>([])
   const [loading, setLoading] = useState(true)
@@ -93,6 +96,16 @@ const UsersPage: React.FC = () => {
   useEffect(() => {
     loadData()
   }, [])
+
+  // Check for openModal query param and auto-open modal
+  useEffect(() => {
+    const openModal = searchParams.get('openModal')
+    if (openModal === 'create') {
+      setShowCreateModal(true)
+      // Remove the query param from URL without reloading
+      setSearchParams({}, { replace: true })
+    }
+  }, [searchParams, setSearchParams])
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -180,6 +193,7 @@ const UsersPage: React.FC = () => {
       setShowPasswordModal(true)
 
       setShowCreateModal(false)
+      const createdUserName = newUser.name
       setNewUser({
         email: '',
         name: '',
@@ -188,7 +202,7 @@ const UsersPage: React.FC = () => {
       })
       
       // Show success message
-      toast.success(`User ${newUser.name} created successfully! Welcome email sent.`)
+      toast.success(`User ${createdUserName} created successfully! Welcome email sent.`)
       
       loadData() // Reload the list
     } catch (error) {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   Users, 
   Building2, 
@@ -15,6 +16,7 @@ import { Company, User } from '../lib/supabase'
 import { staffAuth } from '../lib/staffAuth'
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate()
   const [stats, setStats] = useState({
     totalCompanies: 0,
     totalUsers: 0,
@@ -269,7 +271,10 @@ const Dashboard: React.FC = () => {
       <div className="bg-white rounded-xl shadow-md border border-gray-200 p-8">
         <h2 className="text-xl font-bold text-gray-900 mb-6">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <button className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md">
+          <button 
+            onClick={() => navigate('/companies?openModal=create')}
+            className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md"
+          >
             <div className="text-center">
               <Building2 className="w-8 h-8 text-gray-400 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-900">Add Company</p>
@@ -277,7 +282,10 @@ const Dashboard: React.FC = () => {
             </div>
           </button>
           
-          <button className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md">
+          <button 
+            onClick={() => navigate('/users?openModal=create')}
+            className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md"
+          >
             <div className="text-center">
               <UserPlus className="w-8 h-8 text-gray-400 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-900">Add User</p>
@@ -285,7 +293,10 @@ const Dashboard: React.FC = () => {
             </div>
           </button>
           
-          <button className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md">
+          <button 
+            onClick={() => navigate('/analytics')}
+            className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md"
+          >
             <div className="text-center">
               <Activity className="w-8 h-8 text-gray-400 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-900">View Analytics</p>
