@@ -126,9 +126,9 @@ const ScreenSharing: React.FC = () => {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-gray-50 min-h-screen">
       {/* Page Header */}
-      <div className="mb-8">
+      <div className="mb-10">
         <div className="flex items-center gap-3 mb-2">
           <Monitor className="h-8 w-8 text-green-600" />
           <h1 className="text-3xl font-bold text-gray-900">Screen Sharing</h1>
@@ -182,8 +182,7 @@ const ScreenSharing: React.FC = () => {
                   }}
                   placeholder="Enter 6-character code"
                   maxLength={6}
-                  className="w-full px-4 py-3 text-2xl font-mono text-center tracking-widest border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                  style={{ letterSpacing: '0.5em' }}
+                  className="w-full px-4 py-3 text-2xl font-mono text-center tracking-normal border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                   disabled={loading}
                 />
                 <p className="mt-2 text-sm text-gray-500 text-center">
@@ -212,7 +211,7 @@ const ScreenSharing: React.FC = () => {
           </div>
 
           {/* Instructions */}
-          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-6">
+          <div className="mt-10 bg-blue-50 border border-blue-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-blue-900 mb-3">How it works:</h3>
             <ol className="space-y-2 text-sm text-blue-800 list-decimal list-inside">
               <li>Customer clicks "Share Screen" in the desktop app</li>
@@ -225,10 +224,10 @@ const ScreenSharing: React.FC = () => {
         </div>
       ) : (
         /* Connected View */
-        <div className="space-y-6">
+        <div className="space-y-10">
           {/* Session Info */}
           {sessionData && (
-            <div className="bg-white rounded-lg shadow border border-gray-200 p-6">
+            <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
@@ -278,7 +277,7 @@ const ScreenSharing: React.FC = () => {
           )}
 
           {/* Screen View */}
-          <div className="bg-black rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+          <div className="bg-black rounded-xl shadow-lg border border-gray-200 overflow-hidden">
             <div className="aspect-video bg-gray-900 flex items-center justify-center relative">
               <video
                 ref={videoRef}
@@ -300,7 +299,7 @@ const ScreenSharing: React.FC = () => {
           </div>
 
           {/* Note about WebRTC implementation */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
             <p className="text-sm text-yellow-800">
               <strong>Note:</strong> Full WebRTC screen sharing implementation is in progress. 
               Currently, the session connection is established. The video stream will be displayed here once WebRTC peer connection is fully configured.

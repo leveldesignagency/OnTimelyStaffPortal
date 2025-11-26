@@ -168,7 +168,7 @@ const Analytics: React.FC = () => {
       </div>
 
       {/* Overview Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {overviewStats.map((stat, index) => {
           const Icon = stat.icon
           return (
@@ -209,9 +209,9 @@ const Analytics: React.FC = () => {
       </div> */}
 
       {/* Feature Usage & Performance */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
         {/* Top Features */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Feature Usage</h3>
           <div className="space-y-4">
             {topFeatures.map((feature, index) => (
@@ -235,7 +235,7 @@ const Analytics: React.FC = () => {
         </div>
 
         {/* Performance Metrics */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">System Performance</h3>
           <div className="space-y-4">
             {performanceMetrics.map((metric, index) => (
@@ -259,7 +259,7 @@ const Analytics: React.FC = () => {
       </div>
 
       {/* Detailed Analytics */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md mb-10">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Detailed Analytics</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Geographic Distribution */}
@@ -286,7 +286,7 @@ const Analytics: React.FC = () => {
       </div>
 
       {/* Export & Actions */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-900">Export & Reports</h3>

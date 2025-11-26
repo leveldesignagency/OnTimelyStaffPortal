@@ -166,15 +166,15 @@ const Admin: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-8 bg-gray-50 min-h-screen">
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Admin Tools</h1>
-        <p className="text-gray-600 mt-2">System administration, monitoring, and management tools</p>
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Tools</h1>
+        <p className="text-gray-600 text-lg">System administration, monitoring, and management tools</p>
       </div>
 
       {/* System Health Overview */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm mb-8">
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md mb-10">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">System Health Overview</h3>
           <div className="flex items-center gap-2">
@@ -228,14 +228,14 @@ const Admin: React.FC = () => {
       </div>
 
       {/* Admin Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {adminActions.map((action, index) => {
           const Icon = action.icon
           return (
             <button
               key={index}
               onClick={action.action}
-              className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow text-left"
+              className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200 text-left"
             >
               <div className={`p-3 rounded-lg ${action.color} inline-block mb-4`}>
                 <Icon className="h-6 w-6 text-white" />
@@ -248,7 +248,7 @@ const Admin: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-md">
         <div className="border-b border-gray-200">
           <nav className="flex space-x-8 px-6">
             {tabs.map((tab) => {
