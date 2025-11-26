@@ -12,8 +12,6 @@ import {
   FileText,
   Smartphone,
   Monitor,
-  Calendar,
-  User,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react'
