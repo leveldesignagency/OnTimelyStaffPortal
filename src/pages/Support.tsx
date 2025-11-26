@@ -204,13 +204,13 @@ const Support: React.FC = () => {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-gray-50 min-h-screen">
       {/* Page Header */}
-      <div className="mb-8">
+      <div className="mb-10">
         <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Support & Help</h1>
-          <p className="text-gray-600 mt-2">Manage support tickets and provide user assistance</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Support & Help</h1>
+          <p className="text-gray-600 text-lg">Manage support tickets and provide user assistance</p>
         </div>
         <button className="btn-primary">
           <Plus className="h-4 w-4" />
@@ -220,7 +220,7 @@ const Support: React.FC = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="border-b border-gray-200 mb-6">
+      <div className="border-b border-gray-200 mb-10">
         <nav className="-mb-px flex space-x-8">
           <button
             onClick={() => setActiveTab('tickets')}
@@ -251,11 +251,11 @@ const Support: React.FC = () => {
       ) : (
         <>
           {/* Support Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {supportStats.map((stat, index) => {
           const Icon = stat.icon
           return (
-            <div key={index} className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <div key={index} className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">{stat.title}</p>
@@ -280,7 +280,7 @@ const Support: React.FC = () => {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
           <div className="text-center">
             <div className="p-3 bg-green-100 rounded-lg inline-block mb-4">
               <BookOpen className="h-8 w-8 text-green-600" />

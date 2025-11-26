@@ -112,18 +112,18 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-8 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600">Overview of your OnTimely application</p>
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+        <p className="text-gray-600 text-lg">Overview of your OnTimely application</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow-sm border p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-3 bg-green-100 rounded-xl">
               <Building2 className="w-6 h-6 text-green-600" />
             </div>
             <div className="ml-4">
@@ -137,9 +137,9 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border p-6">
+        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-3 bg-green-100 rounded-xl">
               <Users className="w-6 h-6 text-green-600" />
             </div>
             <div className="ml-4">
@@ -149,13 +149,13 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="mt-4 flex items-center text-sm text-gray-600">
             <UserPlus className="w-4 h-4 text-green-500 mr-1" />
-            <span className="text-green-600">+{stats.newUsersThisMonth} this month</span>
+            <span className="text-green-600 font-medium">+{stats.newUsersThisMonth} this month</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border p-6">
+        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <div className="p-2 bg-purple-100 rounded-lg">
+            <div className="p-3 bg-purple-100 rounded-xl">
               <Activity className="w-6 h-6 text-purple-600" />
             </div>
             <div className="ml-4">
@@ -165,13 +165,13 @@ const Dashboard: React.FC = () => {
           </div>
           <div className="mt-4 flex items-center text-sm text-gray-600">
             <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
-            <span className="text-green-600">Active now</span>
+            <span className="text-green-600 font-medium">Active now</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border p-6">
+        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <div className="p-2 bg-orange-100 rounded-lg">
+            <div className="p-3 bg-orange-100 rounded-xl">
               <TrendingUp className="w-6 h-6 text-orange-600" />
             </div>
             <div className="ml-4">
@@ -189,11 +189,11 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
         {/* Recent Companies */}
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6 border-b">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Companies</h2>
+        <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-green-50 to-transparent">
+            <h2 className="text-xl font-bold text-gray-900 mb-1">Recent Companies</h2>
             <p className="text-sm text-gray-600">Latest companies added to the platform</p>
           </div>
           <div className="p-6">
@@ -202,7 +202,7 @@ const Dashboard: React.FC = () => {
                 {recentCompanies.map((company) => (
                   <div key={company.id} className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <div className="p-2 bg-green-100 rounded-lg">
+                      <div className="p-2.5 bg-green-100 rounded-lg">
                         <Building className="w-4 h-4 text-green-600" />
                       </div>
                       <div className="ml-3">
@@ -228,9 +228,9 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Recent Users */}
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6 border-b">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Users</h2>
+        <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-transparent">
+            <h2 className="text-xl font-bold text-gray-900 mb-1">Recent Users</h2>
             <p className="text-sm text-gray-600">Latest users who joined the platform</p>
           </div>
           <div className="p-6">
@@ -239,7 +239,7 @@ const Dashboard: React.FC = () => {
                 {recentUsers.map((user) => (
                   <div key={user.id} className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <div className="p-2 bg-green-100 rounded-lg">
+                      <div className="p-2.5 bg-green-100 rounded-lg">
                         <Users className="w-4 h-4 text-green-600" />
                       </div>
                       <div className="ml-3">
@@ -266,10 +266,10 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
+      <div className="bg-white rounded-xl shadow-md border border-gray-200 p-8">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <button className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md">
             <div className="text-center">
               <Building2 className="w-8 h-8 text-gray-400 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-900">Add Company</p>
@@ -277,7 +277,7 @@ const Dashboard: React.FC = () => {
             </div>
           </button>
           
-          <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
+          <button className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md">
             <div className="text-center">
               <UserPlus className="w-8 h-8 text-gray-400 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-900">Add User</p>
@@ -285,7 +285,7 @@ const Dashboard: React.FC = () => {
             </div>
           </button>
           
-          <button className="p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-colors">
+          <button className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md">
             <div className="text-center">
               <Activity className="w-8 h-8 text-gray-400 mx-auto mb-2" />
               <p className="text-sm font-medium text-gray-900">View Analytics</p>

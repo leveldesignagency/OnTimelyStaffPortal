@@ -1625,15 +1625,15 @@ const SmartAdvertising: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-8 bg-gray-50 min-h-screen">
       {showCampaignForm && <CampaignForm />}
       {showDiscountCodes && <DiscountCodeManager />}
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-10">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Smart Advertising Platform</h1>
-            <p className="text-gray-600 mt-2">AI-powered location-based advertising management</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Smart Advertising Platform</h1>
+            <p className="text-gray-600 text-lg">AI-powered location-based advertising management</p>
           </div>
           <div className="flex gap-2">
             <button 
@@ -1655,10 +1655,12 @@ const SmartAdvertising: React.FC = () => {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-green-500">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 mb-10">
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 border-l-4 border-l-green-500 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <DollarSign className="w-8 h-8 text-green-600" />
+            <div className="p-3 bg-green-100 rounded-xl">
+              <DollarSign className="w-8 h-8 text-green-600" />
+            </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Monthly Revenue</p>
               <p className="text-2xl font-bold text-gray-900">${stats.totalRevenue.toLocaleString()}</p>
@@ -1666,9 +1668,11 @@ const SmartAdvertising: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500">
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <Target className="w-8 h-8 text-blue-600" />
+            <div className="p-3 bg-blue-100 rounded-xl">
+              <Target className="w-8 h-8 text-blue-600" />
+            </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Active Campaigns</p>
               <p className="text-2xl font-bold text-gray-900">{stats.activeCampaigns}</p>
@@ -1676,9 +1680,11 @@ const SmartAdvertising: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-purple-500">
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <Eye className="w-8 h-8 text-purple-600" />
+            <div className="p-3 bg-purple-100 rounded-xl">
+              <Eye className="w-8 h-8 text-purple-600" />
+            </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Impressions</p>
               <p className="text-2xl font-bold text-gray-900">{stats.totalImpressions.toLocaleString()}</p>
@@ -1686,9 +1692,11 @@ const SmartAdvertising: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-orange-500">
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 border-l-4 border-l-orange-500 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <MousePointer className="w-8 h-8 text-orange-600" />
+            <div className="p-3 bg-orange-100 rounded-xl">
+              <MousePointer className="w-8 h-8 text-orange-600" />
+            </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Avg CTR</p>
               <p className="text-2xl font-bold text-gray-900">{(stats.avgCTR * 100).toFixed(2)}%</p>
@@ -1696,9 +1704,11 @@ const SmartAdvertising: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow border-l-4 border-red-500">
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 border-l-4 border-l-red-500 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <Zap className="w-8 h-8 text-red-600" />
+            <div className="p-3 bg-red-100 rounded-xl">
+              <Zap className="w-8 h-8 text-red-600" />
+            </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Hot Opportunities</p>
               <p className="text-2xl font-bold text-gray-900">{stats.hotOpportunities}</p>

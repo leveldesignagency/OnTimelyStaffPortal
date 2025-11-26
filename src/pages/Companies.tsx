@@ -214,13 +214,13 @@ const Companies: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-8 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-10">
         <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Companies</h1>
-          <p className="text-gray-600">Manage company accounts and subscriptions</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Companies</h1>
+          <p className="text-gray-600 text-lg">Manage company accounts and subscriptions</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
@@ -233,20 +233,24 @@ const Companies: React.FC = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white p-4 rounded-lg border">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <Building2 className="w-8 h-8 text-green-600" />
-            <div className="ml-3">
+            <div className="p-3 bg-green-100 rounded-xl">
+              <Building2 className="w-8 h-8 text-green-600" />
+            </div>
+            <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Companies</p>
               <p className="text-2xl font-bold text-gray-900">{companies.length}</p>
             </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg border">
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <Users className="w-8 h-8 text-green-600" />
-            <div className="ml-3">
+            <div className="p-3 bg-blue-100 rounded-xl">
+              <Users className="w-8 h-8 text-blue-600" />
+            </div>
+            <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Users</p>
               <p className="text-2xl font-bold text-gray-900">
                 {companies.reduce((sum, c) => sum + (c.max_users || 5), 0)}
@@ -254,10 +258,12 @@ const Companies: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg border">
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <Building2 className="w-8 h-8 text-purple-600" />
-            <div className="ml-3">
+            <div className="p-3 bg-purple-100 rounded-xl">
+              <Building2 className="w-8 h-8 text-purple-600" />
+            </div>
+            <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Premium Plans</p>
               <p className="text-2xl font-bold text-gray-900">
                 {companies.filter(c => c.subscription_plan === 'premium').length}
@@ -265,10 +271,12 @@ const Companies: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg border">
+        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
-            <Users className="w-8 h-8 text-orange-600" />
-            <div className="ml-3">
+            <div className="p-3 bg-orange-100 rounded-xl">
+              <Users className="w-8 h-8 text-orange-600" />
+            </div>
+            <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Enterprise Plans</p>
               <p className="text-2xl font-bold text-gray-900">
                 {companies.filter(c => c.subscription_plan === 'enterprise').length}
@@ -279,14 +287,14 @@ const Companies: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="mb-6">
+      <div className="mb-10">
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8">
             <button
               onClick={() => setActiveTab('active')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`py-3 px-1 border-b-2 font-semibold text-sm transition-colors ${
                 activeTab === 'active'
-                  ? 'border-primary-500 text-primary-600'
+                  ? 'border-green-500 text-green-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -294,9 +302,9 @@ const Companies: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('deleted')}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              className={`py-3 px-1 border-b-2 font-semibold text-sm transition-colors ${
                 activeTab === 'deleted'
-                  ? 'border-primary-500 text-primary-600'
+                  ? 'border-green-500 text-green-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -307,7 +315,7 @@ const Companies: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-4 rounded-lg border">
+      <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-10">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 min-w-64">
             <div className="relative">
@@ -370,7 +378,7 @@ const Companies: React.FC = () => {
           {filteredCompanies.map((company) => (
             <div 
               key={company.id} 
-              className="bg-white rounded-lg border hover:shadow-md transition-shadow cursor-pointer"
+              className="bg-white rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-200 cursor-pointer"
               onClick={() => navigate(`/companies/${company.id}`)}
             >
               <div className="p-6">
@@ -425,7 +433,7 @@ const Companies: React.FC = () => {
       {activeTab === 'deleted' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
           {deletedCompanies.map((company) => (
-            <div key={company.id} className="bg-white rounded-lg border border-red-200 hover:shadow-md transition-shadow">
+            <div key={company.id} className="bg-white rounded-xl border border-red-200 hover:shadow-lg transition-all duration-200">
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center">

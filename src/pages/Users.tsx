@@ -492,7 +492,7 @@ const UsersPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-8 bg-gray-50 min-h-screen">
       {/* Success Message */}
       {showSuccess && (
         <div className="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50">
@@ -501,10 +501,10 @@ const UsersPage: React.FC = () => {
       )}
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-          <p className="text-gray-600">Manage all users across companies</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">User Management</h1>
+          <p className="text-gray-600 text-lg">Manage all users across companies</p>
         </div>
         <div className="flex gap-3">
           <button
@@ -525,7 +525,7 @@ const UsersPage: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border p-4 mb-6">
+      <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-10">
         <div className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-64">
             <div className="relative">
@@ -631,7 +631,7 @@ const UsersPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-lg shadow-sm border mb-6">
+      <div className="bg-white rounded-xl shadow-md border border-gray-200 mb-10">
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8 px-6">
             <button

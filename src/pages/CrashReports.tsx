@@ -195,15 +195,15 @@ const CrashReports: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Crash Reports</h1>
-        <p className="text-gray-600">Monitor and manage app crashes and errors</p>
+    <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Crash Reports</h1>
+        <p className="text-gray-600 text-lg">Monitor and manage app crashes and errors</p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-10">
+        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total Reports</p>
@@ -212,34 +212,34 @@ const CrashReports: React.FC = () => {
             <FileText className="h-8 w-8 text-gray-400" />
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Open</p>
+              <p className="text-sm font-medium text-gray-600">Open</p>
               <p className="text-2xl font-bold text-red-600">{stats.open}</p>
             </div>
             <AlertTriangle className="h-8 w-8 text-red-400" />
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">In Progress</p>
+              <p className="text-sm font-medium text-gray-600">In Progress</p>
               <p className="text-2xl font-bold text-yellow-600">{stats.inProgress}</p>
             </div>
             <Clock className="h-8 w-8 text-yellow-400" />
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Resolved</p>
+              <p className="text-sm font-medium text-gray-600">Resolved</p>
               <p className="text-2xl font-bold text-green-600">{stats.resolved}</p>
             </div>
             <CheckCircle className="h-8 w-8 text-green-400" />
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Critical</p>
@@ -251,7 +251,7 @@ const CrashReports: React.FC = () => {
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-white rounded-lg shadow mb-6 p-4 border border-gray-200">
+      <div className="bg-white rounded-xl shadow-md mb-10 p-6 border border-gray-200">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
@@ -309,7 +309,7 @@ const CrashReports: React.FC = () => {
       </div>
 
       {/* Reports Table */}
-      <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
         {loading ? (
           <div className="p-8 text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-4"></div>
