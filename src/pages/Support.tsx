@@ -279,7 +279,7 @@ const Support: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
           <div className="text-center">
             <div className="p-3 bg-green-100 rounded-lg inline-block mb-4">
@@ -293,7 +293,7 @@ const Support: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
           <div className="text-center">
             <div className="p-3 bg-green-100 rounded-lg inline-block mb-4">
               {/* <Video className="h-8 w-8 text-green-600" /> */}
@@ -306,7 +306,7 @@ const Support: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
           <div className="text-center">
             <div className="p-3 bg-purple-100 rounded-lg inline-block mb-4">
               <HelpCircle className="h-8 w-8 text-purple-600" />
@@ -321,7 +321,7 @@ const Support: React.FC = () => {
       </div>
 
       {/* Support Tickets */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-md">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Support Tickets</h3>
