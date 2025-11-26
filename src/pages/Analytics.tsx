@@ -138,11 +138,11 @@ const Analytics: React.FC = () => {
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       {/* Page Header */}
-      <div className="mb-8">
+      <div className="mb-10">
         <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Analytics & Monitoring</h1>
-          <p className="text-gray-600 mt-2">Track user activity, system performance, and usage patterns</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Analytics & Monitoring</h1>
+          <p className="text-gray-600 text-lg">Track user activity, system performance, and usage patterns</p>
         </div>
         <div className="flex items-center gap-3">
           <select
@@ -172,7 +172,7 @@ const Analytics: React.FC = () => {
         {overviewStats.map((stat, index) => {
           const Icon = stat.icon
           return (
-            <div key={index} className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <div key={index} className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">{stat.title}</p>

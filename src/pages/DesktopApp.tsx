@@ -142,16 +142,16 @@ const DesktopApp: React.FC = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-8 bg-gray-50 min-h-screen">
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Desktop App Support</h1>
-        <p className="text-gray-600 mt-2">Manage desktop app installation, updates, and provide user support</p>
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Desktop App Support</h1>
+        <p className="text-gray-600 text-lg">Manage desktop app installation, updates, and provide user support</p>
       </div>
 
       {/* App Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
             <div className="p-3 bg-green-100 rounded-lg">
               <Package className="h-6 w-6 text-green-600" />
@@ -162,7 +162,7 @@ const DesktopApp: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
             <div className="p-3 bg-green-100 rounded-lg">
               <Download className="h-6 w-6 text-green-600" />
@@ -173,7 +173,7 @@ const DesktopApp: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
             <div className="p-3 bg-purple-100 rounded-lg">
               <Users className="h-6 w-6 text-purple-600" />
@@ -184,7 +184,7 @@ const DesktopApp: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
             <div className="p-3 bg-orange-100 rounded-lg">
               <Clock className="h-6 w-6 text-orange-600" />

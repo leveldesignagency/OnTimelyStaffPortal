@@ -132,7 +132,7 @@ const CompanyDetailPage: React.FC = () => {
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-10">
         <button 
           onClick={() => navigate('/companies')}
           className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
