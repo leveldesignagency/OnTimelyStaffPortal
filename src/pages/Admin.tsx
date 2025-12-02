@@ -28,7 +28,6 @@ const Admin: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('overview')
   const [exportFormat, setExportFormat] = useState('csv')
   const [userCsvFile, setUserCsvFile] = useState<File | null>(null)
-  const [companyCsvFile, setCompanyCsvFile] = useState<File | null>(null)
   const [userCsvPreview, setUserCsvPreview] = useState<Array<{ email: string; name: string }>>([])
   const [isImportingUsers, setIsImportingUsers] = useState(false)
   const [isExportingUsers, setIsExportingUsers] = useState(false)
@@ -212,8 +211,7 @@ const Admin: React.FC = () => {
   const handleCompanyCsvUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      setCompanyCsvFile(file)
-      toast.info('Company CSV import functionality coming soon')
+      toast('Company CSV import functionality coming soon')
     }
   }
 
