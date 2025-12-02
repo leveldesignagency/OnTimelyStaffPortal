@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
+import toast from 'react-hot-toast'
 import { 
   Users, 
   Building2, 
@@ -20,9 +21,20 @@ import {
   Key,
   // Globe // TODO: Uncomment when needed
 } from 'lucide-react'
+import CustomDropdown from '../components/CustomDropdown'
+import { db } from '../lib/database'
 
 const Admin: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('overview')
+  const [exportFormat, setExportFormat] = useState('csv')
+  const [userCsvFile, setUserCsvFile] = useState<File | null>(null)
+  const [companyCsvFile, setCompanyCsvFile] = useState<File | null>(null)
+  const [userCsvPreview, setUserCsvPreview] = useState<Array<{ email: string; name: string }>>([])
+  const [isImportingUsers, setIsImportingUsers] = useState(false)
+  const [isExportingUsers, setIsExportingUsers] = useState(false)
+  const [isExportingCompanies, setIsExportingCompanies] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const companyFileInputRef = useRef<HTMLInputElement>(null)
 
   // Mock data - replace with real data from your backend
   const systemHealth = {
@@ -163,6 +175,152 @@ const Admin: React.FC = () => {
       hour: '2-digit',
       minute: '2-digit'
     })
+  }
+
+  // CSV Import/Export Functions
+  const parseCsvInput = (text: string): Array<{ email: string; name: string }> => {
+    const lines = text.split('\n').filter(line => line.trim())
+    const users: Array<{ email: string; name: string }> = []
+
+    lines.forEach(line => {
+      const parts = line.split(',').map(part => part.trim())
+      if (parts.length >= 2) {
+        users.push({
+          email: parts[0],
+          name: parts[1]
+        })
+      }
+    })
+
+    return users
+  }
+
+  const handleUserCsvUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setUserCsvFile(file)
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const text = e.target?.result as string
+        const preview = parseCsvInput(text)
+        setUserCsvPreview(preview)
+      }
+      reader.readAsText(file)
+    }
+  }
+
+  const handleCompanyCsvUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setCompanyCsvFile(file)
+      toast.info('Company CSV import functionality coming soon')
+    }
+  }
+
+  const handleImportUsers = async () => {
+    if (userCsvPreview.length === 0) {
+      toast.error('Please upload a CSV file with user data')
+      return
+    }
+
+    setIsImportingUsers(true)
+    try {
+      const usersToCreate = userCsvPreview.map(user => ({
+        email: user.email.trim(),
+        name: user.name.trim(),
+        role: 'user'
+      }))
+
+      await db.users.bulkCreateUsers(usersToCreate)
+      toast.success(`Successfully imported ${userCsvPreview.length} users! Welcome emails have been sent.`)
+      setUserCsvFile(null)
+      setUserCsvPreview([])
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    } catch (error: any) {
+      console.error('Error importing users:', error)
+      toast.error(error.message || 'Error importing users. Please try again.')
+    } finally {
+      setIsImportingUsers(false)
+    }
+  }
+
+  const handleExportUsers = async () => {
+    setIsExportingUsers(true)
+    try {
+      const users = await db.users.getUsers()
+      
+      let content = ''
+      let filename = 'users'
+      let mimeType = 'text/csv'
+
+      if (exportFormat === 'csv') {
+        content = 'Email,Name,Company,Role,Status,Created At\n'
+        users.forEach(user => {
+          const companyName = (user as any).companies?.name || 'N/A'
+          content += `${user.email},${user.name},${companyName},${user.role || 'user'},${user.status || 'offline'},${user.created_at}\n`
+        })
+        filename = 'users.csv'
+      } else if (exportFormat === 'json') {
+        content = JSON.stringify(users, null, 2)
+        filename = 'users.json'
+        mimeType = 'application/json'
+      } else if (exportFormat === 'excel') {
+        // For Excel, we'll use CSV format (Excel can open CSV)
+        content = 'Email,Name,Company,Role,Status,Created At\n'
+        users.forEach(user => {
+          const companyName = (user as any).companies?.name || 'N/A'
+          content += `${user.email},${user.name},${companyName},${user.role || 'user'},${user.status || 'offline'},${user.created_at}\n`
+        })
+        filename = 'users.xlsx'
+        mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      }
+
+      const blob = new Blob([content], { type: mimeType })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      toast.success(`Users exported successfully as ${exportFormat.toUpperCase()}`)
+    } catch (error: any) {
+      console.error('Error exporting users:', error)
+      toast.error('Error exporting users. Please try again.')
+    } finally {
+      setIsExportingUsers(false)
+    }
+  }
+
+  const handleExportCompanies = async () => {
+    setIsExportingCompanies(true)
+    try {
+      const companies = await db.companies.getCompanies()
+      
+      const content = 'Name,Plan,Max Users,Created At\n' +
+        companies.map(c => `${c.name},${c.subscription_plan || 'basic'},${c.max_users || 5},${c.created_at}\n`).join('')
+
+      const blob = new Blob([content], { type: 'text/csv' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'companies.csv'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      toast.success('Companies exported successfully')
+    } catch (error: any) {
+      console.error('Error exporting companies:', error)
+      toast.error('Error exporting companies. Please try again.')
+    } finally {
+      setIsExportingCompanies(false)
+    }
   }
 
   return (
@@ -320,14 +478,36 @@ const Admin: React.FC = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Upload CSV File
                         </label>
-                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <div 
+                          className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-gray-400 transition-colors"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
                           <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                          <p className="text-sm text-gray-600">Drag and drop CSV file here, or click to browse</p>
+                          <p className="text-sm text-gray-600">
+                            {userCsvFile ? userCsvFile.name : 'Drag and drop CSV file here, or click to browse'}
+                          </p>
+                          {userCsvPreview.length > 0 && (
+                            <p className="text-xs text-green-600 mt-2">
+                              {userCsvPreview.length} users ready to import
+                            </p>
+                          )}
                         </div>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept=".csv"
+                          onChange={handleUserCsvUpload}
+                          className="hidden"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">CSV format: email,name (one per line)</p>
                       </div>
-                      <button className="btn-primary w-full">
+                      <button 
+                        onClick={handleImportUsers}
+                        disabled={isImportingUsers || userCsvPreview.length === 0}
+                        className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
                         <Upload className="h-4 w-4" />
-                        Import Users
+                        {isImportingUsers ? 'Importing...' : 'Import Users'}
                       </button>
                     </div>
                   </div>
@@ -339,15 +519,24 @@ const Admin: React.FC = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Export Format
                         </label>
-                        <select className="input">
-                          <option>CSV</option>
-                          <option>JSON</option>
-                          <option>Excel</option>
-                        </select>
+                        <CustomDropdown
+                          options={[
+                            { value: 'csv', label: 'CSV' },
+                            { value: 'json', label: 'JSON' },
+                            { value: 'excel', label: 'Excel' },
+                          ]}
+                          value={exportFormat}
+                          onChange={setExportFormat}
+                          placeholder="Select Format"
+                        />
                       </div>
-                      <button className="btn-outline w-full">
+                      <button 
+                        onClick={handleExportUsers}
+                        disabled={isExportingUsers}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
                         <Download className="h-4 w-4" />
-                        Export Users
+                        {isExportingUsers ? 'Exporting...' : 'Export Users'}
                       </button>
                     </div>
                   </div>
@@ -367,12 +556,16 @@ const Admin: React.FC = () => {
                     <div className="space-y-4">
                       <input type="text" placeholder="Company Name" className="input" />
                       <input type="email" placeholder="Admin Email" className="input" />
-                      <select className="input">
-                        <option>Select Plan</option>
-                        <option>Basic</option>
-                        <option>Professional</option>
-                        <option>Enterprise</option>
-                      </select>
+                      <CustomDropdown
+                        options={[
+                          { value: 'basic', label: 'Basic' },
+                          { value: 'professional', label: 'Professional' },
+                          { value: 'enterprise', label: 'Enterprise' },
+                        ]}
+                        value=""
+                        onChange={() => {}}
+                        placeholder="Select Plan"
+                      />
                       <button className="btn-primary w-full">Create Company</button>
                     </div>
                   </div>
@@ -380,15 +573,31 @@ const Admin: React.FC = () => {
                   <div className="border border-gray-200 rounded-lg p-6">
                     <h4 className="font-medium text-gray-900 mb-4">Bulk Operations</h4>
                     <div className="space-y-4">
-                      <button className="btn-outline w-full">
-                        <Upload className="h-4 w-4" />
-                        Import Companies
-                      </button>
-                      <button className="btn-outline w-full">
+                      <div>
+                        <input
+                          ref={companyFileInputRef}
+                          type="file"
+                          accept=".csv"
+                          onChange={handleCompanyCsvUpload}
+                          className="hidden"
+                        />
+                        <button 
+                          onClick={() => companyFileInputRef.current?.click()}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+                        >
+                          <Upload className="h-4 w-4" />
+                          Import Companies
+                        </button>
+                      </div>
+                      <button 
+                        onClick={handleExportCompanies}
+                        disabled={isExportingCompanies}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
                         <Download className="h-4 w-4" />
-                        Export Companies
+                        {isExportingCompanies ? 'Exporting...' : 'Export Companies'}
                       </button>
-                      <button className="btn-outline w-full">
+                      <button className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
                         <Settings className="h-4 w-4" />
                         Bulk Settings Update
                       </button>

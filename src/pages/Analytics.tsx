@@ -14,6 +14,7 @@ import {
   // PieChart, // TODO: Uncomment when needed
   // Filter // TODO: Uncomment when needed
 } from 'lucide-react'
+import CustomDropdown from '../components/CustomDropdown'
 import { 
   // LineChart, // TODO: Uncomment when needed
   // Line, // TODO: Uncomment when needed
@@ -145,24 +146,22 @@ const Analytics: React.FC = () => {
           <p className="text-gray-600 text-lg">Track user activity, system performance, and usage patterns</p>
         </div>
         <div className="flex items-center gap-3">
-          <select
-            value={selectedPeriod}
-            onChange={(e) => setSelectedPeriod(e.target.value)}
-            className="input"
-          >
-            {periodOptions.map(option => (
-              <option key={option.value} value={option.value}>{option.label}</option>
-            ))}
-          </select>
-          <select
-            value={selectedMetric}
-            onChange={(e) => setSelectedMetric(e.target.value)}
-            className="input"
-          >
-            {metricOptions.map(option => (
-              <option key={option.value} value={option.value}>{option.label}</option>
-            ))}
-          </select>
+          <div className="w-48">
+            <CustomDropdown
+              options={periodOptions.map(opt => ({ value: opt.value, label: opt.label }))}
+              value={selectedPeriod}
+              onChange={setSelectedPeriod}
+              placeholder="Select Period"
+            />
+          </div>
+          <div className="w-48">
+            <CustomDropdown
+              options={metricOptions.map(opt => ({ value: opt.value, label: opt.label }))}
+              value={selectedMetric}
+              onChange={setSelectedMetric}
+              placeholder="Select Metric"
+            />
+          </div>
         </div>
         </div>
       </div>

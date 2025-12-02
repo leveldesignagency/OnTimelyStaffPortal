@@ -46,10 +46,10 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 dark:border-green-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
         </div>
       </div>
     )
@@ -78,9 +78,9 @@ const PortalLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   }, [])
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-950">
       <Sidebar user={user} />
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto bg-gray-50 dark:bg-gray-950">
         {children}
       </main>
     </div>
@@ -95,9 +95,9 @@ function App() {
         toastOptions={{
           duration: 4000,
           style: {
-            background: '#fff',
-            color: '#374151',
-            border: '1px solid #e5e7eb',
+            background: 'var(--toast-bg, #fff)',
+            color: 'var(--toast-color, #374151)',
+            border: '1px solid var(--toast-border, #e5e7eb)',
             borderRadius: '8px',
             fontSize: '14px',
           },

@@ -14,9 +14,12 @@ import {
   Target,
   ScreenShare,
   Package,
-  AlertTriangle
+  AlertTriangle,
+  Moon,
+  Sun
 } from 'lucide-react'
 import { staffAuth } from '../lib/staffAuth'
+import { useTheme } from '../contexts/ThemeContext'
 
 interface SidebarProps {
   user: any
@@ -25,6 +28,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ user }) => {
   const location = useLocation()
   const navigate = useNavigate()
+  const { isDark, toggleTheme } = useTheme()
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
 
   const navigation = [
@@ -55,9 +59,9 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
   }
 
   return (
-    <div className="flex flex-col w-64 bg-white shadow-lg">
+    <div className="flex flex-col w-64 bg-white dark:bg-gray-900 shadow-lg border-r border-gray-200 dark:border-gray-800">
       {/* Logo */}
-      <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
+      <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center space-x-2">
           <svg viewBox="0 0 1695.17 474.35" style={{ height: '32px', width: 'auto' }}>
             <defs>
@@ -140,8 +144,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
               to={item.href}
               className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 isActive(item.href)
-                  ? 'bg-green-50 text-green-700 border-r-2 border-green-700'
-                  : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-r-2 border-green-700 dark:border-green-500'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               <Icon className="h-5 w-5" />
@@ -151,12 +155,31 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
         })}
       </nav>
 
+      {/* Dark Mode Toggle */}
+      <div className="border-t border-gray-200 dark:border-gray-800 p-4">
+        <button
+          onClick={toggleTheme}
+          className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+        >
+          <div className="flex items-center space-x-3">
+            {isDark ? (
+              <Sun className="h-5 w-5 text-yellow-500" />
+            ) : (
+              <Moon className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            )}
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {isDark ? 'Light Mode' : 'Dark Mode'}
+            </span>
+          </div>
+        </button>
+      </div>
+
       {/* User Menu */}
-      <div className="border-t border-gray-200 p-4">
+      <div className="border-t border-gray-200 dark:border-gray-800 p-4">
         <div className="relative">
           <button
             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-            className="flex items-center w-full p-3 text-left rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex items-center w-full p-3 text-left rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
             <div className="flex-shrink-0">
               <div className="w-8 h-8 bg-gradient-to-r from-green-600 to-green-700 rounded-full flex items-center justify-center">
@@ -164,24 +187,24 @@ const Sidebar: React.FC<SidebarProps> = ({ user }) => {
               </div>
             </div>
             <div className="ml-3 flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
+              <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                 {user?.name || 'Staff Member'}
               </p>
-              <p className="text-xs text-gray-500 truncate capitalize">
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate capitalize">
                 {user?.role || 'staff'}
               </p>
             </div>
-            <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${
+            <ChevronDown className={`h-4 w-4 text-gray-400 dark:text-gray-500 transition-transform ${
               isUserMenuOpen ? 'rotate-180' : ''
             }`} />
           </button>
 
           {/* Dropdown Menu */}
           {isUserMenuOpen && (
-            <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-lg shadow-lg border border-gray-200 py-1">
+            <div className="absolute bottom-full left-0 right-0 mb-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1">
               <button
                 onClick={handleLogout}
-                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out

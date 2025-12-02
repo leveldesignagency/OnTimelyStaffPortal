@@ -16,6 +16,7 @@ import {
   ChevronUp,
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import CustomDropdown from '../components/CustomDropdown'
 
 interface CrashReport {
   id: string
@@ -264,37 +265,46 @@ const CrashReports: React.FC = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            >
-              <option value="all">All Status</option>
-              <option value="open">Open</option>
-              <option value="in_progress">In Progress</option>
-              <option value="resolved">Resolved</option>
-              <option value="closed">Closed</option>
-            </select>
-            <select
-              value={severityFilter}
-              onChange={(e) => setSeverityFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            >
-              <option value="all">All Severity</option>
-              <option value="critical">Critical</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
-            <select
-              value={platformFilter}
-              onChange={(e) => setPlatformFilter(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            >
-              <option value="all">All Platforms</option>
-              <option value="ios">iOS</option>
-              <option value="android">Android</option>
-            </select>
+            <div className="w-40">
+              <CustomDropdown
+                options={[
+                  { value: 'all', label: 'All Status' },
+                  { value: 'open', label: 'Open' },
+                  { value: 'in_progress', label: 'In Progress' },
+                  { value: 'resolved', label: 'Resolved' },
+                  { value: 'closed', label: 'Closed' },
+                ]}
+                value={statusFilter}
+                onChange={setStatusFilter}
+                placeholder="All Status"
+              />
+            </div>
+            <div className="w-40">
+              <CustomDropdown
+                options={[
+                  { value: 'all', label: 'All Severity' },
+                  { value: 'critical', label: 'Critical' },
+                  { value: 'high', label: 'High' },
+                  { value: 'medium', label: 'Medium' },
+                  { value: 'low', label: 'Low' },
+                ]}
+                value={severityFilter}
+                onChange={setSeverityFilter}
+                placeholder="All Severity"
+              />
+            </div>
+            <div className="w-40">
+              <CustomDropdown
+                options={[
+                  { value: 'all', label: 'All Platforms' },
+                  { value: 'ios', label: 'iOS' },
+                  { value: 'android', label: 'Android' },
+                ]}
+                value={platformFilter}
+                onChange={setPlatformFilter}
+                placeholder="All Platforms"
+              />
+            </div>
             <button
               onClick={loadReports}
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
@@ -597,16 +607,17 @@ const CrashReports: React.FC = () => {
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select
+                <CustomDropdown
+                  options={[
+                    { value: 'open', label: 'Open' },
+                    { value: 'in_progress', label: 'In Progress' },
+                    { value: 'resolved', label: 'Resolved' },
+                    { value: 'closed', label: 'Closed' },
+                  ]}
                   value={newStatus}
-                  onChange={(e) => setNewStatus(e.target.value as CrashReport['status'])}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                >
-                  <option value="open">Open</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="resolved">Resolved</option>
-                  <option value="closed">Closed</option>
-                </select>
+                  onChange={(value) => setNewStatus(value as CrashReport['status'])}
+                  placeholder="Select Status"
+                />
               </div>
               {(newStatus === 'resolved' || newStatus === 'closed') && (
                 <div>

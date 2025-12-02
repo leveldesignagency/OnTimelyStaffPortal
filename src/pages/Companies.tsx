@@ -248,7 +248,7 @@ const Companies: React.FC = () => {
         <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
             <div className="p-3 bg-green-100 rounded-xl">
-              <Building2 className="w-8 h-8 text-green-600" />
+            <Building2 className="w-8 h-8 text-green-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Total Companies</p>
@@ -272,7 +272,7 @@ const Companies: React.FC = () => {
         <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
             <div className="p-3 bg-purple-100 rounded-xl">
-              <Building2 className="w-8 h-8 text-purple-600" />
+            <Building2 className="w-8 h-8 text-purple-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Premium Plans</p>
@@ -285,7 +285,7 @@ const Companies: React.FC = () => {
         <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
             <div className="p-3 bg-orange-100 rounded-xl">
-              <Users className="w-8 h-8 text-orange-600" />
+            <Users className="w-8 h-8 text-orange-600" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Enterprise Plans</p>

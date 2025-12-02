@@ -16,6 +16,7 @@ import {
   // ExternalLink // TODO: Uncomment when needed
 } from 'lucide-react'
 import HelpCenterIntegration from '../components/HelpCenterIntegration'
+import CustomDropdown from '../components/CustomDropdown'
 
 const Support: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -326,24 +327,22 @@ const Support: React.FC = () => {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Support Tickets</h3>
             <div className="flex items-center gap-3">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="input"
-              >
-                {categories.map(category => (
-                  <option key={category.value} value={category.value}>{category.label}</option>
-                ))}
-              </select>
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="input"
-              >
-                {statuses.map(status => (
-                  <option key={status.value} value={status.value}>{status.label}</option>
-                ))}
-              </select>
+              <div className="w-48">
+                <CustomDropdown
+                  options={categories.map(cat => ({ value: cat.value, label: cat.label }))}
+                  value={selectedCategory}
+                  onChange={setSelectedCategory}
+                  placeholder="All Categories"
+                />
+              </div>
+              <div className="w-48">
+                <CustomDropdown
+                  options={statuses.map(status => ({ value: status.value, label: status.label }))}
+                  value={selectedStatus}
+                  onChange={setSelectedStatus}
+                  placeholder="All Status"
+                />
+              </div>
             </div>
           </div>
           
