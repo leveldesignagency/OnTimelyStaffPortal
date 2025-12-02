@@ -121,7 +121,7 @@ const CompanyDetailPage: React.FC = () => {
   if (!company) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-600">Company not found</p>
+        <p className="text-gray-600 dark:text-gray-400">Company not found</p>
         <button onClick={() => navigate('/companies')} className="btn-primary mt-4">
           Back to Companies
         </button>
@@ -130,12 +130,12 @@ const CompanyDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
       {/* Header */}
       <div className="mb-10">
         <button 
           onClick={() => navigate('/companies')}
-          className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
+          className="flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-100 mb-4"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Companies
@@ -172,10 +172,10 @@ const CompanyDetailPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="flex items-center">
-                  <h1 className="text-2xl font-bold text-gray-900">{company.name}</h1>
+                  <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{company.name}</h1>
                   <button
                     onClick={() => setEditingCompanyName(true)}
-                    className="ml-3 text-gray-600 hover:text-gray-900"
+                    className="ml-3 text-gray-600 hover:text-gray-900 dark:text-gray-100"
                   >
                     <Edit className="w-5 h-5" />
                   </button>
@@ -192,7 +192,7 @@ const CompanyDetailPage: React.FC = () => {
         <div className="bg-white p-6 rounded-lg border">
           <div className="flex items-center mb-2">
             <Building2 className="w-5 h-5 text-green-600 mr-2" />
-            <h3 className="text-sm font-medium text-gray-600">Subscription Plan</h3>
+            <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Subscription Plan</h3>
           </div>
           <p className="text-2xl font-bold text-gray-900 capitalize">{company.subscription_plan || 'basic'}</p>
         </div>
@@ -200,24 +200,24 @@ const CompanyDetailPage: React.FC = () => {
         <div className="bg-white p-6 rounded-lg border">
           <div className="flex items-center mb-2">
             <Users className="w-5 h-5 text-green-600 mr-2" />
-            <h3 className="text-sm font-medium text-gray-600">Max Users</h3>
+            <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Max Users</h3>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{company.max_users || 5}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{company.max_users || 5}</p>
         </div>
         
         <div className="bg-white p-6 rounded-lg border">
           <div className="flex items-center mb-2">
             <Users className="w-5 h-5 text-green-600 mr-2" />
-            <h3 className="text-sm font-medium text-gray-600">Current Users</h3>
+            <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">Current Users</h3>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{users.length}</p>
         </div>
       </div>
 
       {/* Users List */}
       <div className="bg-white rounded-lg border">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Company Users ({users.length})</h2>
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Company Users ({users.length})</h2>
         </div>
         
         <div className="overflow-x-auto">
@@ -236,10 +236,10 @@ const CompanyDetailPage: React.FC = () => {
               {users.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{user.name}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-600">{user.email}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{user.email}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {editingUserRole === user.id ? (
@@ -278,7 +278,7 @@ const CompanyDetailPage: React.FC = () => {
                       {user.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {new Date(user.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -307,7 +307,7 @@ const CompanyDetailPage: React.FC = () => {
           {users.length === 0 && (
             <div className="text-center py-12">
               <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No users found for this company</p>
+              <p className="text-gray-600 dark:text-gray-400">No users found for this company</p>
             </div>
           )}
         </div>

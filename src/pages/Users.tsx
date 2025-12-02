@@ -505,7 +505,7 @@ const UsersPage: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
       {/* Success Message */}
       {showSuccess && (
         <div className="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50">
@@ -516,8 +516,8 @@ const UsersPage: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">User Management</h1>
-          <p className="text-gray-600 text-lg">Manage all users across companies</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">User Management</h1>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">Manage all users across companies</p>
         </div>
         <div className="flex gap-3">
           <button
@@ -538,7 +538,7 @@ const UsersPage: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-10">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 mb-10">
         <div className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-64">
             <div className="relative">
@@ -559,7 +559,7 @@ const UsersPage: React.FC = () => {
               onClick={() => setShowStatusDropdown(!showStatusDropdown)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white text-left flex items-center justify-between min-w-[140px]"
             >
-              <span className="text-gray-900">
+              <span className="text-gray-900 dark:text-gray-100">
                 {statusFilter === 'all' ? 'All Statuses' : 
                  statusFilter === 'online' ? 'Online' :
                  statusFilter === 'offline' ? 'Offline' :
@@ -644,8 +644,8 @@ const UsersPage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-xl shadow-md border border-gray-200 mb-10">
-        <div className="border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 mb-10">
+        <div className="border-b border-gray-200 dark:border-gray-700">
           <nav className="-mb-px flex space-x-8 px-6">
             <button
               onClick={() => setActiveTab('active')}
@@ -743,12 +743,12 @@ const UsersPage: React.FC = () => {
                         )}
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{user.name}</div>
-                        <div className="text-sm text-gray-500">{user.email}</div>
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{user.name}</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">{user.email}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                     {getCompanyName(user.company_id)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -761,7 +761,7 @@ const UsersPage: React.FC = () => {
                       {user.status || 'offline'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {user.last_seen ? new Date(user.last_seen).toLocaleDateString() : 'Never'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -975,11 +975,11 @@ const UsersPage: React.FC = () => {
               <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                 <Key className="h-6 w-6 text-green-600" />
               </div>
-              <h2 className="text-xl font-semibold text-gray-900">User Created Successfully!</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">User Created Successfully!</h2>
               <p className="text-gray-600 mt-2">Welcome email has been sent with login credentials.</p>
             </div>
             
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 mb-6">
               <h3 className="text-sm font-medium text-gray-900 mb-3">User Details</h3>
               <div className="space-y-2 text-sm">
                 <div><span className="font-medium">Name:</span> {passwordModalData.name}</div>
@@ -1026,7 +1026,7 @@ const UsersPage: React.FC = () => {
               <h2 className="text-xl font-semibold">Bulk Add Users</h2>
               <button
                 onClick={() => setShowBulkModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 dark:text-gray-400"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -1117,7 +1117,7 @@ const UsersPage: React.FC = () => {
                         onClick={() => setShowBulkRoleDropdown(!showBulkRoleDropdown)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white text-left flex items-center justify-between"
                       >
-                        <span className="text-gray-900">
+                        <span className="text-gray-900 dark:text-gray-100">
                           {bulkRole === 'user' ? 'User' : 'Master Admin'}
                         </span>
                         <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${showBulkRoleDropdown ? 'rotate-180' : ''}`} />
@@ -1155,7 +1155,7 @@ const UsersPage: React.FC = () => {
               {bulkPreview.length > 0 && (
                 <div>
                   <h3 className="text-lg font-medium mb-3">Preview ({bulkPreview.length} users)</h3>
-                  <div className="bg-gray-50 rounded-lg p-4 max-h-48 overflow-y-auto">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 max-h-48 overflow-y-auto">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {bulkPreview.map((user, index) => (
                         <div key={index} className="text-sm">
@@ -1191,7 +1191,7 @@ const UsersPage: React.FC = () => {
       {/* Custom Delete Confirmation Modal */}
       {showDeleteModal && userToDelete && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
             <div className="p-6">
               {/* Header */}
               <div className="flex items-center mb-4">
@@ -1199,8 +1199,8 @@ const UsersPage: React.FC = () => {
                   <Trash2 className="w-5 h-5 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Delete User</h3>
-                  <p className="text-sm text-gray-500">This action cannot be undone</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Delete User</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">This action cannot be undone</p>
                 </div>
               </div>
               

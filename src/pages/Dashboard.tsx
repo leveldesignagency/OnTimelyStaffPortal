@@ -114,76 +114,76 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
       {/* Header */}
       <div className="mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-        <p className="text-gray-600 text-lg">Overview of your OnTimely application</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Dashboard</h1>
+        <p className="text-gray-600 dark:text-gray-400 text-lg">Overview of your OnTimely application</p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
             <div className="p-3 bg-green-100 rounded-xl">
               <Building2 className="w-6 h-6 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Companies</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalCompanies}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Companies</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.totalCompanies}</p>
             </div>
           </div>
-          <div className="mt-4 flex items-center text-sm text-gray-600">
+          <div className="mt-4 flex items-center text-sm text-gray-600 dark:text-gray-400">
             <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
             <span className="text-green-600">+{stats.newCompaniesThisMonth} this month</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
             <div className="p-3 bg-green-100 rounded-xl">
               <Users className="w-6 h-6 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Users</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Users</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.totalUsers}</p>
             </div>
           </div>
-          <div className="mt-4 flex items-center text-sm text-gray-600">
+          <div className="mt-4 flex items-center text-sm text-gray-600 dark:text-gray-400">
             <UserPlus className="w-4 h-4 text-green-500 mr-1" />
             <span className="text-green-600 font-medium">+{stats.newUsersThisMonth} this month</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
             <div className="p-3 bg-purple-100 rounded-xl">
               <Activity className="w-6 h-6 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Online Users</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.onlineUsers}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Online Users</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.onlineUsers}</p>
             </div>
           </div>
-          <div className="mt-4 flex items-center text-sm text-gray-600">
+          <div className="mt-4 flex items-center text-sm text-gray-600 dark:text-gray-400">
             <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
             <span className="text-green-600 font-medium">Active now</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 hover:shadow-lg transition-shadow duration-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center">
             <div className="p-3 bg-orange-100 rounded-xl">
               <TrendingUp className="w-6 h-6 text-orange-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Growth Rate</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Growth Rate</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {stats.totalCompanies > 0 ? Math.round((stats.newCompaniesThisMonth / stats.totalCompanies) * 100) : 0}%
               </p>
             </div>
           </div>
-          <div className="mt-4 flex items-center text-sm text-gray-600">
+          <div className="mt-4 flex items-center text-sm text-gray-600 dark:text-gray-400">
             {/* <Clock className="w-4 h-4 text-orange-500 mr-1" /> */}
             <span className="text-orange-600">Monthly</span>
           </div>
@@ -193,10 +193,10 @@ const Dashboard: React.FC = () => {
       {/* Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
         {/* Recent Companies */}
-        <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-green-50 to-transparent">
-            <h2 className="text-xl font-bold text-gray-900 mb-1">Recent Companies</h2>
-            <p className="text-sm text-gray-600">Latest companies added to the platform</p>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-green-50 dark:from-green-900/20 to-transparent">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">Recent Companies</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Latest companies added to the platform</p>
           </div>
           <div className="p-6">
             {recentCompanies.length > 0 ? (
@@ -208,13 +208,13 @@ const Dashboard: React.FC = () => {
                         <Building className="w-4 h-4 text-green-600" />
                       </div>
                       <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900">{company.name}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{company.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           {company.subscription_plan || 'basic'} plan • {company.max_users || 5} users max
                         </p>
                       </div>
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
                       {new Date(company.created_at).toLocaleDateString()}
                     </div>
                   </div>
@@ -222,18 +222,18 @@ const Dashboard: React.FC = () => {
               </div>
             ) : (
               <div className="text-center py-8">
-                <Building className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                <p className="text-gray-500">No companies yet</p>
+                <Building className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+                <p className="text-gray-500 dark:text-gray-400">No companies yet</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Recent Users */}
-        <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-transparent">
-            <h2 className="text-xl font-bold text-gray-900 mb-1">Recent Users</h2>
-            <p className="text-sm text-gray-600">Latest users who joined the platform</p>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-blue-50 dark:from-blue-900/20 to-transparent">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">Recent Users</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Latest users who joined the platform</p>
           </div>
           <div className="p-6">
             {recentUsers.length > 0 ? (
@@ -245,13 +245,13 @@ const Dashboard: React.FC = () => {
                         <Users className="w-4 h-4 text-green-600" />
                       </div>
                       <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{user.name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
                           {user.role || 'user'} • {user.status || 'offline'}
                         </p>
                       </div>
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
                       {new Date(user.created_at).toLocaleDateString()}
                     </div>
                   </div>
@@ -260,7 +260,7 @@ const Dashboard: React.FC = () => {
             ) : (
               <div className="text-center py-8">
                 <Users className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                <p className="text-gray-500">No users yet</p>
+                <p className="text-gray-500 dark:text-gray-400">No users yet</p>
               </div>
             )}
           </div>
@@ -268,17 +268,17 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-xl shadow-md border border-gray-200 p-8">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-8">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <button 
             onClick={() => navigate('/companies?openModal=create')}
-            className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md"
+            className="p-6 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl hover:border-green-500 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 hover:shadow-md"
           >
             <div className="text-center">
-              <Building2 className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-900">Add Company</p>
-              <p className="text-xs text-gray-500">Create a new company</p>
+              <Building2 className="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+              <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Add Company</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Create a new company</p>
             </div>
           </button>
           
@@ -287,9 +287,9 @@ const Dashboard: React.FC = () => {
             className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md"
           >
             <div className="text-center">
-              <UserPlus className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-900">Add User</p>
-              <p className="text-xs text-gray-500">Create a new user</p>
+              <UserPlus className="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+              <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Add User</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Create a new user</p>
             </div>
           </button>
           
@@ -298,9 +298,9 @@ const Dashboard: React.FC = () => {
             className="p-6 border-2 border-dashed border-gray-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200 hover:shadow-md"
           >
             <div className="text-center">
-              <Activity className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-900">View Analytics</p>
-              <p className="text-xs text-gray-500">Check detailed metrics</p>
+              <Activity className="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
+              <p className="text-sm font-medium text-gray-900 dark:text-gray-100">View Analytics</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Check detailed metrics</p>
             </div>
           </button>
         </div>

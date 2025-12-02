@@ -137,13 +137,13 @@ const Analytics: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
       {/* Page Header */}
       <div className="mb-10">
         <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Analytics & Monitoring</h1>
-          <p className="text-gray-600 text-lg">Track user activity, system performance, and usage patterns</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Analytics & Monitoring</h1>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">Track user activity, system performance, and usage patterns</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="w-48">
@@ -171,11 +171,11 @@ const Analytics: React.FC = () => {
         {overviewStats.map((stat, index) => {
           const Icon = stat.icon
           return (
-            <div key={index} className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
+            <div key={index} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{stat.title}</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stat.value}</p>
                 </div>
                 <div className={`p-3 rounded-lg ${stat.color}`}>
                   <Icon className="h-6 w-6 text-white" />
@@ -196,13 +196,13 @@ const Analytics: React.FC = () => {
 
       {/* Main Charts - COMMENTED OUT DUE TO MISSING IMPORTS */}
       {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">User Activity Over Time</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">User Activity Over Time</h3>
           <p className="text-gray-500 text-center py-20">Chart temporarily disabled - imports commented out</p>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Device Usage Distribution</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Device Usage Distribution</h3>
           <p className="text-gray-500 text-center py-20">Chart temporarily disabled - imports commented out</p>
         </div>
       </div> */}
@@ -210,15 +210,15 @@ const Analytics: React.FC = () => {
       {/* Feature Usage & Performance */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
         {/* Top Features */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Feature Usage</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Feature Usage</h3>
           <div className="space-y-4">
             {topFeatures.map((feature, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium text-gray-900">{feature.feature}</span>
-                    <span className="text-sm text-gray-500">{feature.usage}%</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{feature.feature}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">{feature.usage}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div 
@@ -234,14 +234,14 @@ const Analytics: React.FC = () => {
         </div>
 
         {/* Performance Metrics */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">System Performance</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">System Performance</h3>
           <div className="space-y-4">
             {performanceMetrics.map((metric, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{metric.metric}</p>
-                  <p className="text-xs text-gray-500">Target: {metric.target}</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{metric.metric}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Target: {metric.target}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className={`text-lg font-bold ${getStatusColor(metric.status)}`}>
@@ -258,37 +258,37 @@ const Analytics: React.FC = () => {
       </div>
 
       {/* Detailed Analytics */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md mb-10">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Detailed Analytics</h3>
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-md mb-10">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Detailed Analytics</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Geographic Distribution */}
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
+          <div className="text-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
             {/* <Globe className="h-8 w-8 text-blue-500 mx-auto mb-2" /> */}
-            <h4 className="font-medium text-gray-900">Geographic Distribution</h4>
+            <h4 className="font-medium text-gray-900 dark:text-gray-100">Geographic Distribution</h4>
             <p className="text-sm text-gray-600 mt-1">Top regions: US (45%), EU (32%), Asia (23%)</p>
           </div>
 
           {/* Platform Usage */}
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
+          <div className="text-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
             {/* <Monitor className="h-8 w-8 text-green-500 mx-auto mb-2" /> */}
-            <h4 className="font-medium text-gray-900">Platform Usage</h4>
+            <h4 className="font-medium text-gray-900 dark:text-gray-100">Platform Usage</h4>
             <p className="text-sm text-gray-600 mt-1">Desktop: 65%, Mobile: 25%, Tablet: 10%</p>
           </div>
 
           {/* User Engagement */}
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
+          <div className="text-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
             <Activity className="h-8 w-8 text-purple-500 mx-auto mb-2" />
-            <h4 className="font-medium text-gray-900">User Engagement</h4>
+            <h4 className="font-medium text-gray-900 dark:text-gray-100">User Engagement</h4>
             <p className="text-sm text-gray-600 mt-1">Avg. daily active users: 8,234</p>
           </div>
         </div>
       </div>
 
       {/* Export & Actions */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-md">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Export & Reports</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Export & Reports</h3>
             <p className="text-gray-600 mt-1">Generate detailed reports and export data</p>
           </div>
           <div className="flex items-center gap-3">

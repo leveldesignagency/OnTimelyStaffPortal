@@ -142,11 +142,11 @@ const DesktopApp: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
       {/* Page Header */}
       <div className="mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Desktop App Support</h1>
-        <p className="text-gray-600 text-lg">Manage desktop app installation, updates, and provide user support</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Desktop App Support</h1>
+        <p className="text-gray-600 dark:text-gray-400 text-lg">Manage desktop app installation, updates, and provide user support</p>
       </div>
 
       {/* App Stats */}
@@ -157,8 +157,8 @@ const DesktopApp: React.FC = () => {
               <Package className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Current Version</p>
-              <p className="text-2xl font-bold text-gray-900">{appStats.currentVersion}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Current Version</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{appStats.currentVersion}</p>
             </div>
           </div>
         </div>
@@ -168,8 +168,8 @@ const DesktopApp: React.FC = () => {
               <Download className="h-6 w-6 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Downloads</p>
-              <p className="text-2xl font-bold text-gray-900">{appStats.totalDownloads}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Downloads</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{appStats.totalDownloads}</p>
             </div>
           </div>
         </div>
@@ -179,8 +179,8 @@ const DesktopApp: React.FC = () => {
               <Users className="h-6 w-6 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Active Users</p>
-              <p className="text-2xl font-bold text-gray-900">{appStats.activeUsers}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Users</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{appStats.activeUsers}</p>
             </div>
           </div>
         </div>
@@ -190,8 +190,8 @@ const DesktopApp: React.FC = () => {
               <Clock className="h-6 w-6 text-orange-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Last Update</p>
-              <p className="text-lg font-bold text-gray-900">{formatDate(appStats.lastUpdate)}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Last Update</p>
+              <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{formatDate(appStats.lastUpdate)}</p>
             </div>
           </div>
         </div>
@@ -199,7 +199,7 @@ const DesktopApp: React.FC = () => {
 
       {/* Tabs */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-md">
-        <div className="border-b border-gray-200">
+        <div className="border-b border-gray-200 dark:border-gray-700">
           <nav className="flex space-x-8 px-6">
             {tabs.map((tab) => {
               const Icon = tab.icon
@@ -226,17 +226,17 @@ const DesktopApp: React.FC = () => {
           {selectedTab === 'overview' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Updates</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Recent Updates</h3>
                 <div className="space-y-4">
                   {recentUpdates.map((update, index) => (
-                    <div key={index} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div key={index} className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                       <div className="p-2 bg-green-100 rounded-lg">
                         <Package className="h-5 w-5 text-green-600" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="font-medium text-gray-900">v{update.version}</span>
-                          <span className="text-sm text-gray-500">{update.date}</span>
+                          <span className="font-medium text-gray-900 dark:text-gray-100">v{update.version}</span>
+                          <span className="text-sm text-gray-500 dark:text-gray-400">{update.date}</span>
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                             update.type === 'major' ? 'bg-purple-100 text-purple-800' :
                             update.type === 'feature' ? 'bg-green-100 text-green-800' :
@@ -245,7 +245,7 @@ const DesktopApp: React.FC = () => {
                             {update.type}
                           </span>
                         </div>
-                        <p className="text-gray-600">{update.description}</p>
+                        <p className="text-gray-600 dark:text-gray-400">{update.description}</p>
                       </div>
                       <CheckCircle className="h-5 w-5 text-green-500 mt-1" />
                     </div>
@@ -263,7 +263,7 @@ const DesktopApp: React.FC = () => {
                   <div key={index} className="border border-gray-200 rounded-lg p-6">
                     <div className="text-center mb-4">
                       <div className="text-4xl mb-2">{guide.icon}</div>
-                      <h3 className="text-lg font-semibold text-gray-900">{guide.platform}</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{guide.platform}</h3>
                     </div>
                     
                     <div className="space-y-3 mb-4">
@@ -272,7 +272,7 @@ const DesktopApp: React.FC = () => {
                           <span className="flex-shrink-0 w-6 h-6 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center text-sm font-medium">
                             {stepIndex + 1}
                           </span>
-                          <p className="text-sm text-gray-600">{step}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{step}</p>
                         </div>
                       ))}
                     </div>
@@ -282,7 +282,7 @@ const DesktopApp: React.FC = () => {
                         <Download className="h-4 w-4" />
                         Download for {guide.platform}
                       </button>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
                         <strong>System Requirements:</strong> {guide.systemRequirements}
                       </div>
                     </div>
@@ -296,12 +296,12 @@ const DesktopApp: React.FC = () => {
           {selectedTab === 'troubleshooting' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Common Issues & Solutions</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Common Issues & Solutions</h3>
                 <div className="space-y-4">
                   {troubleshootingIssues.map((item, index) => (
                     <div key={index} className="border border-gray-200 rounded-lg p-4">
                       <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">{item.issue}</h4>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">{item.issue}</h4>
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getSeverityColor(item.severity)}`}>
                           {item.severity}
                         </span>
@@ -319,8 +319,8 @@ const DesktopApp: React.FC = () => {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Update Management</h3>
-                  <p className="text-gray-600">Manage app updates and release schedules</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Update Management</h3>
+                  <p className="text-gray-600 dark:text-gray-400">Manage app updates and release schedules</p>
                 </div>
                 <button className="btn-primary">
                   <RefreshCw className="h-4 w-4" />
@@ -328,11 +328,11 @@ const DesktopApp: React.FC = () => {
                 </button>
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h4 className="font-medium text-gray-900 mb-2">Update Status</h4>
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6">
+                <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Update Status</h4>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-600">Your app is up to date (v{appStats.currentVersion})</span>
+                  <span className="text-gray-600 dark:text-gray-400">Your app is up to date (v{appStats.currentVersion})</span>
                 </div>
               </div>
             </div>
@@ -342,14 +342,14 @@ const DesktopApp: React.FC = () => {
           {selectedTab === 'documentation' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Documentation & Resources</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Documentation & Resources</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors cursor-pointer">
                     <div className="flex items-center gap-3">
                       <FileText className="h-8 w-8 text-green-500" />
                       <div>
-                        <h4 className="font-medium text-gray-900">User Manual</h4>
-                        <p className="text-sm text-gray-600">Complete guide to using OnTimely</p>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">User Manual</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Complete guide to using OnTimely</p>
                       </div>
                     </div>
                   </div>
@@ -357,8 +357,8 @@ const DesktopApp: React.FC = () => {
                     <div className="flex items-center gap-3">
                       <Video className="h-8 w-8 text-green-500" />
                       <div>
-                        <h4 className="font-medium text-gray-900">Video Tutorials</h4>
-                        <p className="text-sm text-gray-600">Step-by-step video guides</p>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Video Tutorials</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Step-by-step video guides</p>
                       </div>
                     </div>
                   </div>
@@ -366,8 +366,8 @@ const DesktopApp: React.FC = () => {
                     <div className="flex items-center gap-3">
                       <Settings className="h-8 w-8 text-purple-500" />
                       <div>
-                        <h4 className="font-medium text-gray-900">Configuration Guide</h4>
-                        <p className="text-sm text-gray-600">Advanced settings and customization</p>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Configuration Guide</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Advanced settings and customization</p>
                       </div>
                     </div>
                   </div>
@@ -375,8 +375,8 @@ const DesktopApp: React.FC = () => {
                     <div className="flex items-center gap-3">
                       <AlertTriangle className="h-8 w-8 text-orange-500" />
                       <div>
-                        <h4 className="font-medium text-gray-900">Troubleshooting</h4>
-                        <p className="text-sm text-gray-600">Common issues and solutions</p>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Troubleshooting</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Common issues and solutions</p>
                       </div>
                     </div>
                   </div>

@@ -225,13 +225,13 @@ const Companies: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
       {/* Header */}
       <div className="mb-10">
         <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Companies</h1>
-          <p className="text-gray-600 text-lg">Manage company accounts and subscriptions</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Companies</h1>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">Manage company accounts and subscriptions</p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
@@ -251,8 +251,8 @@ const Companies: React.FC = () => {
             <Building2 className="w-8 h-8 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Companies</p>
-              <p className="text-2xl font-bold text-gray-900">{companies.length}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Companies</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{companies.length}</p>
             </div>
           </div>
         </div>
@@ -262,8 +262,8 @@ const Companies: React.FC = () => {
               <Users className="w-8 h-8 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Users</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Users</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {companies.reduce((sum, c) => sum + (c.max_users || 5), 0)}
               </p>
             </div>
@@ -275,8 +275,8 @@ const Companies: React.FC = () => {
             <Building2 className="w-8 h-8 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Premium Plans</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Premium Plans</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {companies.filter(c => c.subscription_plan === 'premium').length}
               </p>
             </div>
@@ -288,8 +288,8 @@ const Companies: React.FC = () => {
             <Users className="w-8 h-8 text-orange-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Enterprise Plans</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Enterprise Plans</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {companies.filter(c => c.subscription_plan === 'enterprise').length}
               </p>
             </div>
@@ -299,7 +299,7 @@ const Companies: React.FC = () => {
 
       {/* Tabs */}
       <div className="mb-10">
-        <div className="border-b border-gray-200">
+        <div className="border-b border-gray-200 dark:border-gray-700">
           <nav className="-mb-px flex space-x-8">
             <button
               onClick={() => setActiveTab('active')}
@@ -347,7 +347,7 @@ const Companies: React.FC = () => {
               onClick={() => setShowPlanDropdown(!showPlanDropdown)}
               className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white text-left flex items-center justify-between min-w-[140px]"
             >
-              <span className="text-gray-900">
+              <span className="text-gray-900 dark:text-gray-100">
                 {planFilter === 'all' ? 'All Plans' : 
                  planFilter === 'basic' ? 'Basic' :
                  planFilter === 'premium' ? 'Premium' : 'Enterprise'}
@@ -397,8 +397,8 @@ const Companies: React.FC = () => {
                   <div className="flex items-center">
                     <Building2 className="w-8 h-8 text-green-600 mr-3" />
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{company.name}</h3>
-                      <p className="text-sm text-gray-500">ID: {company.id.slice(0, 8)}...</p>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{company.name}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">ID: {company.id.slice(0, 8)}...</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -407,18 +407,18 @@ const Companies: React.FC = () => {
                 </div>
 
                 <div className="space-y-3 mb-4">
-                  <div className="flex items-center text-sm text-gray-600">
+                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                     <Users className="w-4 h-4 mr-2" />
                     Max Users: {company.max_users || 5}
                   </div>
-                  <div className="flex items-center text-sm text-gray-600">
+                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                     <Building2 className="w-4 h-4 mr-2" />
                     Plan: {company.subscription_plan || 'basic'}
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between pt-4 border-t">
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
                     Created {new Date(company.created_at).toLocaleDateString()}
                   </span>
                   <div className="flex items-center space-x-2">
@@ -429,7 +429,7 @@ const Companies: React.FC = () => {
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
-                    <button className="text-gray-400 hover:text-gray-600">
+                    <button className="text-gray-400 hover:text-gray-600 dark:text-gray-400">
                       <MoreVertical className="w-4 h-4" />
                     </button>
                   </div>
@@ -450,8 +450,8 @@ const Companies: React.FC = () => {
                   <div className="flex items-center">
                     <Building2 className="w-8 h-8 text-red-600 mr-3" />
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{company.name}</h3>
-                      <p className="text-sm text-gray-500">ID: {company.id.slice(0, 8)}...</p>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{company.name}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">ID: {company.id.slice(0, 8)}...</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -462,11 +462,11 @@ const Companies: React.FC = () => {
                 </div>
 
                 <div className="space-y-3 mb-4">
-                  <div className="flex items-center text-sm text-gray-600">
+                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                     <Users className="w-4 h-4 mr-2" />
                     Max Users: {company.max_users || 5}
                   </div>
-                  <div className="flex items-center text-sm text-gray-600">
+                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
                     <Building2 className="w-4 h-4 mr-2" />
                     Plan: {company.subscription_plan || 'basic'}
                   </div>
@@ -477,7 +477,7 @@ const Companies: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-between pt-4 border-t">
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
                     Created {new Date(company.created_at).toLocaleDateString()}
                   </span>
                   <div className="flex items-center space-x-2">
@@ -500,10 +500,10 @@ const Companies: React.FC = () => {
       {((activeTab === 'active' && filteredCompanies.length === 0) || (activeTab === 'deleted' && deletedCompanies.length === 0)) && !loading && (
         <div className="text-center py-12">
           <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
             {activeTab === 'active' ? 'No companies found' : 'No deleted companies found'}
           </h3>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             {activeTab === 'active' ? 'Try adjusting your search or filters.' : 'Deleted companies will appear here for 30 days.'}
           </p>
         </div>
@@ -540,7 +540,7 @@ const Companies: React.FC = () => {
                 className="input w-full"
                 min="1"
               />
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 * Company name is required. Subscription plan and max users will use defaults if not specified.
               </p>
             </div>
@@ -573,8 +573,8 @@ const Companies: React.FC = () => {
                 <Trash2 className="w-5 h-5 text-red-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Delete Company</h3>
-                <p className="text-sm text-gray-500">This action can be undone within 30 days</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Delete Company</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">This action can be undone within 30 days</p>
               </div>
             </div>
 

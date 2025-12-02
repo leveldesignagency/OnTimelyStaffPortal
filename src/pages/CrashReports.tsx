@@ -194,55 +194,55 @@ const CrashReports: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
       <div className="mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Crash Reports</h1>
-        <p className="text-gray-600 text-lg">Monitor and manage app crashes and errors</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Crash Reports</h1>
+        <p className="text-gray-600 dark:text-gray-400 text-lg">Monitor and manage app crashes and errors</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-10">
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Total Reports</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Total Reports</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.total}</p>
             </div>
             <FileText className="h-8 w-8 text-gray-400" />
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Open</p>
-              <p className="text-2xl font-bold text-red-600">{stats.open}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Open</p>
+              <p className="text-2xl font-bold text-red-600 dark:text-red-400">{stats.open}</p>
             </div>
             <AlertTriangle className="h-8 w-8 text-red-400" />
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">In Progress</p>
-              <p className="text-2xl font-bold text-yellow-600">{stats.inProgress}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">In Progress</p>
+              <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-400">{stats.inProgress}</p>
             </div>
             <Clock className="h-8 w-8 text-yellow-400" />
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Resolved</p>
-              <p className="text-2xl font-bold text-green-600">{stats.resolved}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Resolved</p>
+              <p className="text-2xl font-bold text-green-600 dark:text-green-400">{stats.resolved}</p>
             </div>
             <CheckCircle className="h-8 w-8 text-green-400" />
           </div>
         </div>
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Critical</p>
-              <p className="text-2xl font-bold text-red-600">{stats.critical}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Critical</p>
+              <p className="text-2xl font-bold text-red-600 dark:text-red-400">{stats.critical}</p>
             </div>
             <AlertTriangle className="h-8 w-8 text-red-400" />
           </div>
@@ -250,7 +250,7 @@ const CrashReports: React.FC = () => {
       </div>
 
       {/* Filters and Search */}
-      <div className="bg-white rounded-xl shadow-md mb-10 p-6 border border-gray-200">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md mb-10 p-6 border border-gray-200 dark:border-gray-700">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
@@ -317,23 +317,23 @@ const CrashReports: React.FC = () => {
       </div>
 
       {/* Reports Table */}
-      <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
         {loading ? (
           <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading crash reports...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 dark:border-green-500 mx-auto mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-400">Loading crash reports...</p>
           </div>
         ) : filteredReports.length === 0 ? (
           <div className="p-8 text-center">
-            <AlertTriangle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No crash reports found</p>
+            <AlertTriangle className="h-12 w-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+            <p className="text-gray-600 dark:text-gray-400">No crash reports found</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Error
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -356,17 +356,17 @@ const CrashReports: React.FC = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {filteredReports.map((report) => {
                   const isExpanded = expandedRows.has(report.id)
                   return (
                     <React.Fragment key={report.id}>
-                      <tr className={`hover:bg-gray-50 ${isExpanded ? 'bg-gray-50' : ''}`}>
+                      <tr className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 ${isExpanded ? 'bg-gray-50 dark:bg-gray-700/50' : ''}`}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => toggleRowExpansion(report.id)}
-                              className="text-gray-400 hover:text-gray-600"
+                              className="text-gray-400 hover:text-gray-600 dark:text-gray-400"
                             >
                               {isExpanded ? (
                                 <ChevronUp className="h-4 w-4" />
@@ -375,34 +375,34 @@ const CrashReports: React.FC = () => {
                               )}
                             </button>
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-900 truncate">
+                              <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                                 {truncateText(report.error_message, 60)}
                               </p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
                                 {report.error_type} • v{report.app_version}
                               </p>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
+                          <div className="text-sm text-gray-900 dark:text-gray-100">
                             {report.user_email || 'Unknown'}
                           </div>
                           {report.screen_name && (
-                            <div className="text-xs text-gray-500">{report.screen_name}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">{report.screen_name}</div>
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-2">
                             {report.platform === 'ios' ? (
-                              <Smartphone className="h-4 w-4 text-gray-400" />
+                              <Smartphone className="h-4 w-4 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
                             ) : (
-                              <Monitor className="h-4 w-4 text-gray-400" />
+                              <Monitor className="h-4 w-4 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
                             )}
-                            <span className="text-sm text-gray-900 capitalize">{report.platform}</span>
+                            <span className="text-sm text-gray-900 dark:text-gray-100 capitalize">{report.platform}</span>
                           </div>
                           {report.device_model && (
-                            <div className="text-xs text-gray-500">{report.device_model}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">{report.device_model}</div>
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -412,7 +412,7 @@ const CrashReports: React.FC = () => {
                           {getStatusBadge(report.status)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
+                          <div className="text-sm text-gray-900 dark:text-gray-100">
                             {formatDate(report.created_at)}
                           </div>
                         </td>
@@ -442,32 +442,32 @@ const CrashReports: React.FC = () => {
                       </tr>
                       {isExpanded && (
                         <tr>
-                          <td colSpan={7} className="px-6 py-4 bg-gray-50">
+                          <td colSpan={7} className="px-6 py-4 bg-gray-50 dark:bg-gray-900">
                             <div className="space-y-3">
                               <div>
-                                <h4 className="text-sm font-medium text-gray-900 mb-1">Full Error Message</h4>
-                                <p className="text-sm text-gray-700 bg-white p-3 rounded border border-gray-200 font-mono">
+                                <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">Full Error Message</h4>
+                                <p className="text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 p-3 rounded border border-gray-200 dark:border-gray-700 font-mono">
                                   {report.error_message}
                                 </p>
                               </div>
                               {report.stack_trace && (
                                 <div>
-                                  <h4 className="text-sm font-medium text-gray-900 mb-1">Stack Trace</h4>
-                                  <pre className="text-xs text-gray-700 bg-white p-3 rounded border border-gray-200 overflow-x-auto max-h-48">
+                                <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">Stack Trace</h4>
+                                <pre className="text-xs text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 p-3 rounded border border-gray-200 dark:border-gray-700 overflow-x-auto max-h-48">
                                     {report.stack_trace}
                                   </pre>
                                 </div>
                               )}
                               {report.action_taken && (
                                 <div>
-                                  <h4 className="text-sm font-medium text-gray-900 mb-1">Action Taken</h4>
-                                  <p className="text-sm text-gray-700">{report.action_taken}</p>
+                                <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">Action Taken</h4>
+                                <p className="text-sm text-gray-700 dark:text-gray-300">{report.action_taken}</p>
                                 </div>
                               )}
                               {report.resolution_notes && (
                                 <div>
-                                  <h4 className="text-sm font-medium text-gray-900 mb-1">Resolution Notes</h4>
-                                  <p className="text-sm text-gray-700">{report.resolution_notes}</p>
+                                <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">Resolution Notes</h4>
+                                <p className="text-sm text-gray-700 dark:text-gray-300">{report.resolution_notes}</p>
                                 </div>
                               )}
                             </div>
@@ -485,16 +485,16 @@ const CrashReports: React.FC = () => {
 
       {/* Detail Modal */}
       {showDetailModal && selectedReport && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Crash Report Details</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Crash Report Details</h2>
               <button
                 onClick={() => {
                   setShowDetailModal(false)
                   setSelectedReport(null)
                 }}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 dark:text-gray-400"
               >
                 <XCircle className="h-6 w-6" />
               </button>
@@ -502,76 +502,76 @@ const CrashReports: React.FC = () => {
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Status</label>
-                  <div className="mt-1">{getStatusBadge(selectedReport.status)}</div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Severity</label>
-                  <div className="mt-1">{getSeverityBadge(selectedReport.severity)}</div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Platform</label>
-                  <div className="mt-1 text-sm text-gray-900 capitalize">{selectedReport.platform}</div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">App Version</label>
-                  <div className="mt-1 text-sm text-gray-900">v{selectedReport.app_version}</div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Device Model</label>
-                  <div className="mt-1 text-sm text-gray-900">{selectedReport.device_model || 'N/A'}</div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">OS Version</label>
-                  <div className="mt-1 text-sm text-gray-900">{selectedReport.os_version || 'N/A'}</div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">User Email</label>
-                  <div className="mt-1 text-sm text-gray-900">{selectedReport.user_email || 'N/A'}</div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Screen</label>
-                  <div className="mt-1 text-sm text-gray-900">{selectedReport.screen_name || 'N/A'}</div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">Created At</label>
-                  <div className="mt-1 text-sm text-gray-900">{formatDate(selectedReport.created_at)}</div>
-                </div>
-                {selectedReport.resolved_at && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Resolved At</label>
-                    <div className="mt-1 text-sm text-gray-900">{formatDate(selectedReport.resolved_at)}</div>
-                  </div>
-                )}
+                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Status</label>
+                <div className="mt-1">{getStatusBadge(selectedReport.status)}</div>
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-500">Error Message</label>
-                <p className="mt-1 text-sm text-gray-900 bg-gray-50 p-3 rounded border border-gray-200 font-mono">
+                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Severity</label>
+                <div className="mt-1">{getSeverityBadge(selectedReport.severity)}</div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Platform</label>
+                <div className="mt-1 text-sm text-gray-900 dark:text-gray-100 capitalize">{selectedReport.platform}</div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">App Version</label>
+                <div className="mt-1 text-sm text-gray-900 dark:text-gray-100">v{selectedReport.app_version}</div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Device Model</label>
+                <div className="mt-1 text-sm text-gray-900 dark:text-gray-100">{selectedReport.device_model || 'N/A'}</div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">OS Version</label>
+                <div className="mt-1 text-sm text-gray-900 dark:text-gray-100">{selectedReport.os_version || 'N/A'}</div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">User Email</label>
+                <div className="mt-1 text-sm text-gray-900 dark:text-gray-100">{selectedReport.user_email || 'N/A'}</div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Screen</label>
+                <div className="mt-1 text-sm text-gray-900 dark:text-gray-100">{selectedReport.screen_name || 'N/A'}</div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Created At</label>
+                <div className="mt-1 text-sm text-gray-900 dark:text-gray-100">{formatDate(selectedReport.created_at)}</div>
+              </div>
+              {selectedReport.resolved_at && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Resolved At</label>
+                  <div className="mt-1 text-sm text-gray-900 dark:text-gray-100">{formatDate(selectedReport.resolved_at)}</div>
+                </div>
+              )}
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Error Message</label>
+                <p className="mt-1 text-sm text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 p-3 rounded border border-gray-200 dark:border-gray-700 font-mono">
                   {selectedReport.error_message}
                 </p>
               </div>
               {selectedReport.stack_trace && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Stack Trace</label>
-                  <pre className="mt-1 text-xs text-gray-900 bg-gray-50 p-3 rounded border border-gray-200 overflow-x-auto max-h-96">
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Stack Trace</label>
+                  <pre className="mt-1 text-xs text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 p-3 rounded border border-gray-200 dark:border-gray-700 overflow-x-auto max-h-96">
                     {selectedReport.stack_trace}
                   </pre>
                 </div>
               )}
               {selectedReport.action_taken && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Action Taken</label>
-                  <p className="mt-1 text-sm text-gray-900">{selectedReport.action_taken}</p>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Action Taken</label>
+                  <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">{selectedReport.action_taken}</p>
                 </div>
               )}
               {selectedReport.resolution_notes && (
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Resolution Notes</label>
-                  <p className="mt-1 text-sm text-gray-900">{selectedReport.resolution_notes}</p>
+                  <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Resolution Notes</label>
+                  <p className="mt-1 text-sm text-gray-900 dark:text-gray-100">{selectedReport.resolution_notes}</p>
                 </div>
               )}
             </div>
-            <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 px-6 py-4 flex justify-end gap-2">
+            <div className="sticky bottom-0 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-end gap-2">
               <button
                 onClick={() => {
                   setShowDetailModal(false)
@@ -599,14 +599,14 @@ const CrashReports: React.FC = () => {
 
       {/* Status Update Modal */}
       {showStatusModal && selectedReport && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900">Update Report Status</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Update Report Status</h2>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
                 <CustomDropdown
                   options={[
                     { value: 'open', label: 'Open' },
@@ -621,33 +621,33 @@ const CrashReports: React.FC = () => {
               </div>
               {(newStatus === 'resolved' || newStatus === 'closed') && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Resolution Notes (Optional)
                   </label>
                   <textarea
                     value={resolutionNotes}
                     onChange={(e) => setResolutionNotes(e.target.value)}
                     rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                     placeholder="Add notes about how this issue was resolved..."
                   />
                 </div>
               )}
             </div>
-            <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
+            <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-2">
               <button
                 onClick={() => {
                   setShowStatusModal(false)
                   setSelectedReport(null)
                   setResolutionNotes('')
                 }}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 Cancel
               </button>
               <button
                 onClick={() => updateReportStatus(selectedReport.id, newStatus, resolutionNotes || undefined)}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                className="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600"
               >
                 Update Status
               </button>

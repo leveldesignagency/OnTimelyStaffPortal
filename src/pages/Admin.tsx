@@ -322,17 +322,17 @@ const Admin: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
       {/* Page Header */}
       <div className="mb-10">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Tools</h1>
-        <p className="text-gray-600 text-lg">System administration, monitoring, and management tools</p>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Admin Tools</h1>
+        <p className="text-gray-600 dark:text-gray-400 text-lg">System administration, monitoring, and management tools</p>
       </div>
 
       {/* System Health Overview */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-md mb-10">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-md mb-10">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">System Health Overview</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">System Health Overview</h3>
           <div className="flex items-center gap-2">
             <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusBgColor(systemHealth.overall)} ${getStatusColor(systemHealth.overall)}`}>
               {systemHealth.overall}
@@ -348,11 +348,11 @@ const Admin: React.FC = () => {
           {systemMetrics.map((metric, index) => {
             const Icon = metric.icon
             return (
-              <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
+              <div key={index} className="text-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                 <div className={`p-3 rounded-lg ${metric.color} inline-block mb-3`}>
                   <Icon className="h-6 w-6 text-white" />
                 </div>
-                <h4 className="font-medium text-gray-900">{metric.name}</h4>
+                <h4 className="font-medium text-gray-900 dark:text-gray-100">{metric.name}</h4>
                 <p className={`text-2xl font-bold ${getStatusColor(metric.status)}`}>
                   {metric.value}
                 </p>
@@ -365,20 +365,20 @@ const Admin: React.FC = () => {
         </div>
 
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
+          <div className="text-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
             <Server className="h-8 w-8 text-green-500 mx-auto mb-2" />
-            <h4 className="font-medium text-gray-900">Uptime</h4>
+            <h4 className="font-medium text-gray-900 dark:text-gray-100">Uptime</h4>
             <p className="text-2xl font-bold text-green-600">{systemHealth.uptime}</p>
           </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
+          <div className="text-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
             <Users className="h-8 w-8 text-green-500 mx-auto mb-2" />
-            <h4 className="font-medium text-gray-900">Active Users</h4>
-            <p className="text-2xl font-bold text-gray-900">{systemHealth.activeUsers}</p>
+            <h4 className="font-medium text-gray-900 dark:text-gray-100">Active Users</h4>
+            <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{systemHealth.activeUsers}</p>
           </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
+          <div className="text-center p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
             <Activity className="h-8 w-8 text-orange-500 mx-auto mb-2" />
-            <h4 className="font-medium text-gray-900">Server Load</h4>
-            <p className="text-2xl font-bold text-gray-900">{systemHealth.serverLoad}</p>
+            <h4 className="font-medium text-gray-900 dark:text-gray-100">Server Load</h4>
+            <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{systemHealth.serverLoad}</p>
           </div>
         </div>
       </div>
@@ -396,16 +396,16 @@ const Admin: React.FC = () => {
               <div className={`p-3 rounded-lg ${action.color} inline-block mb-4`}>
                 <Icon className="h-6 w-6 text-white" />
               </div>
-              <h3 className="font-medium text-gray-900 mb-2">{action.title}</h3>
-              <p className="text-sm text-gray-600">{action.description}</p>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">{action.title}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{action.description}</p>
             </button>
           )
         })}
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-md">
-        <div className="border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md">
+        <div className="border-b border-gray-200 dark:border-gray-700">
           <nav className="flex space-x-8 px-6">
             {tabs.map((tab) => {
               const Icon = tab.icon
@@ -432,20 +432,20 @@ const Admin: React.FC = () => {
           {selectedTab === 'overview' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Incidents</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Recent Incidents</h3>
                 <div className="space-y-4">
                   {recentIncidents.map((incident) => (
                     <div key={incident.id} className="border border-gray-200 rounded-lg p-4">
                       <div className="flex items-start justify-between mb-2">
                         <div>
-                          <h4 className="font-medium text-gray-900">{incident.type}</h4>
-                          <p className="text-sm text-gray-600">{incident.description}</p>
+                          <h4 className="font-medium text-gray-900 dark:text-gray-100">{incident.type}</h4>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{incident.description}</p>
                         </div>
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getSeverityColor(incident.severity)}`}>
                           {incident.severity}
                         </span>
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                         <span>Created: {formatDate(incident.createdAt)}</span>
                         {incident.resolvedAt && (
                           <span>Resolved: {formatDate(incident.resolvedAt)}</span>
@@ -467,10 +467,10 @@ const Admin: React.FC = () => {
           {selectedTab === 'users' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Bulk User Operations</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Bulk User Operations</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="border border-gray-200 rounded-lg p-6">
-                    <h4 className="font-medium text-gray-900 mb-4">Import Users</h4>
+                  <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-4">Import Users</h4>
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -481,11 +481,11 @@ const Admin: React.FC = () => {
                           onClick={() => fileInputRef.current?.click()}
                         >
                           <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
                             {userCsvFile ? userCsvFile.name : 'Drag and drop CSV file here, or click to browse'}
                           </p>
                           {userCsvPreview.length > 0 && (
-                            <p className="text-xs text-green-600 mt-2">
+                            <p className="text-xs text-green-600 dark:text-green-400 mt-2">
                               {userCsvPreview.length} users ready to import
                             </p>
                           )}
@@ -497,7 +497,7 @@ const Admin: React.FC = () => {
                           onChange={handleUserCsvUpload}
                           className="hidden"
                         />
-                        <p className="text-xs text-gray-500 mt-1">CSV format: email,name (one per line)</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">CSV format: email,name (one per line)</p>
                       </div>
                       <button 
                         onClick={handleImportUsers}
@@ -510,8 +510,8 @@ const Admin: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="border border-gray-200 rounded-lg p-6">
-                    <h4 className="font-medium text-gray-900 mb-4">Export Users</h4>
+                  <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-4">Export Users</h4>
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -547,10 +547,10 @@ const Admin: React.FC = () => {
           {selectedTab === 'companies' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Company Management</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Company Management</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="border border-gray-200 rounded-lg p-6">
-                    <h4 className="font-medium text-gray-900 mb-4">Create Company</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-4">Create Company</h4>
                     <div className="space-y-4">
                       <input type="text" placeholder="Company Name" className="input" />
                       <input type="email" placeholder="Admin Email" className="input" />
@@ -568,8 +568,8 @@ const Admin: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="border border-gray-200 rounded-lg p-6">
-                    <h4 className="font-medium text-gray-900 mb-4">Bulk Operations</h4>
+                  <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-4">Bulk Operations</h4>
                     <div className="space-y-4">
                       <div>
                         <input
@@ -610,36 +610,36 @@ const Admin: React.FC = () => {
           {selectedTab === 'monitoring' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Real-time Monitoring</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Real-time Monitoring</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="border border-gray-200 rounded-lg p-6">
-                    <h4 className="font-medium text-gray-900 mb-4">Performance Metrics</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-4">Performance Metrics</h4>
                     <div className="space-y-3">
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Response Time</span>
-                        <span className="text-sm font-medium text-gray-900">180ms</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Response Time</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">180ms</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Throughput</span>
-                        <span className="text-sm font-medium text-gray-900">1,250 req/s</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Throughput</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">1,250 req/s</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">Error Rate</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Error Rate</span>
                         <span className="text-sm font-medium text-green-600">0.02%</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="border border-gray-200 rounded-lg p-6">
-                    <h4 className="font-medium text-gray-900 mb-4">System Alerts</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-4">System Alerts</h4>
                     <div className="space-y-3">
                       <div className="flex items-center gap-2 text-sm">
                         <CheckCircle className="h-4 w-4 text-green-500" />
-                        <span className="text-gray-600">All systems operational</span>
+                        <span className="text-gray-600 dark:text-gray-400">All systems operational</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                        <span className="text-gray-600">Memory usage above 70%</span>
+                        <span className="text-gray-600 dark:text-gray-400">Memory usage above 70%</span>
                       </div>
                     </div>
                   </div>
@@ -652,22 +652,22 @@ const Admin: React.FC = () => {
           {selectedTab === 'security' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Security & Access Control</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Security & Access Control</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="border border-gray-200 rounded-lg p-6">
-                    <h4 className="font-medium text-gray-900 mb-4">Access Logs</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-4">Access Logs</h4>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">Failed Login Attempts</span>
+                        <span className="text-gray-600 dark:text-gray-400">Failed Login Attempts</span>
                         <span className="font-medium text-red-600">12</span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">Suspicious Activities</span>
+                        <span className="text-gray-600 dark:text-gray-400">Suspicious Activities</span>
                         <span className="font-medium text-yellow-600">3</span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">Last Security Scan</span>
-                        <span className="font-medium text-gray-900">2 hours ago</span>
+                        <span className="text-gray-600 dark:text-gray-400">Last Security Scan</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">2 hours ago</span>
                       </div>
                     </div>
                     <button className="btn-outline w-full mt-4">
@@ -677,14 +677,14 @@ const Admin: React.FC = () => {
                   </div>
 
                   <div className="border border-gray-200 rounded-lg p-6">
-                    <h4 className="font-medium text-gray-900 mb-4">API Keys</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-4">API Keys</h4>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">Active API Keys</span>
-                        <span className="font-medium text-gray-900">24</span>
+                        <span className="text-gray-600 dark:text-gray-400">Active API Keys</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">24</span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">Expired Keys</span>
+                        <span className="text-gray-600 dark:text-gray-400">Expired Keys</span>
                         <span className="font-medium text-red-600">2</span>
                       </div>
                     </div>
@@ -702,18 +702,18 @@ const Admin: React.FC = () => {
           {selectedTab === 'backup' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Backup & Recovery</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Backup & Recovery</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="border border-gray-200 rounded-lg p-6">
-                    <h4 className="font-medium text-gray-900 mb-4">System Backup</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-4">System Backup</h4>
                     <div className="space-y-4">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">Last Backup</span>
-                        <span className="font-medium text-gray-900">2 hours ago</span>
+                        <span className="text-gray-600 dark:text-gray-400">Last Backup</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">2 hours ago</span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">Backup Size</span>
-                        <span className="font-medium text-gray-900">2.4 GB</span>
+                        <span className="text-gray-600 dark:text-gray-400">Backup Size</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">2.4 GB</span>
                       </div>
                       <button className="btn-primary w-full">
                         <Database className="h-4 w-4" />
@@ -723,14 +723,14 @@ const Admin: React.FC = () => {
                   </div>
 
                   <div className="border border-gray-200 rounded-lg p-6">
-                    <h4 className="font-medium text-gray-900 mb-4">Recovery Points</h4>
+                    <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-4">Recovery Points</h4>
                     <div className="space-y-3">
                       <div className="text-sm">
-                        <span className="text-gray-600">Available:</span>
+                        <span className="text-gray-600 dark:text-gray-400">Available:</span>
                         <span className="font-medium text-gray-900 ml-2">5 recovery points</span>
                       </div>
                       <div className="text-sm">
-                        <span className="text-gray-600">Oldest:</span>
+                        <span className="text-gray-600 dark:text-gray-400">Oldest:</span>
                         <span className="font-medium text-gray-900 ml-2">7 days ago</span>
                       </div>
                     </div>

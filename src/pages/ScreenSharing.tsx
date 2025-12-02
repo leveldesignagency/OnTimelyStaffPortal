@@ -126,14 +126,14 @@ const ScreenSharing: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
       {/* Page Header */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-2">
           <Monitor className="h-8 w-8 text-green-600" />
-          <h1 className="text-3xl font-bold text-gray-900">Screen Sharing</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Screen Sharing</h1>
         </div>
-        <p className="text-gray-600">Enter a confirmation code to view a customer's screen</p>
+        <p className="text-gray-600 dark:text-gray-400">Enter a confirmation code to view a customer's screen</p>
       </div>
 
       {!isConnected ? (
@@ -144,8 +144,8 @@ const ScreenSharing: React.FC = () => {
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Eye className="h-10 w-10 text-green-600" />
               </div>
-              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Join Screen Share Session</h2>
-              <p className="text-gray-600">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Join Screen Share Session</h2>
+              <p className="text-gray-600 dark:text-gray-400">
                 Ask the customer for their confirmation code and enter it below
               </p>
             </div>
@@ -227,15 +227,15 @@ const ScreenSharing: React.FC = () => {
         <div className="space-y-10">
           {/* Session Info */}
           {sessionData && (
-            <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
                     <CheckCircle className="h-6 w-6 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">Connected to Session</h3>
-                    <p className="text-sm text-gray-600">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Connected to Session</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       Code: <span className="font-mono font-bold text-green-600">{sessionData.confirmation_code}</span>
                     </p>
                   </div>
@@ -252,22 +252,22 @@ const ScreenSharing: React.FC = () => {
               {sessionData.metadata && (
                 <div className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   <div>
-                    <p className="text-gray-500">User</p>
-                    <p className="font-medium text-gray-900">
+                    <p className="text-gray-500 dark:text-gray-400">User</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">
                       {sessionData.metadata.user_name || sessionData.metadata.user_email || 'Unknown'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-500">Email</p>
-                    <p className="font-medium text-gray-900">{sessionData.metadata.user_email || 'N/A'}</p>
+                    <p className="text-gray-500 dark:text-gray-400">Email</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">{sessionData.metadata.user_email || 'N/A'}</p>
                   </div>
                   <div>
-                    <p className="text-gray-500">Platform</p>
-                    <p className="font-medium text-gray-900">{sessionData.metadata.platform || 'Unknown'}</p>
+                    <p className="text-gray-500 dark:text-gray-400">Platform</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">{sessionData.metadata.platform || 'Unknown'}</p>
                   </div>
                   <div>
-                    <p className="text-gray-500">Started</p>
-                    <p className="font-medium text-gray-900">
+                    <p className="text-gray-500 dark:text-gray-400">Started</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">
                       {new Date(sessionData.created_at).toLocaleTimeString()}
                     </p>
                   </div>

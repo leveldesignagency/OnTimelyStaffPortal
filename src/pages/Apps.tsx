@@ -639,10 +639,10 @@ The OnTimely Team`
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Apps Management</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Apps Management</h1>
           <p className="text-gray-600 mt-2">Manage available apps and add-ons for OnTimely users</p>
         </div>
         <div className="flex items-center space-x-3">
@@ -706,7 +706,7 @@ The OnTimely Team`
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
                 <div className="flex items-center space-x-2">
-                  <h3 className="text-xl font-semibold text-gray-900">{app.app_name}</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{app.app_name}</h3>
                   {app.is_featured && (
                     <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
                   )}
@@ -745,7 +745,7 @@ The OnTimely Team`
               <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
                 {app.app_type}
               </span>
-              <span className="text-sm text-gray-500">v{app.version}</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">v{app.version}</span>
             </div>
 
             {app.features && app.features.length > 0 && (
@@ -799,14 +799,14 @@ The OnTimely Team`
       {/* Delete Confirmation Modal */}
       {showDeleteModal && appToDelete && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
             <div className="flex items-center space-x-3 mb-4">
               <div className="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
                 <Trash2 className="h-6 w-6 text-red-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Delete App</h3>
-                <p className="text-sm text-gray-500">This action cannot be undone</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Delete App</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">This action cannot be undone</p>
               </div>
             </div>
             
@@ -857,7 +857,7 @@ The OnTimely Team`
           {/* Modal Content */}
           <div className="flex-1 bg-white overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center z-10">
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {selectedApp ? 'Edit App' : 'Add New App'}
               </h2>
               <button
@@ -875,8 +875,8 @@ The OnTimely Team`
 
             <div className="p-8 max-w-4xl mx-auto space-y-6">
               {/* Basic Information */}
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Basic Information</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -975,8 +975,8 @@ The OnTimely Team`
               </div>
 
               {/* Image Upload Section */}
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">App Image</h3>
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">App Image</h3>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -1016,12 +1016,12 @@ The OnTimely Team`
                       {isUploadingImage ? (
                         <>
                           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-green-600"></div>
-                          <span className="text-gray-600">Uploading...</span>
+                          <span className="text-gray-600 dark:text-gray-400">Uploading...</span>
                         </>
                       ) : (
                         <>
                           <Upload className="h-5 w-5 text-gray-400" />
-                          <span className="text-gray-600">Choose Image</span>
+                          <span className="text-gray-600 dark:text-gray-400">Choose Image</span>
                         </>
                       )}
                     </button>
@@ -1033,7 +1033,7 @@ The OnTimely Team`
                 {(imagePreview || formData.image_url) && (
                   <div className="mt-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Preview</label>
-                    <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border border-gray-300">
+                    <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700">
                       <img
                         src={imagePreview || formData.image_url || ''}
                         alt="App preview"
@@ -1052,8 +1052,8 @@ The OnTimely Team`
               </div>
 
               {/* Developer Information */}
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Developer Information</h3>
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Developer Information</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -1083,8 +1083,8 @@ The OnTimely Team`
               </div>
 
               {/* Features */}
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Features</h3>
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Features</h3>
                 <textarea
                   value={(formData.features || []).join('\n')}
                   onChange={(e) => {
@@ -1099,8 +1099,8 @@ The OnTimely Team`
               </div>
 
               {/* Status */}
-              <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Status</h3>
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Status</h3>
                 <div className="flex space-x-6">
                   <label className="flex items-center">
                     <input
@@ -1124,7 +1124,7 @@ The OnTimely Team`
               </div>
 
               {/* Save Button */}
-              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <button
                   onClick={() => {
                     setShowAddModal(false)
@@ -1152,9 +1152,9 @@ The OnTimely Team`
       {/* Send Documents to Developer Modal */}
       {showSendDocumentsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-900">Send Documents to Developer</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Send Documents to Developer</h2>
               <button
                 onClick={() => {
                   setShowSendDocumentsModal(false)

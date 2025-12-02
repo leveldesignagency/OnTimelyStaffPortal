@@ -502,7 +502,7 @@ const SmartAdvertising: React.FC = () => {
             <span className={selected ? 'text-gray-900' : 'text-gray-500'}>
               {selected?.label || placeholder || 'Select'}
             </span>
-            <svg className="w-4 h-4 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.25 4.39a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clipRule="evenodd" />
             </svg>
           </button>
@@ -688,8 +688,8 @@ const SmartAdvertising: React.FC = () => {
     const renderStep1 = () => (
       <div className="space-y-6">
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Campaign Information & Pricing</h2>
-          <p className="text-gray-600">Set up your campaign details and get an instant quote</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Campaign Information & Pricing</h2>
+          <p className="text-gray-600 dark:text-gray-400">Set up your campaign details and get an instant quote</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -879,7 +879,7 @@ const SmartAdvertising: React.FC = () => {
         {/* Pricing Display */}
         <div className="bg-gray-50 p-4 rounded-lg">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-lg font-semibold text-gray-900">Pricing Estimate</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Pricing Estimate</h3>
             <button
               type="button"
               onClick={() => {
@@ -894,36 +894,36 @@ const SmartAdvertising: React.FC = () => {
           </div>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-gray-600">Estimated Reach:</span>
+              <span className="text-gray-600 dark:text-gray-400">Estimated Reach:</span>
               <span className="ml-2 font-medium">{campaignDetails.estimatedReach.toLocaleString()} people</span>
             </div>
             <div>
-              <span className="text-gray-600">Cost per Impression:</span>
+              <span className="text-gray-600 dark:text-gray-400">Cost per Impression:</span>
               <span className="ml-2 font-medium">${campaignDetails.costPerImpression.toFixed(4)}</span>
             </div>
             <div>
-              <span className="text-gray-600">Campaign Duration:</span>
+              <span className="text-gray-600 dark:text-gray-400">Campaign Duration:</span>
               <span className="ml-2 font-medium">{campaignDetails.dealDuration} days</span>
             </div>
             <div>
-              <span className="text-gray-600">Subtotal:</span>
+              <span className="text-gray-600 dark:text-gray-400">Subtotal:</span>
               <span className="ml-2 font-medium">${campaignDetails.totalCost.toFixed(2)}</span>
             </div>
             {campaignDetails.discountAmount > 0 && (
               <>
                 <div>
-                  <span className="text-gray-600">Discount ({campaignDetails.discountCode}):</span>
+                  <span className="text-gray-600 dark:text-gray-400">Discount ({campaignDetails.discountCode}):</span>
                   <span className="ml-2 font-medium text-green-600">-${campaignDetails.discountAmount.toFixed(2)}</span>
                 </div>
                 <div>
-                  <span className="text-gray-600">Total Cost:</span>
+                  <span className="text-gray-600 dark:text-gray-400">Total Cost:</span>
                   <span className="ml-2 font-bold text-green-600 text-lg">${campaignDetails.finalCost.toFixed(2)}</span>
                 </div>
               </>
             )}
             {campaignDetails.discountAmount === 0 && (
               <div>
-                <span className="text-gray-600">Total Cost:</span>
+                <span className="text-gray-600 dark:text-gray-400">Total Cost:</span>
                 <span className="ml-2 font-bold text-green-600 text-lg">${campaignDetails.totalCost.toFixed(2)}</span>
               </div>
             )}
@@ -935,37 +935,37 @@ const SmartAdvertising: React.FC = () => {
     const renderStep2 = () => (
       <div className="space-y-6">
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Payment Confirmation</h2>
-          <p className="text-gray-600">Review and confirm your campaign pricing</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Payment Confirmation</h2>
+          <p className="text-gray-600 dark:text-gray-400">Review and confirm your campaign pricing</p>
         </div>
 
         <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaign Summary</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Campaign Summary</h3>
           <div className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-600">Campaign:</span>
+              <span className="text-gray-600 dark:text-gray-400">Campaign:</span>
               <span className="font-medium">{campaignDetails.campaignTitle}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Company:</span>
+              <span className="text-gray-600 dark:text-gray-400">Company:</span>
               <span className="font-medium">{campaignDetails.companyName}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Location:</span>
+              <span className="text-gray-600 dark:text-gray-400">Location:</span>
               <span className="font-medium">{campaignDetails.country} {campaignDetails.city && `- ${campaignDetails.city}`}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Duration:</span>
+              <span className="text-gray-600 dark:text-gray-400">Duration:</span>
               <span className="font-medium">{campaignDetails.dealDuration} days</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Estimated Reach:</span>
+              <span className="text-gray-600 dark:text-gray-400">Estimated Reach:</span>
               <span className="font-medium">{campaignDetails.estimatedReach.toLocaleString()} people</span>
             </div>
             <div className="border-t pt-3">
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal:</span>
+                  <span className="text-gray-600 dark:text-gray-400">Subtotal:</span>
                   <span className="font-medium">${campaignDetails.totalCost.toFixed(2)}</span>
                 </div>
                 {campaignDetails.discountAmount > 0 && (
@@ -1004,8 +1004,8 @@ const SmartAdvertising: React.FC = () => {
     const renderStep3 = () => (
       <div className="space-y-6">
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Create Advertisement</h2>
-          <p className="text-gray-600">Design your mobile advertisement</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Create Advertisement</h2>
+          <p className="text-gray-600 dark:text-gray-400">Design your mobile advertisement</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -1019,7 +1019,7 @@ const SmartAdvertising: React.FC = () => {
               maxLength={60}
               placeholder="Brief description for mobile display"
             />
-            <p className="text-xs text-gray-500">Max 60 characters (for mobile display)</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Max 60 characters (for mobile display)</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Full Description</label>
@@ -1070,7 +1070,7 @@ const SmartAdvertising: React.FC = () => {
               }}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
             />
-            <p className="text-xs text-gray-500">Supports all image and video formats</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Supports all image and video formats</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Company Logo *</label>
@@ -1087,7 +1087,7 @@ const SmartAdvertising: React.FC = () => {
               }}
               className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
             />
-            <p className="text-xs text-gray-500">Supports all image formats</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Supports all image formats</p>
           </div>
         </div>
 
@@ -1178,23 +1178,23 @@ const SmartAdvertising: React.FC = () => {
           {showPaymentConfirmation && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Confirm Send Payment Link</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Confirm Send Payment Link</h3>
                 <div className="space-y-3 mb-6">
                   <div>
-                    <p className="text-sm text-gray-600">Company:</p>
-                    <p className="font-semibold text-gray-900">{campaignDetails.companyName}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Company:</p>
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">{campaignDetails.companyName}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Campaign:</p>
-                    <p className="font-semibold text-gray-900">{campaignDetails.campaignTitle}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Campaign:</p>
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">{campaignDetails.campaignTitle}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Email:</p>
-                    <p className="font-semibold text-gray-900">{campaignDetails.invoiceEmail}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Email:</p>
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">{campaignDetails.invoiceEmail}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Amount:</p>
-                    <p className="font-semibold text-gray-900">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Amount:</p>
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">
                       ${campaignDetails.discountAmount > 0 ? campaignDetails.finalCost.toFixed(2) : campaignDetails.totalCost.toFixed(2)}
                       {campaignDetails.discountAmount > 0 && (
                         <span className="text-sm text-gray-500 ml-2">
@@ -1408,7 +1408,7 @@ const SmartAdvertising: React.FC = () => {
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               {editingDiscountCode ? 'Edit Discount Code' : 'Create Discount Code'}
             </h2>
             <button
@@ -1569,13 +1569,13 @@ const SmartAdvertising: React.FC = () => {
 
           {/* Existing Discount Codes List */}
           <div className="mt-8 border-t pt-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Existing Discount Codes</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Existing Discount Codes</h3>
             <div className="space-y-2 max-h-64 overflow-y-auto">
               {discountCodes.map((dc) => (
                 <div key={dc.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-900">{dc.code}</span>
+                      <span className="font-semibold text-gray-900 dark:text-gray-100">{dc.code}</span>
                       <span className={`px-2 py-1 text-xs rounded-full ${dc.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                         {dc.is_active ? 'Active' : 'Inactive'}
                       </span>
@@ -1625,15 +1625,15 @@ const SmartAdvertising: React.FC = () => {
   }
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-8 bg-gray-50 dark:bg-gray-950 min-h-screen">
       {showCampaignForm && <CampaignForm />}
       {showDiscountCodes && <DiscountCodeManager />}
       {/* Header */}
       <div className="mb-10">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Smart Advertising Platform</h1>
-            <p className="text-gray-600 text-lg">AI-powered location-based advertising management</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">Smart Advertising Platform</h1>
+            <p className="text-gray-600 dark:text-gray-400 text-lg">AI-powered location-based advertising management</p>
           </div>
           <div className="flex gap-2">
             <button 
@@ -1662,8 +1662,8 @@ const SmartAdvertising: React.FC = () => {
               <DollarSign className="w-8 h-8 text-green-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Monthly Revenue</p>
-              <p className="text-2xl font-bold text-gray-900">${stats.totalRevenue.toLocaleString()}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Monthly Revenue</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">${stats.totalRevenue.toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -1674,8 +1674,8 @@ const SmartAdvertising: React.FC = () => {
               <Target className="w-8 h-8 text-blue-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Active Campaigns</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.activeCampaigns}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Active Campaigns</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.activeCampaigns}</p>
             </div>
           </div>
         </div>
@@ -1686,8 +1686,8 @@ const SmartAdvertising: React.FC = () => {
               <Eye className="w-8 h-8 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Total Impressions</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalImpressions.toLocaleString()}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Impressions</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.totalImpressions.toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -1698,8 +1698,8 @@ const SmartAdvertising: React.FC = () => {
               <MousePointer className="w-8 h-8 text-orange-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Avg CTR</p>
-              <p className="text-2xl font-bold text-gray-900">{(stats.avgCTR * 100).toFixed(2)}%</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Avg CTR</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{(stats.avgCTR * 100).toFixed(2)}%</p>
             </div>
           </div>
         </div>
@@ -1710,8 +1710,8 @@ const SmartAdvertising: React.FC = () => {
               <Zap className="w-8 h-8 text-red-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Hot Opportunities</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.hotOpportunities}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Hot Opportunities</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.hotOpportunities}</p>
             </div>
           </div>
         </div>
@@ -1720,15 +1720,15 @@ const SmartAdvertising: React.FC = () => {
           <div className="flex items-center">
             <Brain className="w-8 h-8 text-indigo-600" />
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Market Ops</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.marketOpportunities}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Market Ops</p>
+              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.marketOpportunities}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-gray-200 dark:border-gray-700">
         <nav className="-mb-px flex space-x-8">
           {[
             { key: 'campaigns', label: 'Campaigns', icon: Target },
@@ -1757,9 +1757,9 @@ const SmartAdvertising: React.FC = () => {
         {activeTab === 'campaigns' && (
           <div className="space-y-6">
             <div className="bg-white shadow rounded-lg">
-              <div className="px-6 py-4 border-b border-gray-200">
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-lg font-medium text-gray-900">Campaign Management</h2>
+                  <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Campaign Management</h2>
                   <div className="flex gap-2">
                     <button className="px-3 py-2 border border-gray-300 rounded-md text-sm flex items-center gap-2">
                       <Filter className="w-4 h-4" />
@@ -1791,8 +1791,8 @@ const SmartAdvertising: React.FC = () => {
                       <tr key={campaign.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div>
-                            <div className="text-sm font-medium text-gray-900">{campaign.title}</div>
-                            <div className="text-sm text-gray-500">{campaign.company_name}</div>
+                            <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{campaign.title}</div>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">{campaign.company_name}</div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -1800,7 +1800,7 @@ const SmartAdvertising: React.FC = () => {
                             {campaign.payment_tier}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                           ${campaign.monthly_payment_amount?.toLocaleString() || 0}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -1820,18 +1820,18 @@ const SmartAdvertising: React.FC = () => {
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">{campaign.impressions_count.toLocaleString()} impressions</div>
-                          <div className="text-sm text-gray-500">{(campaign.ctr * 100).toFixed(2)}% CTR</div>
+                          <div className="text-sm text-gray-900 dark:text-gray-100">{campaign.impressions_count.toLocaleString()} impressions</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">{(campaign.ctr * 100).toFixed(2)}% CTR</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(campaign.status)}`}>
                             {campaign.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                           {campaign.target_cities?.length ? `${campaign.target_cities.length} cities` : 'Global'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                           <div className="flex flex-col gap-1">
                             <button
                               onClick={() => {
@@ -1939,8 +1939,8 @@ const SmartAdvertising: React.FC = () => {
         {activeTab === 'intelligence' && (
           <div className="space-y-6">
             <div className="bg-white shadow rounded-lg">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-medium text-gray-900">AI Market Intelligence</h2>
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">AI Market Intelligence</h2>
                 <p className="text-sm text-gray-600 mt-1">AI-analyzed market opportunities and insights</p>
               </div>
               <div className="p-6">
@@ -1949,7 +1949,7 @@ const SmartAdvertising: React.FC = () => {
                     <div key={intel.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
                       <div className="flex justify-between items-start mb-3">
                         <div>
-                          <h3 className="font-medium text-gray-900">{intel.location_name}</h3>
+                          <h3 className="font-medium text-gray-900 dark:text-gray-100">{intel.location_name}</h3>
                           <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full mt-1 ${getPriorityColor(intel.sales_priority)}`}>
                             {intel.sales_priority} priority
                           </span>
@@ -1959,15 +1959,15 @@ const SmartAdvertising: React.FC = () => {
                       
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Revenue Potential:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Revenue Potential:</span>
                           <span className="font-medium">${intel.revenue_potential.toLocaleString()}/mo</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Business Density:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Business Density:</span>
                           <span className="font-medium">{(intel.business_density_score * 100).toFixed(0)}%</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Competition:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Competition:</span>
                           <span className={`font-medium ${
                             intel.competition_level === 'low' ? 'text-green-600' : 
                             intel.competition_level === 'medium' ? 'text-yellow-600' : 'text-red-600'
@@ -1977,8 +1977,8 @@ const SmartAdvertising: React.FC = () => {
                         </div>
                       </div>
                       
-                      <div className="mt-4 pt-3 border-t border-gray-200">
-                        <div className="flex justify-between items-center text-xs text-gray-500">
+                      <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+                        <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
                           <span>Last analyzed: {new Date(intel.last_analyzed).toLocaleDateString()}</span>
                           <button className="text-indigo-600 hover:text-indigo-700 font-medium">View Details</button>
                         </div>
@@ -1994,8 +1994,8 @@ const SmartAdvertising: React.FC = () => {
         {activeTab === 'opportunities' && (
           <div className="space-y-6">
             <div className="bg-white shadow rounded-lg">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-medium text-gray-900">AI-Generated Sales Opportunities</h2>
+              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">AI-Generated Sales Opportunities</h2>
                 <p className="text-sm text-gray-600 mt-1">Potential clients identified by AI analysis</p>
               </div>
               <div className="overflow-x-auto">
@@ -2014,13 +2014,13 @@ const SmartAdvertising: React.FC = () => {
                     {salesOps.map((opportunity) => (
                       <tr key={opportunity.id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{opportunity.company_name}</div>
-                          <div className="text-sm text-gray-500">{opportunity.status}</div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{opportunity.company_name}</div>
+                          <div className="text-sm text-gray-500 dark:text-gray-400">{opportunity.status}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                           {opportunity.business_type}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                           ${opportunity.estimated_budget.toLocaleString()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -2031,7 +2031,7 @@ const SmartAdvertising: React.FC = () => {
                                 style={{ width: `${opportunity.likelihood_score * 100}%` }}
                               ></div>
                             </div>
-                            <span className="text-sm text-gray-900">{(opportunity.likelihood_score * 100).toFixed(0)}%</span>
+                            <span className="text-sm text-gray-900 dark:text-gray-100">{(opportunity.likelihood_score * 100).toFixed(0)}%</span>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -2054,8 +2054,8 @@ const SmartAdvertising: React.FC = () => {
         {activeTab === 'analytics' && (
           <div className="space-y-6">
             <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Performance Analytics</h2>
-              <div className="text-center py-12 text-gray-500">
+              <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Performance Analytics</h2>
+              <div className="text-center py-12 text-gray-500 dark:text-gray-400">
                 <BarChart3 className="w-12 h-12 mx-auto mb-4" />
                 <p>Advanced analytics dashboard coming soon...</p>
                 <p className="text-sm mt-2">Will include revenue trends, geographic performance, and AI insights</p>

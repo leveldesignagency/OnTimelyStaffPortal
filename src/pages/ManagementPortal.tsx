@@ -81,13 +81,13 @@ const ManagementPortal: React.FC = () => {
               className="p-2 rounded-md hover:bg-gray-100 transition-colors"
               onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             >
-              <Menu className="h-5 w-5 text-gray-600" />
+              <Menu className="h-5 w-5 text-gray-600 dark:text-gray-400" />
             </button>
-            <h1 className="text-2xl font-semibold text-gray-900">OnTimely Staff Portal</h1>
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">OnTimely Staff Portal</h1>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg">
-              <UserCircle className="h-5 w-5 text-gray-600" />
+              <UserCircle className="h-5 w-5 text-gray-600 dark:text-gray-400" />
               <span className="text-sm font-medium text-gray-700">Staff User</span>
             </div>
           </div>

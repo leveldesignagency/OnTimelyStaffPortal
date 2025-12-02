@@ -10,22 +10,28 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isDark, setIsDark] = useState(() => {
     // Check localStorage first, then system preference
-    const stored = localStorage.getItem('portal-theme')
-    if (stored) {
-      return stored === 'dark'
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('portal-theme')
+      if (stored) {
+        return stored === 'dark'
+      }
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
     }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
+    return false
   })
 
+  // Apply dark class immediately on mount and when theme changes
   useEffect(() => {
-    // Update localStorage when theme changes
-    localStorage.setItem('portal-theme', isDark ? 'dark' : 'light')
-    
-    // Update document class for Tailwind dark mode
-    if (isDark) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
+    if (typeof document !== 'undefined') {
+      // Update localStorage when theme changes
+      localStorage.setItem('portal-theme', isDark ? 'dark' : 'light')
+      
+      // Update document class for Tailwind dark mode
+      if (isDark) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
     }
   }, [isDark])
 
